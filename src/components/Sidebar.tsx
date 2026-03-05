@@ -1,17 +1,13 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-type SidebarProps = {
-  currentView: string;
-  setCurrentView: (view: string) => void;
-};
-
-export function Sidebar({ currentView, setCurrentView }: SidebarProps) {
+export function Sidebar() {
   const navItems = [
-    { id: 'home', icon: 'home', label: 'Home' },
-    { id: 'community_queue', icon: 'smart_toy', label: 'Community Queue' },
-    { id: 'content_pipeline', icon: 'article', label: 'Content Pipeline' },
-    { id: 'ax_reports', icon: 'analytics', label: 'AX Reports' },
-    { id: 'knowledge_base', icon: 'settings_input_component', label: 'Knowledge Base' },
+    { path: '/', icon: 'home', label: 'Home' },
+    { path: '/community-queue', icon: 'smart_toy', label: 'Community Queue' },
+    { path: '/content-pipeline', icon: 'article', label: 'Content Pipeline' },
+    { path: '/ax-reports', icon: 'analytics', label: 'AX Reports' },
+    { path: '/knowledge-base', icon: 'settings_input_component', label: 'Knowledge Base' },
   ];
 
   return (
@@ -21,20 +17,22 @@ export function Sidebar({ currentView, setCurrentView }: SidebarProps) {
       </div>
       <nav className="flex flex-col gap-8 flex-1">
         {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setCurrentView(item.id)}
-            className={`group relative flex items-center justify-center p-2 rounded-lg transition-colors ${
-              currentView === item.id
-                ? 'bg-primary/20 text-accent'
-                : 'text-slate-400 hover:text-accent'
-            }`}
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `group relative flex items-center justify-center p-2 rounded-lg transition-colors ${
+                isActive
+                  ? 'bg-primary/20 text-accent'
+                  : 'text-slate-400 hover:text-accent'
+              }`
+            }
           >
             <span className="material-symbols-outlined">{item.icon}</span>
             <span className="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">
               {item.label}
             </span>
-          </button>
+          </NavLink>
         ))}
       </nav>
       <div className="flex flex-col gap-6">

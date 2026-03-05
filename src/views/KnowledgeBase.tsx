@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { pb } from '../lib/pb';
+import React from 'react';
+import { usePocketBase } from '../hooks/usePocketBase';
+import { KnowledgeSource } from '../types';
 
 export function KnowledgeBase() {
-  const [sources, setSources] = useState<any[]>([]);
+  const { data: sources, loading, error } = usePocketBase<KnowledgeSource>('knowledge_sources');
 
-  useEffect(() => {
-    const fetchSources = async () => {
-      try {
-        const records = await pb.collection('knowledge_sources').getFullList();
-        setSources(records);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchSources();
-
-    pb.collection('knowledge_sources').subscribe('*', function (e) {
-      if (e.action === 'create') {
-        setSources((prev) => [...prev, e.record]);
-      } else if (e.action === 'update') {
-        setSources((prev) => prev.map(s => s.id === e.record.id ? e.record : s));
-      } else if (e.action === 'delete') {
-        setSources((prev) => prev.filter(s => s.id !== e.record.id));
-      }
-    });
-
-    return () => {
-      pb.collection('knowledge_sources').unsubscribe('*');
-    };
-  }, []);
+  if (loading) return <div className="p-6 font-mono text-accent">Loading Knowledge Base...</div>;
+  if (error) return <div className="p-6 font-mono text-red-500">Error loading Knowledge Base: {error.message}</div>;
 
   return (
     <div className="flex-1 p-6 h-full overflow-y-auto">

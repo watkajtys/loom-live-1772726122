@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-type HeaderProps = {
-  currentView: string;
-};
-
-export function Header({ currentView }: HeaderProps) {
+export function Header() {
   const [time, setTime] = useState('');
+  const location = useLocation();
 
   useEffect(() => {
     const updateTime = () => {
@@ -19,7 +17,15 @@ export function Header({ currentView }: HeaderProps) {
     return () => clearInterval(int);
   }, []);
 
-  const viewName = currentView.toUpperCase();
+  const routeNameMap: Record<string, string> = {
+    '/': 'HOME',
+    '/community-queue': 'COMMUNITY_QUEUE',
+    '/content-pipeline': 'CONTENT_PIPELINE',
+    '/ax-reports': 'AX_REPORTS',
+    '/knowledge-base': 'KNOWLEDGE_BASE',
+  };
+
+  const viewName = routeNameMap[location.pathname] || 'UNKNOWN';
 
   return (
     <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md">

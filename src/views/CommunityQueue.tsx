@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { pb } from '../lib/pb';
+import React from 'react';
+import { usePocketBase } from '../hooks/usePocketBase';
+import { SocialMention } from '../types';
 
 export function CommunityQueue() {
-  const [mentions, setMentions] = useState<any[]>([]);
+  const { data: mentions, loading, error } = usePocketBase<SocialMention>('social_mentions');
 
-  useEffect(() => {
-    const fetchMentions = async () => {
-      try {
-        const records = await pb.collection('social_mentions').getFullList();
-        setMentions(records);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchMentions();
-
-    pb.collection('social_mentions').subscribe('*', function (e) {
-      if (e.action === 'create') {
-        setMentions((prev) => [...prev, e.record]);
-      } else if (e.action === 'update') {
-        setMentions((prev) => prev.map(m => m.id === e.record.id ? e.record : m));
-      } else if (e.action === 'delete') {
-        setMentions((prev) => prev.filter(m => m.id !== e.record.id));
-      }
-    });
-
-    return () => {
-      pb.collection('social_mentions').unsubscribe('*');
-    };
-  }, []);
+  if (loading) return <div className="p-6 font-mono text-accent">Loading Community Queue...</div>;
+  if (error) return <div className="p-6 font-mono text-red-500">Error loading Community Queue: {error.message}</div>;
 
   return (
     <div className="flex-1 p-6 h-full overflow-y-auto">

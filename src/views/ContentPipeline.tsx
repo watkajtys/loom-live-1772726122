@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { pb } from '../lib/pb';
+import React from 'react';
+import { usePocketBase } from '../hooks/usePocketBase';
+import { ContentPipeline as ContentPipelineType } from '../types';
 
 export function ContentPipeline() {
-  const [contentItems, setContentItems] = useState<any[]>([]);
+  const { data: contentItems, loading, error } = usePocketBase<ContentPipelineType>('content_pipeline');
 
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const records = await pb.collection('content_pipeline').getFullList();
-        setContentItems(records);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchContent();
-
-    pb.collection('content_pipeline').subscribe('*', function (e) {
-      if (e.action === 'create') {
-        setContentItems((prev) => [...prev, e.record]);
-      } else if (e.action === 'update') {
-        setContentItems((prev) => prev.map(c => c.id === e.record.id ? e.record : c));
-      } else if (e.action === 'delete') {
-        setContentItems((prev) => prev.filter(c => c.id !== e.record.id));
-      }
-    });
-
-    return () => {
-      pb.collection('content_pipeline').unsubscribe('*');
-    };
-  }, []);
+  if (loading) return <div className="p-6 font-mono text-accent">Loading Content Pipeline...</div>;
+  if (error) return <div className="p-6 font-mono text-red-500">Error loading Content Pipeline: {error.message}</div>;
 
   return (
     <div className="flex-1 p-6 h-full overflow-y-auto">

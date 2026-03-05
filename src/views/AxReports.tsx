@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { pb } from '../lib/pb';
+import React from 'react';
+import { usePocketBase } from '../hooks/usePocketBase';
+import { AxReport } from '../types';
 
 export function AxReports() {
-  const [reports, setReports] = useState<any[]>([]);
+  const { data: reports, loading, error } = usePocketBase<AxReport>('ax_reports');
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const records = await pb.collection('ax_reports').getFullList();
-        setReports(records);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchReports();
-
-    pb.collection('ax_reports').subscribe('*', function (e) {
-      if (e.action === 'create') {
-        setReports((prev) => [...prev, e.record]);
-      } else if (e.action === 'update') {
-        setReports((prev) => prev.map(r => r.id === e.record.id ? e.record : r));
-      } else if (e.action === 'delete') {
-        setReports((prev) => prev.filter(r => r.id !== e.record.id));
-      }
-    });
-
-    return () => {
-      pb.collection('ax_reports').unsubscribe('*');
-    };
-  }, []);
+  if (loading) return <div className="p-6 font-mono text-accent">Loading AX Reports...</div>;
+  if (error) return <div className="p-6 font-mono text-red-500">Error loading AX Reports: {error.message}</div>;
 
   return (
     <div className="flex-1 p-6 h-full overflow-y-auto">
