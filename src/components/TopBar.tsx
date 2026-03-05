@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Icon } from './Icon';
+import { getRouteName } from '../constants/routes';
 
 export const TopBar: React.FC = () => {
   const [time, setTime] = useState('');
@@ -17,22 +18,11 @@ export const TopBar: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const getRouteName = () => {
-    switch (location.pathname) {
-      case '/': return 'Root::Command_Center';
-      case '/queue': return 'Root::Community_Queue';
-      case '/content': return 'Root::Content_Pipeline';
-      case '/reports': return 'Root::AX_Reports';
-      case '/knowledge': return 'Root::Knowledge_Base';
-      default: return `Root::${location.pathname.replace('/', '').toUpperCase()}`;
-    }
-  };
-
   return (
     <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md">
       <div className="flex items-center gap-4">
         <span className="text-accent text-xs font-mono tracking-widest uppercase">
-          {getRouteName()}
+          {getRouteName(location.pathname)}
         </span>
         <div className="h-4 w-px bg-primary/20"></div>
         <div className="flex items-center gap-2 text-xs font-mono">

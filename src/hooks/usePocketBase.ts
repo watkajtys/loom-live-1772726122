@@ -10,6 +10,8 @@ export function usePocketBase<T = RecordModel>(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const { page = 1, perPage = 50, filter, sort, subscribe } = options;
+
   useEffect(() => {
     let isMounted = true;
 
@@ -17,11 +19,11 @@ export function usePocketBase<T = RecordModel>(
       try {
         setLoading(true);
         const records = await pb.collection(collectionName).getList<T>(
-          options.page || 1,
-          options.perPage || 50,
+          page,
+          perPage,
           {
-            filter: options.filter,
-            sort: options.sort,
+            filter: filter,
+            sort: sort,
           }
         );
         if (isMounted) {
@@ -41,7 +43,7 @@ export function usePocketBase<T = RecordModel>(
 
     fetchData();
 
-    if (options.subscribe) {
+    if (subscribe) {
       pb.collection(collectionName).subscribe<T>('*', (e) => {
         if (e.action === 'create') {
           setData((prev) => [e.record, ...prev]);
@@ -55,11 +57,11 @@ export function usePocketBase<T = RecordModel>(
 
     return () => {
       isMounted = false;
-      if (options.subscribe) {
+      if (subscribe) {
         pb.collection(collectionName).unsubscribe('*');
       }
     };
-  }, [collectionName, options.page, options.perPage, options.filter, options.sort, options.subscribe]);
+  }, [collectionName, page, perPage, filter, sort, subscribe]);
 
   return { data, loading, error };
 }

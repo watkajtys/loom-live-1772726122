@@ -2,13 +2,7 @@ import React from 'react';
 import { DataViewLayout } from '../components/DataViewLayout';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { Badge } from '../components/Badge';
-
-type AXReport = {
-  id: string;
-  error_log: string;
-  suggested_fix: string;
-  status: 'pending' | 'submitted';
-};
+import { AXReport } from '../types/models';
 
 export const AXReports: React.FC = () => {
   const { data, loading, error } = usePocketBase<AXReport>('ax_reports', {

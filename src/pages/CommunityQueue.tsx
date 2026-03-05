@@ -2,14 +2,7 @@ import React from 'react';
 import { DataViewLayout } from '../components/DataViewLayout';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { Badge } from '../components/Badge';
-
-type SocialMention = {
-  id: string;
-  platform: string;
-  query: string;
-  draft_reply: string;
-  status: 'pending' | 'approved' | 'rejected';
-};
+import { SocialMention } from '../types/models';
 
 export const CommunityQueue: React.FC = () => {
   const { data, loading, error } = usePocketBase<SocialMention>('social_mentions', {

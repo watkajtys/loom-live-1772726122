@@ -2,14 +2,7 @@ import React from 'react';
 import { DataViewLayout } from '../components/DataViewLayout';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { Badge } from '../components/Badge';
-
-type KnowledgeSource = {
-  id: string;
-  source_type: 'sdk_repo' | 'docs_url' | 'github_issues' | 'forum';
-  url: string;
-  vectorization_status: 'pending' | 'processing' | 'vectorized' | 'failed';
-  last_synced: string;
-};
+import { KnowledgeSource } from '../types/models';
 
 export const KnowledgeBase: React.FC = () => {
   const { data, loading, error } = usePocketBase<KnowledgeSource>('knowledge_sources', {

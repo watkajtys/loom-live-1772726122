@@ -2,16 +2,10 @@ import React from 'react';
 import { DataViewLayout } from '../components/DataViewLayout';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { Badge } from '../components/Badge';
-
-type ContentPipeline = {
-  id: string;
-  title: string;
-  markdown_body: string;
-  status: 'drafting' | 'review' | 'published';
-};
+import { ContentPipeline as ContentPipelineModel } from '../types/models';
 
 export const ContentPipeline: React.FC = () => {
-  const { data, loading, error } = usePocketBase<ContentPipeline>('content_pipeline', {
+  const { data, loading, error } = usePocketBase<ContentPipelineModel>('content_pipeline', {
     sort: '-created',
     subscribe: true,
   });
