@@ -25,5 +25,6 @@ test('App initializes correctly and switches views', async ({ page }) => {
   await expect(page.locator('text=Root::KNOWLEDGE_BASE')).toBeVisible();
   await expect(page.locator('text=Knowledge Base').first()).toBeVisible();
 
+  // Capture evidence of completed tests
   await page.screenshot({ path: 'evidence.png' });
 });

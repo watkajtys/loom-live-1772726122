@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { ContentPipeline as ContentPipelineType } from '../types';
+import { StatusBadge } from '../components/ui/Badge';
 
 export function ContentPipeline() {
   const { data: contentItems, loading, error } = usePocketBase<ContentPipelineType>('content_pipeline');
@@ -15,11 +16,7 @@ export function ContentPipeline() {
         {contentItems.map((item) => (
           <div key={item.id} className="glass-panel p-4 rounded-lg flex flex-col gap-2">
             <h3 className="font-bold text-lg text-primary">{item.title}</h3>
-            <span className={`text-[10px] uppercase w-fit px-2 py-1 rounded font-mono ${
-              item.status === 'published' ? 'bg-green-500/20 text-green-400' :
-              item.status === 'review' ? 'bg-yellow-500/20 text-yellow-400' :
-              'bg-blue-500/20 text-blue-400'
-            }`}>{item.status}</span>
+            <StatusBadge status={item.status} />
             <div className="mt-2 p-2 bg-background-dark/50 rounded text-xs border border-primary/20 max-h-40 overflow-y-auto terminal-scroll whitespace-pre-wrap font-mono">
               {item.markdown_body}
             </div>

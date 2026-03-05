@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { SocialMention } from '../types';
+import { StatusBadge } from '../components/ui/Badge';
 
 export function CommunityQueue() {
   const { data: mentions, loading, error } = usePocketBase<SocialMention>('social_mentions');
@@ -16,11 +17,7 @@ export function CommunityQueue() {
           <div key={mention.id} className="glass-panel p-4 rounded-lg flex flex-col gap-2">
             <div className="flex justify-between">
               <span className="text-xs uppercase font-mono text-slate-400">{mention.platform}</span>
-              <span className={`text-[10px] px-2 py-1 rounded font-mono ${
-                mention.status === 'approved' ? 'bg-green-500/20 text-green-400' :
-                mention.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                'bg-yellow-500/20 text-yellow-400'
-              }`}>{mention.status}</span>
+              <StatusBadge status={mention.status} />
             </div>
             <p className="text-sm">{mention.query}</p>
             {mention.draft_reply && (

@@ -1,6 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { getTerminalStream, TerminalLog } from '../../utils/terminalStream';
 
 export function LiveTerminalWidget() {
+  const [logs, setLogs] = useState<TerminalLog[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Add some initial mock logs to prevent the terminal from looking empty at first
+    const initialLogs: TerminalLog[] = [
+      { id: '1', timestamp: '14:22:01', prefix: 'INGEST_SUCCESS:', message: "Github Webhook - Repository: 'advoloom-core' - Pull Request #421", type: 'success' },
+      { id: '2', timestamp: '14:22:05', prefix: 'AGENT_REPLY:', message: "Llama-3-70B processing technical query on Discord #general...", type: 'info' },
+      { id: '3', timestamp: '14:22:10', prefix: 'NEURAL_MAP:', message: "Updating context vector for 'Authentication Flow' tutorials", type: 'system' }
+    ];
+    setLogs(initialLogs);
+
+    const cleanup = getTerminalStream((log) => {
+      setLogs((prev) => {
+        const newLogs = [...prev, log];
+        // Keep only last 50 logs to prevent memory leaks
+        return newLogs.length > 50 ? newLogs.slice(newLogs.length - 50) : newLogs;
+      });
+    });
+
+    return () => cleanup();
+  }, []);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [logs]);
+
+  const getColorForType = (type: string) => {
+    switch (type) {
+      case 'success': return 'text-green-400';
+      case 'info': return 'text-primary';
+      case 'warning': return 'text-yellow-400';
+      case 'error': return 'text-red-400';
+      case 'system': return 'text-slate-400';
+      default: return 'text-slate-200';
+    }
+  };
+
   return (
     <section className="col-span-12 lg:col-span-9 row-span-4 glass-panel rounded-lg flex flex-col overflow-hidden border-t-2 border-t-accent/30">
       <div className="bg-primary/10 px-4 py-2 border-b border-primary/20 flex items-center justify-between">
@@ -14,16 +55,15 @@ export function LiveTerminalWidget() {
           <div className="size-2 rounded-full bg-slate-600"></div>
         </div>
       </div>
-      <div className="flex-1 p-4 font-mono text-sm terminal-scroll overflow-y-auto bg-black/40">
-        <div className="mb-2"><span className="text-accent">[14:22:01]</span> <span className="text-green-400">INGEST_SUCCESS:</span> Github Webhook - Repository: 'advoloom-core' - Pull Request #421</div>
-        <div className="mb-2"><span className="text-accent">[14:22:05]</span> <span className="text-primary">AGENT_REPLY:</span> Llama-3-70B processing technical query on Discord #general...</div>
-        <div className="mb-2"><span className="text-accent">[14:22:10]</span> <span className="text-slate-400">NEURAL_MAP:</span> Updating context vector for 'Authentication Flow' tutorials</div>
-        <div className="mb-2"><span className="text-accent">[14:22:15]</span> <span className="text-yellow-400">WARN:</span> Rate limit approaching for X-API v2 [88% capacity]</div>
-        <div className="mb-2"><span className="text-accent">[14:22:18]</span> <span className="text-green-400">INGEST_SUCCESS:</span> New tutorial request identified from Discord thread ID 99283</div>
-        <div className="mb-2"><span className="text-accent">[14:22:20]</span> <span className="text-primary">AGENT_OUTPUT:</span> "To initialize the SDK, use the `adv.init()` method with your API key..."</div>
-        <div className="mb-2"><span className="text-accent">[14:22:25]</span> <span className="text-green-400">INGEST_SUCCESS:</span> 4 files synced from 'documentation-v2' main branch</div>
-        <div className="mb-2"><span className="text-accent">[14:22:31]</span> <span className="text-slate-400">SYSTEM:</span> Garbage collection complete. 1.2MB memory reclaimed.</div>
-        <div className="flex items-center gap-2">
+      <div ref={containerRef} className="flex-1 p-4 font-mono text-sm terminal-scroll overflow-y-auto bg-black/40">
+        {logs.map((log) => (
+          <div key={log.id} className="mb-2">
+            <span className="text-accent">[{log.timestamp}]</span>{' '}
+            <span className={getColorForType(log.type)}>{log.prefix}</span>{' '}
+            {log.message}
+          </div>
+        ))}
+        <div className="flex items-center gap-2 mt-2">
           <span className="text-accent font-bold">&gt;</span>
           <div className="w-2 h-4 bg-accent animate-[pulse_1s_infinite]"></div>
         </div>

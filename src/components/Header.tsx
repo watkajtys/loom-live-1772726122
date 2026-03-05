@@ -17,15 +17,9 @@ export function Header() {
     return () => clearInterval(int);
   }, []);
 
-  const routeNameMap: Record<string, string> = {
-    '/': 'HOME',
-    '/community-queue': 'COMMUNITY_QUEUE',
-    '/content-pipeline': 'CONTENT_PIPELINE',
-    '/ax-reports': 'AX_REPORTS',
-    '/knowledge-base': 'KNOWLEDGE_BASE',
-  };
-
-  const viewName = routeNameMap[location.pathname] || 'UNKNOWN';
+  const viewName = location.pathname === '/'
+    ? 'HOME'
+    : location.pathname.substring(1).replace(/-/g, '_').toUpperCase();
 
   return (
     <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md">

@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { AxReport } from '../types';
+import { StatusBadge } from '../components/ui/Badge';
 
 export function AxReports() {
   const { data: reports, loading, error } = usePocketBase<AxReport>('ax_reports');
@@ -26,11 +27,7 @@ export function AxReports() {
                 {report.suggested_fix}
               </div>
               <div className="mt-auto self-end">
-                <span className={`text-[10px] uppercase px-3 py-1 rounded font-mono ${
-                  report.status === 'submitted' ? 'bg-green-500/20 text-green-400 border border-green-500/50' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                }`}>
-                  {report.status}
-                </span>
+                <StatusBadge status={report.status} />
               </div>
             </div>
           </div>

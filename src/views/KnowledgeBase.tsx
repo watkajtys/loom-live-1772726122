@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { KnowledgeSource } from '../types';
+import { StatusBadge } from '../components/ui/Badge';
 
 export function KnowledgeBase() {
   const { data: sources, loading, error } = usePocketBase<KnowledgeSource>('knowledge_sources');
@@ -31,14 +32,7 @@ export function KnowledgeBase() {
                   </a>
                 </td>
                 <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-[10px] uppercase border ${
-                    source.vectorization_status === 'vectorized' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
-                    source.vectorization_status === 'failed' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                    source.vectorization_status === 'processing' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20 animate-pulse' :
-                    'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                  }`}>
-                    {source.vectorization_status}
-                  </span>
+                  <StatusBadge status={source.vectorization_status} />
                 </td>
                 <td className="p-4 text-slate-500 text-xs">
                   {source.last_synced ? new Date(source.last_synced).toLocaleString() : 'Never'}
