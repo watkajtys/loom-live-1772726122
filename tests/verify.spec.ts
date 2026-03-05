@@ -1,6 +1,38 @@
 import { test, expect } from '@playwright/test';
 
-test('App initializes correctly', async ({ page }) => {
+test('App initializes correctly and navigates through views', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('text=Loom Initialized')).toBeVisible();
+
+  // Shell assertions
+  await expect(page.locator('text=Root::Command_Center')).toBeVisible();
+  
+  // Dashboard view is rendered (checking for specific elements)
+  await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
+  await expect(page.locator('text=Command::Live_Log')).toBeVisible();
+
+  // Navigate to Community Queue
+  await page.click('a[href="/community"]');
+  await expect(page.locator('text=Community Queue')).toBeVisible();
+  await expect(page.locator('text=Manage inbound social mentions and approve drafted AI responses.')).toBeVisible();
+
+  // Navigate to Content Pipeline
+  await page.click('a[href="/content"]');
+  await expect(page.locator('text=Content Pipeline')).toBeVisible();
+  await expect(page.locator('text=Track technical content generation and publish status.')).toBeVisible();
+
+  // Navigate to AX Reports
+  await page.click('a[href="/ax-reports"]');
+  await expect(page.locator('text=AX Reports')).toBeVisible();
+  await expect(page.locator('text=Review identified architectural exceptions and suggested fixes.')).toBeVisible();
+
+  // Navigate to Knowledge Base
+  await page.click('a[href="/knowledge-base"]');
+  await expect(page.locator('text=Knowledge Base')).toBeVisible();
+  await expect(page.locator('text=Manage context sources and vectorization status.')).toBeVisible();
+
+  // Back to Dashboard
+  await page.click('a[href="/"]');
+  await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
+
+  await page.screenshot({ path: 'evidence.png' });
 });
