@@ -7,16 +7,14 @@ export const TopBar: React.FC = () => {
 
   const getSystemStatusColor = () => {
     switch (systemStatus) {
-      case 'nominal': return 'text-green-500 bg-green-500';
-      case 'degraded': return 'text-yellow-500 bg-yellow-500';
-      case 'offline': return 'text-red-500 bg-red-500';
-      default: return 'text-green-500 bg-green-500';
+      case 'nominal': return { text: 'text-green-500', bg: 'bg-green-500' };
+      case 'degraded': return { text: 'text-yellow-500', bg: 'bg-yellow-500' };
+      case 'offline': return { text: 'text-red-500', bg: 'bg-red-500' };
+      default: return { text: 'text-green-500', bg: 'bg-green-500' };
     }
   };
 
-  const statusColorClass = getSystemStatusColor();
-  const textColorClass = statusColorClass.split(' ')[0];
-  const bgColorClass = statusColorClass.split(' ')[1];
+  const { text: textColorClass, bg: bgColorClass } = getSystemStatusColor();
 
   return (
     <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md z-10">

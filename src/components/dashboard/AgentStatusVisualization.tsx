@@ -14,9 +14,14 @@ export const AgentStatusVisualization = () => {
         </div>
       </div>
       <div className="flex-1 flex items-end gap-1 px-2 pb-2">
-        {bars.map((h, i) => (
-          <div key={i} className={`flex-1 rounded-t h-${h === 40 && i%2===0 ? '1/2' : (h===60?'full':(h===10?'1/4':'3/4'))} ${i%4===3 ? 'bg-primary/40' : `bg-accent/${h}`}`}></div>
-        ))}
+        {bars.map((h, i) => {
+          const heightClass = h === 40 && i % 2 === 0 ? 'h-1/2' : h === 60 ? 'h-full' : h === 10 ? 'h-1/4' : 'h-3/4';
+          const bgOpacity = h === 20 ? 'bg-accent/20' : h === 40 ? 'bg-accent/40' : h === 60 ? 'bg-accent/60' : 'bg-accent/10';
+          const bgClass = i % 4 === 3 ? 'bg-primary/40' : bgOpacity;
+          return (
+            <div key={i} className={`flex-1 rounded-t ${heightClass} ${bgClass}`}></div>
+          );
+        })}
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent pointer-events-none"></div>
     </section>

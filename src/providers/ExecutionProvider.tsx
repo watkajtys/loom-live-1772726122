@@ -16,6 +16,8 @@ const ExecutionContext = createContext<ExecutionContextType | undefined>(undefin
 export const ExecutionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const [currentTime, setCurrentTime] = useState('');
+  const [systemStatus, setSystemStatus] = useState<'nominal' | 'degraded' | 'offline'>('nominal');
+  const [uptime, setUptime] = useState('99.982%');
 
   useEffect(() => {
     const updateTime = () => {
@@ -28,11 +30,31 @@ export const ExecutionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return () => clearInterval(interval);
   }, []);
 
+  // Simulate telemetry data updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomValue = Math.random();
+      if (randomValue > 0.99) {
+        setSystemStatus('degraded');
+      } else if (randomValue > 0.999) {
+        setSystemStatus('offline');
+      } else {
+        setSystemStatus('nominal');
+      }
+      
+      // slightly fluctuate uptime string
+      const uptimeNum = 99.982 + (Math.random() * 0.005 - 0.002);
+      setUptime(`${uptimeNum.toFixed(3)}%`);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const value: ExecutionContextType = {
     currentPath: location.pathname,
     currentRouteName: getRouteName(location.pathname),
-    systemStatus: 'nominal',
-    uptime: '99.982%',
+    systemStatus,
+    uptime,
     routes: APP_ROUTES,
     currentTime,
   };

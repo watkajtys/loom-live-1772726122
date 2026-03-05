@@ -35,8 +35,8 @@ test('Execution provider maintains centralized shell state across navigations', 
   const newTime = await page.locator('text=UTC').textContent();
   expect(initialTime).not.toEqual(newTime);
   
-  // Uptime constant check
-  await expect(page.locator('text=99.982%')).toBeVisible();
+  // Uptime dynamic check
+  await expect(page.locator('text=/99\\.[0-9]{3}%/')).toBeVisible();
 });
 
 test('Community Queue data fetching and rendering', async ({ page }) => {

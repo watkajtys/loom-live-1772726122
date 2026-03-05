@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { RecordModel } from 'pocketbase';
 import { pb } from '../lib/pocketbase';
 
-export function usePocketBase<T = RecordModel>(
+export function usePocketBase<T extends RecordModel = RecordModel>(
   collectionName: string,
   options: { page?: number; perPage?: number; filter?: string; sort?: string; subscribe?: boolean } = {}
 ) {
@@ -48,9 +48,9 @@ export function usePocketBase<T = RecordModel>(
         if (e.action === 'create') {
           setData((prev) => [e.record, ...prev]);
         } else if (e.action === 'update') {
-          setData((prev) => prev.map((item: any) => (item.id === e.record.id ? e.record : item)));
+          setData((prev) => prev.map((item: T) => (item.id === e.record.id ? e.record : item)));
         } else if (e.action === 'delete') {
-          setData((prev) => prev.filter((item: any) => item.id !== e.record.id));
+          setData((prev) => prev.filter((item: T) => item.id !== e.record.id));
         }
       });
     }
