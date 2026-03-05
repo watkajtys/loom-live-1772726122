@@ -38,3 +38,24 @@ test('Execution provider maintains centralized shell state across navigations', 
   // Uptime constant check
   await expect(page.locator('text=99.982%')).toBeVisible();
 });
+
+test('Community Queue data fetching and rendering', async ({ page }) => {
+  await page.goto('/queue');
+
+  // Verify the page title is visible
+  await expect(page.locator('h1', { hasText: 'Community Queue' })).toBeVisible();
+
+  // Wait for loading to finish, or check for expected states
+  // We handle potential empty state or data list based on standard view wrappers
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Asserting some common elements in the view are loaded properly.
+  // Using a robust locator for the overall layout wrapper or possible data state.
+  await expect(page.locator('.glass-panel')).toBeVisible();
+
+  // Take the mandatory screenshot at the end of the test
+  await page.screenshot({ path: 'evidence.png' });
+});
