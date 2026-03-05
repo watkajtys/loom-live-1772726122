@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Advoloom Command Center Root</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#256af4",
+                        "accent": "#00f2ff", // Neon Cyan
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#0a0c10", // Deeper charcoal
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(25, 30, 45, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #256af444;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display selection:bg-accent/30 selection:text-accent">
+<div class="flex h-screen overflow-hidden">
+<!-- Slim Sidebar -->
+<aside class="w-16 flex flex-col items-center py-6 border-r border-primary/20 bg-background-dark z-20">
+<div class="mb-10 text-accent">
+<span class="material-symbols-outlined text-3xl">terminal</span>
+</div>
+<nav class="flex flex-col gap-8 flex-1">
+<a class="group relative flex items-center justify-center p-2 rounded-lg bg-primary/20 text-accent" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">Home</span>
+</a>
+<a class="group relative flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-accent transition-colors" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">Agents</span>
+</a>
+<a class="group relative flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-accent transition-colors" href="#">
+<span class="material-symbols-outlined">article</span>
+<span class="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">Content</span>
+</a>
+<a class="group relative flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-accent transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">Analytics</span>
+</a>
+<a class="group relative flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-accent transition-colors" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">Integrations</span>
+</a>
+</nav>
+<div class="flex flex-col gap-6">
+<button class="text-slate-400 hover:text-accent transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="size-8 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-[10px] font-bold text-accent">
+                AV
+            </div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col overflow-hidden bg-[radial-gradient(circle_at_50%_50%,_rgba(37,106,244,0.05)_0%,_transparent_100%)]">
+<!-- Top Bar -->
+<header class="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<span class="text-accent text-xs font-mono tracking-widest uppercase">Root::Command_Center</span>
+<div class="h-4 w-px bg-primary/20"></div>
+<div class="flex items-center gap-2 text-xs font-mono">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-green-500">SYSTEM_NOMINAL</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-slate-400 text-sm font-mono">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>UTC 14:22:09</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-400 hover:text-accent">notifications</button>
+<div class="h-6 w-px bg-primary/20"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-tighter text-slate-500">Uptime</p>
+<p class="text-xs font-mono text-accent">99.982%</p>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Modular Grid Workspace -->
+<div class="flex-1 p-6 grid grid-cols-12 grid-rows-6 gap-4 overflow-hidden">
+<!-- Channel Health (Top Left) -->
+<section class="col-span-12 lg:col-span-4 row-span-1 glass-panel rounded-lg p-4 flex gap-4">
+<div class="flex-1 flex flex-col justify-center border-r border-primary/10">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-accent text-sm">hub</span>
+<span class="text-[10px] font-mono uppercase text-slate-400">Discord</span>
+</div>
+<div class="text-xl font-bold font-mono">98<span class="text-xs text-slate-500 ml-1">ms</span></div>
+</div>
+<div class="flex-1 flex flex-col justify-center border-r border-primary/10">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-accent text-sm">code</span>
+<span class="text-[10px] font-mono uppercase text-slate-400">GitHub</span>
+</div>
+<div class="text-xl font-bold font-mono text-green-400">SYNC</div>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-accent text-sm">alternate_email</span>
+<span class="text-[10px] font-mono uppercase text-slate-400">X / Twitter</span>
+</div>
+<div class="text-xl font-bold font-mono">1.2k<span class="text-xs text-slate-500 ml-1">rq/m</span></div>
+</div>
+</section>
+<!-- Agent Status Visualization (Center Top) -->
+<section class="col-span-12 lg:col-span-8 row-span-2 glass-panel rounded-lg p-4 flex flex-col relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-xs font-mono text-accent uppercase tracking-widest">Autonomous Activity Visualize</h3>
+<p class="text-2xl font-bold font-mono">142.8 <span class="text-sm font-normal text-slate-400">ops/m</span></p>
+</div>
+<div class="flex gap-2">
+<span class="px-2 py-1 text-[10px] bg-accent/10 text-accent border border-accent/20 rounded font-mono">LIVE_STREAM</span>
+</div>
+</div>
+<div class="flex-1 flex items-end gap-1 px-2 pb-2">
+<!-- Kinetic Visualizer Mock -->
+<div class="flex-1 bg-accent/20 rounded-t h-1/2"></div>
+<div class="flex-1 bg-accent/40 rounded-t h-3/4"></div>
+<div class="flex-1 bg-accent/10 rounded-t h-1/4"></div>
+<div class="flex-1 bg-primary/40 rounded-t h-5/6"></div>
+<div class="flex-1 bg-accent/60 rounded-t h-full"></div>
+<div class="flex-1 bg-accent/20 rounded-t h-1/3"></div>
+<div class="flex-1 bg-accent/40 rounded-t h-2/3"></div>
+<div class="flex-1 bg-accent/10 rounded-t h-1/2"></div>
+<div class="flex-1 bg-primary/40 rounded-t h-1/4"></div>
+<div class="flex-1 bg-accent/60 rounded-t h-3/4"></div>
+<div class="flex-1 bg-accent/20 rounded-t h-5/6"></div>
+<div class="flex-1 bg-accent/40 rounded-t h-full"></div>
+<div class="flex-1 bg-accent/10 rounded-t h-1/3"></div>
+<div class="flex-1 bg-primary/40 rounded-t h-2/3"></div>
+<div class="flex-1 bg-accent/60 rounded-t h-1/2"></div>
+<div class="flex-1 bg-accent/20 rounded-t h-1/4"></div>
+<div class="flex-1 bg-accent/40 rounded-t h-3/4"></div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent pointer-events-none"></div>
+</section>
+<!-- Live Terminal Output (Middle Bottom) -->
+<section class="col-span-12 lg:col-span-9 row-span-4 glass-panel rounded-lg flex flex-col overflow-hidden border-t-2 border-t-accent/30">
+<div class="bg-primary/10 px-4 py-2 border-b border-primary/20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent text-sm">terminal</span>
+<span class="text-xs font-mono font-bold uppercase tracking-wider">Command::Live_Log</span>
+</div>
+<div class="flex gap-1">
+<div class="size-2 rounded-full bg-slate-600"></div>
+<div class="size-2 rounded-full bg-slate-600"></div>
+<div class="size-2 rounded-full bg-slate-600"></div>
+</div>
+</div>
+<div class="flex-1 p-4 font-mono text-sm terminal-scroll overflow-y-auto bg-black/40">
+<div class="mb-2"><span class="text-accent">[14:22:01]</span> <span class="text-green-400">INGEST_SUCCESS:</span> Github Webhook - Repository: 'advoloom-core' - Pull Request #421</div>
+<div class="mb-2"><span class="text-accent">[14:22:05]</span> <span class="text-primary">AGENT_REPLY:</span> Llama-3-70B processing technical query on Discord #general...</div>
+<div class="mb-2"><span class="text-accent">[14:22:10]</span> <span class="text-slate-400">NEURAL_MAP:</span> Updating context vector for 'Authentication Flow' tutorials</div>
+<div class="mb-2"><span class="text-accent">[14:22:15]</span> <span class="text-yellow-400">WARN:</span> Rate limit approaching for X-API v2 [88% capacity]</div>
+<div class="mb-2"><span class="text-accent">[14:22:18]</span> <span class="text-green-400">INGEST_SUCCESS:</span> New tutorial request identified from Discord thread ID 99283</div>
+<div class="mb-2"><span class="text-accent">[14:22:20]</span> <span class="text-primary">AGENT_OUTPUT:</span> "To initialize the SDK, use the `adv.init()` method with your API key..."</div>
+<div class="mb-2"><span class="text-accent">[14:22:25]</span> <span class="text-green-400">INGEST_SUCCESS:</span> 4 files synced from 'documentation-v2' main branch</div>
+<div class="mb-2"><span class="text-accent">[14:22:31]</span> <span class="text-slate-400">SYSTEM:</span> Garbage collection complete. 1.2MB memory reclaimed.</div>
+<div class="flex items-center gap-2">
+<span class="text-accent font-bold">&gt;</span>
+<div class="w-2 h-4 bg-accent animate-[pulse_1s_infinite]"></div>
+</div>
+</div>
+</section>
+<!-- Recent Ingests Panel (Right) -->
+<section class="col-span-12 lg:col-span-3 row-span-5 glass-panel rounded-lg flex flex-col overflow-hidden">
+<div class="p-4 border-b border-primary/20 bg-primary/5">
+<h3 class="text-xs font-mono text-slate-300 uppercase font-bold tracking-widest">Recent Ingests</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-2">
+<div class="p-3 bg-primary/10 rounded-lg border border-primary/20 hover:border-accent/40 transition-colors group cursor-pointer">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-mono text-accent">GITHUB_COMMIT</span>
+<span class="text-[10px] text-slate-500">2m ago</span>
+</div>
+<p class="text-xs text-slate-300 line-clamp-1">Refactor: Auth middleware logic updates</p>
+<div class="mt-2 flex gap-1">
+<span class="px-1 text-[8px] border border-primary/30 text-primary-300 rounded uppercase">Tutorial_Update</span>
+</div>
+</div>
+<div class="p-3 bg-background-dark/50 rounded-lg border border-primary/10 hover:border-accent/40 transition-colors group cursor-pointer">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-mono text-slate-400">DISCORD_MSG</span>
+<span class="text-[10px] text-slate-500">5m ago</span>
+</div>
+<p class="text-xs text-slate-300 line-clamp-1">User: "How do I setup multi-tenancy?"</p>
+<div class="mt-2 flex gap-1">
+<span class="px-1 text-[8px] border border-primary/30 text-primary-300 rounded uppercase">Q&amp;A_Trigger</span>
+</div>
+</div>
+<div class="p-3 bg-background-dark/50 rounded-lg border border-primary/10 hover:border-accent/40 transition-colors group cursor-pointer">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-mono text-slate-400">X_MENTION</span>
+<span class="text-[10px] text-slate-500">14m ago</span>
+</div>
+<p class="text-xs text-slate-300 line-clamp-1">@dev_guru: Loving the new @advoloom CLI!</p>
+<div class="mt-2 flex gap-1">
+<span class="px-1 text-[8px] border border-primary/30 text-primary-300 rounded uppercase">Sentiment_Pos</span>
+</div>
+</div>
+<div class="p-3 bg-background-dark/50 rounded-lg border border-primary/10 hover:border-accent/40 transition-colors group cursor-pointer">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-mono text-slate-400">DOCS_PARSE</span>
+<span class="text-[10px] text-slate-500">1h ago</span>
+</div>
+<p class="text-xs text-slate-300 line-clamp-1">Updated 'Advanced Routing' technical doc</p>
+<div class="mt-2 flex gap-1">
+<span class="px-1 text-[8px] border border-primary/30 text-primary-300 rounded uppercase">Vector_Sync</span>
+</div>
+</div>
+</div>
+<button class="p-3 text-[10px] font-mono text-slate-500 uppercase hover:text-accent border-t border-primary/20">
+                    View Data Lake
+                </button>
+</section>
+<!-- Snapshot Stats (Bottom Left) -->
+<section class="col-span-12 lg:col-span-4 row-span-1 glass-panel rounded-lg p-4 flex items-center justify-around">
+<div class="text-center">
+<p class="text-[10px] font-mono text-slate-500 uppercase">Active Agents</p>
+<p class="text-xl font-bold font-mono text-accent">12</p>
+</div>
+<div class="w-px h-8 bg-primary/20"></div>
+<div class="text-center">
+<p class="text-[10px] font-mono text-slate-500 uppercase">Tokens / Sec</p>
+<p class="text-xl font-bold font-mono text-slate-100">854</p>
+</div>
+<div class="w-px h-8 bg-primary/20"></div>
+<div class="text-center">
+<p class="text-[10px] font-mono text-slate-500 uppercase">Health</p>
+<p class="text-xl font-bold font-mono text-green-400">98%</p>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>
