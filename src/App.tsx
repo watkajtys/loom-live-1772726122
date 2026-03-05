@@ -1,7 +1,21 @@
+import { Routes, Route } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { Dashboard } from './pages/Dashboard';
+import { CommunityQueue } from './pages/CommunityQueue';
+import { ContentPipeline } from './pages/ContentPipeline';
+import { AXReports } from './pages/AXReports';
+import { KnowledgeBase } from './pages/KnowledgeBase';
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
-      <h1 className="text-4xl font-bold">Loom Initialized</h1>
-    </div>
-  )
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/queue" element={<CommunityQueue />} />
+        <Route path="/content" element={<ContentPipeline />} />
+        <Route path="/reports" element={<AXReports />} />
+        <Route path="/knowledge" element={<KnowledgeBase />} />
+      </Route>
+    </Routes>
+  );
 }
