@@ -1,40 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
 import { Icon } from './Icon';
-import { getRouteName } from '../constants/routes';
+import { useExecution } from '../providers/ExecutionProvider';
 
 export const TopBar: React.FC = () => {
-  const [time, setTime] = useState('');
-  const location = useLocation();
+  const { currentRouteName, systemStatus, uptime, currentTime } = useExecution();
 
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTime(`UTC ${now.toISOString().split('T')[1].split('.')[0]}`);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const getSystemStatusColor = () => {
+    switch (systemStatus) {
+      case 'nominal': return 'text-green-500 bg-green-500';
+      case 'degraded': return 'text-yellow-500 bg-yellow-500';
+      case 'offline': return 'text-red-500 bg-red-500';
+      default: return 'text-green-500 bg-green-500';
+    }
+  };
+
+  const statusColorClass = getSystemStatusColor();
+  const textColorClass = statusColorClass.split(' ')[0];
+  const bgColorClass = statusColorClass.split(' ')[1];
 
   return (
-    <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md">
+    <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md z-10">
       <div className="flex items-center gap-4">
         <span className="text-accent text-xs font-mono tracking-widest uppercase">
-          {getRouteName(location.pathname)}
+          {currentRouteName}
         </span>
         <div className="h-4 w-px bg-primary/20"></div>
         <div className="flex items-center gap-2 text-xs font-mono">
-          <span className="size-2 rounded-full bg-green-500 animate-pulse"></span>
-          <span className="text-green-500">SYSTEM_NOMINAL</span>
+          <span className={`size-2 rounded-full ${bgColorClass} animate-pulse`}></span>
+          <span className={textColorClass}>SYSTEM_{systemStatus.toUpperCase()}</span>
         </div>
       </div>
       
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2 text-slate-400 text-sm font-mono">
           <Icon name="schedule" className="text-sm" />
-          <span>{time}</span>
+          <span>{currentTime}</span>
         </div>
         
         <div className="flex items-center gap-4">
@@ -45,7 +45,7 @@ export const TopBar: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="text-right">
               <p className="text-[10px] uppercase tracking-tighter text-slate-500">Uptime</p>
-              <p className="text-xs font-mono text-accent">99.982%</p>
+              <p className="text-xs font-mono text-accent">{uptime}</p>
             </div>
           </div>
         </div>

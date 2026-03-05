@@ -5,17 +5,20 @@ import { CommunityQueue } from './pages/CommunityQueue';
 import { ContentPipeline } from './pages/ContentPipeline';
 import { AXReports } from './pages/AXReports';
 import { KnowledgeBase } from './pages/KnowledgeBase';
+import { ExecutionProvider } from './providers/ExecutionProvider';
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/queue" element={<CommunityQueue />} />
-        <Route path="/content" element={<ContentPipeline />} />
-        <Route path="/reports" element={<AXReports />} />
-        <Route path="/knowledge" element={<KnowledgeBase />} />
-      </Route>
-    </Routes>
+    <ExecutionProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/queue" element={<CommunityQueue />} />
+          <Route path="/content" element={<ContentPipeline />} />
+          <Route path="/reports" element={<AXReports />} />
+          <Route path="/knowledge" element={<KnowledgeBase />} />
+        </Route>
+      </Routes>
+    </ExecutionProvider>
   );
 }

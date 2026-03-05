@@ -1,16 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Icon } from './Icon';
-
-const navItems = [
-  { path: '/', icon: 'home', label: 'Home' },
-  { path: '/queue', icon: 'smart_toy', label: 'Community Queue' },
-  { path: '/content', icon: 'article', label: 'Content Pipeline' },
-  { path: '/reports', icon: 'analytics', label: 'AX Reports' },
-  { path: '/knowledge', icon: 'settings_input_component', label: 'Knowledge Base' },
-];
+import { useExecution } from '../providers/ExecutionProvider';
 
 export const Sidebar: React.FC = () => {
+  const { routes } = useExecution();
+  const sidebarRoutes = routes.filter(route => route.showInSidebar);
+
   return (
     <aside className="w-16 flex flex-col items-center py-6 border-r border-primary/20 bg-background-dark z-20">
       <div className="mb-10 text-accent">
@@ -18,7 +14,7 @@ export const Sidebar: React.FC = () => {
       </div>
       
       <nav className="flex flex-col gap-8 flex-1">
-        {navItems.map((item) => (
+        {sidebarRoutes.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
