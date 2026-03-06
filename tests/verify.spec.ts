@@ -810,3 +810,73 @@ test('Implement the Pipeline Stage (Column) UI component', async ({ page }) => {
   // Take a screenshot as requested
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('ContentPipeline refactored hooks and DataViewLayout integration', async ({ page }) => {
+  // Test that the refactored ContentPipeline properly uses the useContentPipelineView hook 
+  // and the DataViewLayout component, and handles empty states and business logic correctly.
+  
+  // 1. Mock the API to return no records to test empty state
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Expect the Empty State to be visible since DataViewLayout is now managing it
+  await expect(page.locator('text=No Records Found')).toBeVisible();
+
+  // 2. Unroute and mock with data to test business logic extraction
+  await page.unroute('**/api/collections/content_pipeline/records*');
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_biz_logic_test',
+            title: 'Business Logic Extraction Test',
+            status: 'drafting',
+            markdown_body: 'Testing agent and icon assignment',
+            created: '2023-01-01T00:00:00Z',
+            updated: '2023-01-01T00:00:00Z'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  // Wait for loading
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // The card should render with the expected title
+  await expect(page.locator('text=Business Logic Extraction Test')).toBeVisible();
+  
+  // Since the ID 'mock_biz_logic_test' starts with 'm' (char code 109, odd), 
+  // the hook logic should assign it 'ECHO_04'
+  await expect(page.locator('text=AGNT: ECHO_04')).toBeVisible();
+});

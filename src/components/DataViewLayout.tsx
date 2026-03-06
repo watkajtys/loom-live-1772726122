@@ -13,6 +13,9 @@ type DataViewLayoutProps = {
   customHeader?: React.ReactNode;
   customFooter?: React.ReactNode;
   children: React.ReactNode;
+  containerClassName?: string;
+  wrapperClassName?: string;
+  contentClassName?: string;
 };
 
 export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
@@ -24,9 +27,12 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
   customHeader,
   customFooter,
   children,
+  containerClassName = "flex-1 p-6 flex flex-col h-full overflow-hidden",
+  wrapperClassName = "flex-1 glass-panel rounded-lg overflow-hidden flex flex-col relative",
+  contentClassName = "flex-1 overflow-y-auto terminal-scroll p-4",
 }) => {
   return (
-    <div className="flex-1 p-6 flex flex-col h-full overflow-hidden">
+    <div className={containerClassName}>
       {customHeader ? (
         customHeader
       ) : (
@@ -40,12 +46,12 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
         </header>
       )}
 
-      <div className="flex-1 glass-panel rounded-lg overflow-hidden flex flex-col relative">
+      <div className={wrapperClassName}>
         {loading && <LoadingState />}
         {error && !loading && <ErrorState error={error} />}
         {!loading && !error && isEmpty && <EmptyState />}
 
-        <div className="flex-1 overflow-y-auto terminal-scroll p-4">
+        <div className={contentClassName}>
           {children}
         </div>
       </div>
