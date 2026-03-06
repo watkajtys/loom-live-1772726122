@@ -3,9 +3,10 @@ import { DataViewLayout } from '../components/DataViewLayout';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { Badge } from '../components/Badge';
 import { ContentPipeline as ContentPipelineModel } from '../types/models';
+import { COLLECTIONS } from '../constants/collections';
 
 export const ContentPipeline: React.FC = () => {
-  const { data, loading, error } = usePocketBase<ContentPipelineModel>('content_pipeline', {
+  const { data, loading, error } = usePocketBase<ContentPipelineModel>(COLLECTIONS.CONTENT_PIPELINE, {
     sort: '-created',
     subscribe: true,
   });

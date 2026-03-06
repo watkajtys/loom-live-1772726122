@@ -1,6 +1,8 @@
-import { usePocketBase } from './usePocketBase';
-import { SocialMention } from '../types/models';
 import { useState, useEffect } from 'react';
+import { SocialMention } from '../types/models';
+import { fetchQueueData } from '../lib/queueService';
+import { pb } from '../lib/pocketbase';
+import { COLLECTIONS } from '../constants/collections';
 
 export interface QueueTelemetry {
   bufferUtilization: string;
@@ -11,12 +13,10 @@ export interface QueueTelemetry {
 }
 
 export function useQueueData() {
-  const { data: pbData, loading: pbLoading, error: pbError } = usePocketBase<SocialMention>('social_mentions', {
-    sort: '-created',
-    subscribe: true,
-  });
+  const [data, setData] = useState<SocialMention[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const [simulatedData, setSimulatedData] = useState<SocialMention[]>([]);
   const [telemetry, setTelemetry] = useState<QueueTelemetry>({
     bufferUtilization: '14.2%',
     latency: '42ms',
@@ -26,57 +26,50 @@ export function useQueueData() {
   });
 
   useEffect(() => {
-    if (pbError || (pbData && pbData.length === 0 && !pbLoading)) {
-      setSimulatedData([
-        {
-          id: '0x421',
-          platform: 'DISCORD',
-          query: '"How do I implement the new Webhooks API for real-time ingestions? I\'m getting a 403 error on..."',
-          draft_reply: '',
-          status: 'drafting',
-          user: '@dev_guru',
-          priority: 88,
-          created: new Date().toISOString(),
-          updated: new Date().toISOString(),
-          collectionId: 'mock1',
-          collectionName: 'social_mentions',
-        },
-        {
-          id: '0x422',
-          platform: 'GITHUB',
-          query: 'INGEST: Pull Request #992 - Update documentation for multi-tenant architecture support...',
-          draft_reply: '',
-          status: 'pending_approval',
-          user: 'octocat_42',
-          priority: 45,
-          created: new Date().toISOString(),
-          updated: new Date().toISOString(),
-          collectionId: 'mock1',
-          collectionName: 'social_mentions',
-        },
-        {
-          id: '0x425',
-          platform: 'X',
-          query: '"Excited to see the autonomous agent features! Any plans for supporting local LLM deployments?"',
-          draft_reply: '',
-          status: 'queued',
-          user: '@tech_lead_x',
-          priority: 92,
-          created: new Date().toISOString(),
-          updated: new Date().toISOString(),
-          collectionId: 'mock1',
-          collectionName: 'social_mentions',
-        },
-      ] as SocialMention[]);
-    }
-  }, [pbError, pbData, pbLoading]);
+    let isMounted = true;
 
-  const shouldUseSimulated = !!pbError || (pbData && pbData.length === 0 && !pbLoading);
-  
+    async function loadData() {
+      try {
+        setLoading(true);
+        const resolvedData = await fetchQueueData();
+        if (isMounted) {
+          setData(resolvedData);
+          setError(null);
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          setError(err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadData();
+
+    // Still maintain subscription for real-time changes
+    pb.collection(COLLECTIONS.SOCIAL_MENTIONS).subscribe<SocialMention>('*', (e) => {
+      if (e.action === 'create') {
+        setData((prev) => [e.record, ...prev]);
+      } else if (e.action === 'update') {
+        setData((prev) => prev.map((item) => (item.id === e.record.id ? e.record : item)));
+      } else if (e.action === 'delete') {
+        setData((prev) => prev.filter((item) => item.id !== e.record.id));
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      pb.collection(COLLECTIONS.SOCIAL_MENTIONS).unsubscribe('*');
+    };
+  }, []);
+
   return {
-    data: shouldUseSimulated ? simulatedData : pbData,
-    loading: pbLoading && !shouldUseSimulated,
-    error: shouldUseSimulated ? null : pbError,
+    data,
+    loading,
+    error,
     telemetry,
   };
 }

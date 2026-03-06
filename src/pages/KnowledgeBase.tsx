@@ -3,9 +3,10 @@ import { DataViewLayout } from '../components/DataViewLayout';
 import { usePocketBase } from '../hooks/usePocketBase';
 import { Badge } from '../components/Badge';
 import { KnowledgeSource } from '../types/models';
+import { COLLECTIONS } from '../constants/collections';
 
 export const KnowledgeBase: React.FC = () => {
-  const { data, loading, error } = usePocketBase<KnowledgeSource>('knowledge_sources', {
+  const { data, loading, error } = usePocketBase<KnowledgeSource>(COLLECTIONS.KNOWLEDGE_SOURCES, {
     sort: '-created',
     subscribe: true,
   });

@@ -82,6 +82,10 @@ test('Community Queue data fetching and rendering', async ({ page }) => {
   // Asserting some common elements in the view are loaded properly.
   // Using a robust locator for the overall layout wrapper or possible data state.
   await expect(page.locator('.glass-panel')).toBeVisible();
+  
+  // Verify that the custom telemetry header elements are visible
+  await expect(page.locator('text=Total_Entries')).toBeVisible();
+  await expect(page.locator('text=Sync_Status')).toBeVisible();
 
   // Take the mandatory screenshot at the end of the test
   await page.screenshot({ path: 'evidence.png' });
