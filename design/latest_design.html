@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Queue Item Component</title>
+<title>Advoloom Community Queue Container</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -27,49 +27,77 @@
     </script>
 <style type="text/tailwindcss">
         @layer components {
+            .grid-bg {
+                background-image: 
+                    linear-gradient(to right, rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+                background-size: 32px 32px;
+            }
             .glass-panel {
-                background: rgba(10, 12, 16, 0.8);
+                background: rgba(10, 12, 16, 0.95);
                 backdrop-filter: blur(12px);
-                border: 1px solid rgba(0, 242, 255, 0.2);
+                border: 1px solid rgba(0, 242, 255, 0.15);
             }
             .queue-row {
-                @apply flex items-center gap-6 p-4 border border-accent/20 bg-obsidian/60 hover:bg-accent/5 transition-all duration-200 rounded-sm relative overflow-hidden;
-                box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.05);
+                @apply flex items-center gap-6 p-4 border border-accent/10 bg-black/40 hover:bg-accent/5 transition-all duration-200 rounded-sm relative overflow-hidden;
             }
             .queue-row::before {
                 content: '';
-                @apply absolute left-0 top-0 w-[2px] h-full bg-accent opacity-50;
+                @apply absolute left-0 top-0 w-[2px] h-full bg-accent/40;
             }
             .micro-btn {
-                @apply px-3 py-1 text-[10px] font-mono border border-slate-700 hover:border-accent hover:text-accent transition-colors uppercase tracking-widest bg-black/40;
+                @apply px-3 py-1 text-[10px] font-mono border border-slate-800 hover:border-accent hover:text-accent transition-colors uppercase tracking-widest bg-black/60;
             }
             .status-pulse {
                 @apply size-2 rounded-full bg-terminal-green;
                 box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
             }
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.3);
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(0, 242, 255, 0.2);
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(0, 242, 255, 0.4);
+            }
         }
     </style>
 </head>
-<body class="bg-obsidian text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen p-8">
-<div class="max-w-6xl mx-auto space-y-6">
-<div class="flex items-center justify-between border-b border-accent/20 pb-4 mb-8">
-<div>
-<h1 class="text-xs font-mono text-accent tracking-[0.2em] uppercase">System::Queue_Manager</h1>
-<p class="text-2xl font-bold tracking-tight">Active Agent Tasks</p>
+<body class="bg-obsidian text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen flex items-center justify-center p-4">
+<div class="w-full max-w-6xl glass-panel rounded-lg overflow-hidden shadow-2xl shadow-cyan-950/20 relative">
+<div class="absolute inset-0 grid-bg pointer-events-none opacity-40"></div>
+<div class="relative z-10 flex flex-col h-[700px]">
+<header class="flex items-center justify-between px-6 py-4 border-b border-accent/20 bg-black/40">
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-accent/60 tracking-widest uppercase">SYSTEM::QUEUE_MANAGER</span>
 </div>
-<div class="flex items-center gap-4 text-xs font-mono">
-<span class="text-slate-500">TOTAL_ENTRIES:</span>
+<h2 class="text-xl font-bold tracking-tight text-slate-100 font-display">Active Agent Tasks</h2>
+</div>
+<div class="flex items-center gap-6 font-mono text-[11px]">
+<div class="flex flex-col items-end">
+<span class="text-slate-500 text-[9px] uppercase tracking-tighter">Total_Entries</span>
 <span class="text-accent">0x42</span>
-<div class="h-4 w-px bg-accent/20"></div>
-<span class="text-slate-500">SYNC_STATUS:</span>
-<span class="text-terminal-green">ACTIVE</span>
+</div>
+<div class="h-8 w-px bg-accent/10"></div>
+<div class="flex flex-col items-end">
+<span class="text-slate-500 text-[9px] uppercase tracking-tighter">Sync_Status</span>
+<span class="text-terminal-green flex items-center gap-1.5">
+<span class="size-1 bg-terminal-green rounded-full animate-pulse"></span>
+                            ACTIVE
+                        </span>
 </div>
 </div>
-<div class="space-y-3">
+</header>
+<main class="flex-1 overflow-y-auto p-6 space-y-3 custom-scrollbar">
 <div class="queue-row group">
-<div class="flex items-center gap-4 min-w-[100px]">
+<div class="flex items-center gap-4 min-w-[60px]">
 <div class="relative">
-<div class="size-10 rounded-sm bg-slate-800/50 flex items-center justify-center border border-slate-700 group-hover:border-accent/40 transition-colors">
+<div class="size-10 rounded-sm bg-slate-900/80 flex items-center justify-center border border-slate-800 group-hover:border-accent/40 transition-colors">
 <span class="material-symbols-outlined text-slate-400 group-hover:text-accent">hub</span>
 </div>
 <div class="absolute -top-1 -right-1 status-pulse"></div>
@@ -78,26 +106,26 @@
 <div class="flex-1 min-w-0">
 <div class="flex items-center gap-3 font-mono text-[11px] mb-1">
 <span class="text-accent">ID: 0x421</span>
-<span class="text-slate-600">|</span>
+<span class="text-slate-700">|</span>
 <span class="text-slate-300">USER: @dev_guru</span>
-<span class="text-slate-600">|</span>
+<span class="text-slate-700">|</span>
 <span class="text-slate-500">PLATFORM: DISCORD</span>
 </div>
 <p class="text-sm text-slate-400 font-mono line-clamp-1">
-                        "How do I implement the new Webhooks API for real-time ingestions? I'm getting a 403 error on..."
-                    </p>
+                            "How do I implement the new Webhooks API for real-time ingestions? I'm getting a 403 error on..."
+                        </p>
 </div>
 <div class="flex items-center gap-10">
 <div class="text-right">
 <p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Agent_State</p>
 <p class="text-xs font-mono text-terminal-green">DRAFTING</p>
 </div>
-<div class="text-right">
+<div class="text-right min-w-[80px]">
 <p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Priority</p>
 <div class="flex items-center gap-2">
 <span class="text-xs font-mono text-accent">88</span>
-<div class="w-12 h-1 bg-slate-800 rounded-full overflow-hidden">
-<div class="h-full bg-accent w-[88%]"></div>
+<div class="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
+<div class="h-full bg-accent w-[88%] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
 </div>
 </div>
 </div>
@@ -108,9 +136,9 @@
 </div>
 </div>
 <div class="queue-row group">
-<div class="flex items-center gap-4 min-w-[100px]">
+<div class="flex items-center gap-4 min-w-[60px]">
 <div class="relative">
-<div class="size-10 rounded-sm bg-slate-800/50 flex items-center justify-center border border-slate-700 group-hover:border-accent/40">
+<div class="size-10 rounded-sm bg-slate-900/80 flex items-center justify-center border border-slate-800 group-hover:border-accent/40">
 <span class="material-symbols-outlined text-slate-400 group-hover:text-accent">code</span>
 </div>
 <div class="absolute -top-1 -right-1 status-pulse opacity-50"></div>
@@ -119,26 +147,26 @@
 <div class="flex-1 min-w-0">
 <div class="flex items-center gap-3 font-mono text-[11px] mb-1">
 <span class="text-accent">ID: 0x422</span>
-<span class="text-slate-600">|</span>
+<span class="text-slate-700">|</span>
 <span class="text-slate-300">USER: octocat_42</span>
-<span class="text-slate-600">|</span>
+<span class="text-slate-700">|</span>
 <span class="text-slate-500">PLATFORM: GITHUB</span>
 </div>
 <p class="text-sm text-slate-400 font-mono line-clamp-1">
-                        INGEST: Pull Request #992 - Update documentation for multi-tenant architecture support...
-                    </p>
+                            INGEST: Pull Request #992 - Update documentation for multi-tenant architecture support...
+                        </p>
 </div>
 <div class="flex items-center gap-10">
 <div class="text-right">
 <p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Agent_State</p>
 <p class="text-xs font-mono text-primary">PENDING_APPROVAL</p>
 </div>
-<div class="text-right">
+<div class="text-right min-w-[80px]">
 <p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Priority</p>
 <div class="flex items-center gap-2">
 <span class="text-xs font-mono text-accent">45</span>
-<div class="w-12 h-1 bg-slate-800 rounded-full overflow-hidden">
-<div class="h-full bg-accent w-[45%]"></div>
+<div class="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
+<div class="h-full bg-accent w-[45%] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
 </div>
 </div>
 </div>
@@ -149,9 +177,9 @@
 </div>
 </div>
 <div class="queue-row group">
-<div class="flex items-center gap-4 min-w-[100px]">
+<div class="flex items-center gap-4 min-w-[60px]">
 <div class="relative">
-<div class="size-10 rounded-sm bg-slate-800/50 flex items-center justify-center border border-slate-700 group-hover:border-accent/40">
+<div class="size-10 rounded-sm bg-slate-900/80 flex items-center justify-center border border-slate-800 group-hover:border-accent/40">
 <span class="material-symbols-outlined text-slate-400 group-hover:text-accent">alternate_email</span>
 </div>
 <div class="absolute -top-1 -right-1 status-pulse"></div>
@@ -160,26 +188,26 @@
 <div class="flex-1 min-w-0">
 <div class="flex items-center gap-3 font-mono text-[11px] mb-1">
 <span class="text-accent">ID: 0x425</span>
-<span class="text-slate-600">|</span>
+<span class="text-slate-700">|</span>
 <span class="text-slate-300">USER: @tech_lead_x</span>
-<span class="text-slate-600">|</span>
+<span class="text-slate-700">|</span>
 <span class="text-slate-500">PLATFORM: X</span>
 </div>
 <p class="text-sm text-slate-400 font-mono line-clamp-1">
-                        "Excited to see the autonomous agent features! Any plans for supporting local LLM deployments?"
-                    </p>
+                            "Excited to see the autonomous agent features! Any plans for supporting local LLM deployments?"
+                        </p>
 </div>
 <div class="flex items-center gap-10">
 <div class="text-right">
 <p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Agent_State</p>
 <p class="text-xs font-mono text-yellow-500">QUEUED</p>
 </div>
-<div class="text-right">
+<div class="text-right min-w-[80px]">
 <p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Priority</p>
 <div class="flex items-center gap-2">
 <span class="text-xs font-mono text-accent">92</span>
-<div class="w-12 h-1 bg-slate-800 rounded-full overflow-hidden">
-<div class="h-full bg-accent w-[92%]"></div>
+<div class="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
+<div class="h-full bg-accent w-[92%] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
 </div>
 </div>
 </div>
@@ -189,16 +217,63 @@
 <button class="micro-btn">Edit</button>
 </div>
 </div>
+<div class="queue-row group opacity-60">
+<div class="flex items-center gap-4 min-w-[60px]">
+<div class="relative">
+<div class="size-10 rounded-sm bg-slate-900/80 flex items-center justify-center border border-slate-800">
+<span class="material-symbols-outlined text-slate-400">hub</span>
 </div>
-<div class="mt-8 pt-4 border-t border-slate-800 flex justify-between items-center text-[10px] font-mono text-slate-600">
-<div class="flex gap-4">
-<span>BUFFER_UTILIZATION: 14.2%</span>
-<span>LATENCY: 42ms</span>
+<div class="absolute -top-1 -right-1 status-pulse"></div>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-3 font-mono text-[11px] mb-1">
+<span class="text-accent">ID: 0x426</span>
+<span class="text-slate-700">|</span>
+<span class="text-slate-300">USER: dev_ops_22</span>
+</div>
+<p class="text-sm text-slate-500 font-mono line-clamp-1 italic text-xs">
+                            System process: analyzing historical interaction logs for bias detection...
+                        </p>
+</div>
+<div class="flex items-center gap-10">
+<div class="text-right">
+<p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Agent_State</p>
+<p class="text-xs font-mono text-slate-500">IDLE</p>
+</div>
+<div class="text-right min-w-[80px]">
+<p class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Priority</p>
+<div class="flex items-center gap-2">
+<span class="text-xs font-mono text-slate-500">12</span>
+<div class="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
+<div class="h-full bg-slate-700 w-[12%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-2 ml-4">
+<button class="micro-btn opacity-40">Approve</button>
+<button class="micro-btn opacity-40">Edit</button>
+</div>
+</div>
+</main>
+<footer class="px-6 py-4 border-t border-accent/20 bg-black/60 flex justify-between items-center text-[10px] font-mono text-slate-500">
+<div class="flex gap-6">
+<div class="flex items-center gap-2">
+<span class="uppercase text-slate-600">Buffer_Utilization:</span>
+<span class="text-accent">14.2%</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[10px]">update</span>
-<span>LAST_SYNC: 14:22:18 UTC</span>
+<span class="uppercase text-slate-600">Latency:</span>
+<span class="text-terminal-green">42ms</span>
 </div>
+</div>
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-[12px] animate-pulse">refresh</span>
+<span class="uppercase">Last_Sync:</span>
+<span class="text-accent">14:22:18 UTC</span>
+</div>
+</footer>
 </div>
 </div>
 
