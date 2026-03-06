@@ -48,6 +48,12 @@
             .micro-btn {
                 @apply px-4 py-1.5 text-[10px] font-mono border border-white/10 hover:border-accent hover:text-accent transition-all uppercase tracking-widest bg-white/5 hover:bg-accent/10;
             }
+            .filter-btn {
+                @apply px-3 py-1 text-[9px] font-display border border-white/10 text-slate-400 hover:text-white transition-all uppercase tracking-wider bg-white/5;
+            }
+            .filter-btn.active {
+                @apply border-terminal-green text-terminal-green shadow-[0_0_8px_rgba(74,222,128,0.2)];
+            }
             .status-dot {
                 @apply size-1.5 rounded-full bg-terminal-green;
                 box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
@@ -63,6 +69,12 @@
             }
             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                 background: rgba(0, 242, 255, 0.3);
+            }
+            .neon-cursor {
+                caret-color: #00f2ff;
+            }
+            .select-custom {
+                @apply bg-transparent border-none text-[10px] font-display text-accent uppercase tracking-widest focus:ring-0 cursor-pointer p-0 pr-6;
             }
         }
     </style>
@@ -93,6 +105,36 @@
 </div>
 </div>
 </header>
+<div class="bg-obsidian border-b border-accent/20 px-8 py-3 flex items-center justify-between gap-6">
+<div class="flex items-center flex-1 max-w-md bg-white/5 border border-white/5 px-3 py-1.5 group focus-within:border-accent/40 transition-colors">
+<span class="material-symbols-outlined text-[18px] text-slate-500 mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 p-0 w-full text-[11px] font-mono placeholder:text-slate-600 neon-cursor text-accent uppercase tracking-wider" placeholder="SEARCH_QUERY_..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="filter-btn active">ALL</button>
+<button class="filter-btn">DISCORD</button>
+<button class="filter-btn">GITHUB</button>
+<button class="filter-btn">X</button>
+</div>
+<div class="h-6 w-px bg-white/10"></div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest">SORT_BY:</span>
+<div class="relative flex items-center">
+<select class="select-custom">
+<option>PRIORITY</option>
+<option>LATEST</option>
+<option>STATUS</option>
+</select>
+</div>
+</div>
+<button class="size-8 flex items-center justify-center border border-white/10 hover:border-accent hover:text-accent transition-all bg-white/5 text-slate-400">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+</div>
 <main class="flex-1 overflow-y-auto p-8 space-y-4 custom-scrollbar bg-black/20">
 <div class="queue-row group">
 <div class="flex items-center gap-4 min-w-[50px]">
