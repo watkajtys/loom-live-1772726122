@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Queue Controls: Floating HUD</title>
+<title>Advoloom Queue Controls: Inline Header</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -38,10 +38,6 @@
                 border: 1px solid rgba(0, 242, 255, 0.2);
                 box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.02);
             }
-            .hud-bar {
-                @apply absolute top-4 left-4 right-4 z-50 flex items-center justify-between px-3 py-2 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg;
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-            }
             .sidebar-card {
                 @apply p-4 border-b border-white/5 bg-black/20 hover:bg-accent/[0.05] transition-all cursor-pointer relative overflow-hidden;
             }
@@ -55,11 +51,11 @@
                 @apply size-1 rounded-full bg-terminal-green;
                 box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
             }
-            .hud-icon-btn {
-                @apply p-1.5 text-slate-400 hover:text-accent hover:bg-accent/10 rounded transition-all flex items-center justify-center;
+            .filter-chip {
+                @apply flex items-center gap-1.5 px-2 py-1 text-[9px] font-mono border border-white/10 hover:border-accent/50 text-slate-400 hover:text-accent transition-all uppercase tracking-tighter bg-white/5 cursor-pointer;
             }
-            .hud-icon-btn.active {
-                @apply text-accent bg-accent/5 border border-accent/20;
+            .filter-chip.active {
+                @apply border-accent text-accent bg-accent/10;
             }
             .custom-scrollbar::-webkit-scrollbar {
                 width: 3px;
@@ -76,8 +72,8 @@
             .neon-cursor {
                 caret-color: #00f2ff;
             }
-            .search-input-hud {
-                @apply bg-transparent border-none focus:ring-0 text-[11px] font-mono text-accent placeholder:text-slate-600 w-0 focus:w-32 transition-all duration-300 px-0 focus:px-2;
+            .inline-search {
+                @apply bg-white/5 border border-white/10 focus:border-accent/50 focus:ring-0 text-[10px] font-mono text-accent placeholder:text-slate-600 w-48 h-8 px-3 transition-all duration-300;
             }
         }
     </style>
@@ -85,57 +81,65 @@
 <body class="bg-[#020305] text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen flex items-center justify-center p-4">
 <div class="w-full max-w-7xl glass-panel relative overflow-hidden flex flex-col h-[850px]">
 <div class="absolute inset-0 grid-bg pointer-events-none"></div>
-<header class="relative z-20 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/80 backdrop-blur-md">
-<div class="space-y-0.5">
+<header class="relative z-30 flex items-center justify-between px-6 py-3 border-b border-white/10 bg-black/90 backdrop-blur-md">
+<div class="flex items-center gap-6">
+<div class="space-y-0">
 <div class="flex items-center gap-2">
-<span class="text-[9px] font-mono text-accent tracking-[0.2em] font-bold">SYSTEM::ADVOLOOM_CORE</span>
+<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">CORE_03</span>
 </div>
-<h2 class="text-xl font-bold tracking-tight text-white font-display uppercase">Community Queue</h2>
+<h2 class="text-lg font-bold tracking-tight text-white font-display uppercase leading-none">Community Queue</h2>
 </div>
-<div class="flex items-center gap-8 font-mono text-[10px]">
-<div class="flex flex-col items-end">
-<span class="text-slate-500 text-[8px] uppercase tracking-widest mb-0.5">QUEUE_LOAD</span>
-<span class="text-white font-bold">0xAF24</span>
+<div class="h-8 w-px bg-white/10"></div>
+<div class="flex items-center gap-2">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-2 text-[14px] text-slate-500 pointer-events-none">search</span>
+<input class="inline-search pl-7" placeholder="SEARCH_ID..." type="text"/>
+</div>
+<div class="flex items-center gap-1">
+<div class="filter-chip active">
+<span class="material-symbols-outlined text-[12px]">apps</span>
+<span>ALL</span>
+</div>
+<div class="filter-chip">
+<span class="material-symbols-outlined text-[12px]">forum</span>
+<span>DISC</span>
+</div>
+<div class="filter-chip">
+<span class="material-symbols-outlined text-[12px]">terminal</span>
+<span>GTHB</span>
+</div>
+<div class="filter-chip">
+<span class="material-symbols-outlined text-[12px]">alternate_email</span>
+<span>SOCL</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6 font-mono text-[10px]">
+<div class="flex items-center gap-3">
+<div class="text-right">
+<span class="text-slate-500 text-[8px] uppercase tracking-widest block leading-none">QUEUE_LOAD</span>
+<span class="text-accent font-bold">0xAF24</span>
+</div>
+<div class="h-6 w-px bg-white/5"></div>
+<div class="text-right">
+<span class="text-slate-500 text-[8px] uppercase tracking-widest block leading-none">LATENCY</span>
+<span class="text-white font-bold">42ms</span>
+</div>
 </div>
 <div class="h-8 w-px bg-white/10"></div>
 <div class="flex flex-col items-end">
 <span class="text-slate-500 text-[8px] uppercase tracking-widest mb-0.5">NODE_STATUS</span>
-<span class="text-terminal-green flex items-center gap-2 font-bold uppercase">
+<span class="text-terminal-green flex items-center gap-2 font-bold uppercase text-[9px]">
 <span class="status-dot"></span>
-                        SYNCHRONIZED
-                    </span>
+                    SYNCHRONIZED
+                </span>
 </div>
 </div>
 </header>
 <div class="flex flex-1 overflow-hidden relative z-10">
 <aside class="w-80 relative flex flex-col border-r border-white/5 bg-black/20">
-<div class="hud-bar">
-<div class="flex items-center gap-1">
-<button class="hud-icon-btn active" title="All Streams">
-<span class="material-symbols-outlined text-[18px]">apps</span>
-</button>
-<button class="hud-icon-btn" title="Filter Discord">
-<span class="material-symbols-outlined text-[18px]">forum</span>
-</button>
-<button class="hud-icon-btn" title="Filter GitHub">
-<span class="material-symbols-outlined text-[18px]">terminal</span>
-</button>
-<button class="hud-icon-btn" title="Filter X">
-<span class="material-symbols-outlined text-[18px]">alternate_email</span>
-</button>
-</div>
-<div class="flex items-center gap-2">
-<div class="flex items-center bg-white/5 rounded px-1 group">
-<span class="material-symbols-outlined text-[16px] text-slate-500 group-focus-within:text-accent">search</span>
-<input class="search-input-hud neon-cursor" placeholder="ID_REF..." type="text"/>
-</div>
-<div class="h-4 w-px bg-white/10"></div>
-<button class="hud-icon-btn" title="Sort Options">
-<span class="material-symbols-outlined text-[18px]">sort</span>
-</button>
-</div>
-</div>
-<div class="flex-1 overflow-y-auto custom-scrollbar pt-20">
+<div class="flex-1 overflow-y-auto custom-scrollbar">
 <div class="sidebar-card active">
 <div class="flex items-start justify-between mb-3">
 <div class="flex items-center gap-2">
@@ -243,17 +247,17 @@
 <section class="space-y-3">
 <div class="flex items-center gap-2 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
 <span class="material-symbols-outlined text-[14px]">input</span>
-                            Raw Message Payload
-                        </div>
+                        Raw Message Payload
+                    </div>
 <div class="p-6 border border-white/5 bg-white/[0.02] font-mono text-[13px] text-slate-300 leading-relaxed border-l-2 border-l-slate-700">
-                            "How do I implement the new Webhooks API for real-time ingestions? I'm getting a 403 error on the handshake even though my secret matches. Is there a specific IP range I need to whitelist for the production environment?"
-                        </div>
+                        "How do I implement the new Webhooks API for real-time ingestions? I'm getting a 403 error on the handshake even though my secret matches. Is there a specific IP range I need to whitelist for the production environment?"
+                    </div>
 </section>
 <section class="space-y-3">
 <div class="flex items-center gap-2 text-[10px] font-mono text-terminal-green uppercase tracking-widest">
 <span class="material-symbols-outlined text-[14px]">smart_toy</span>
-                            Autonomous Response Draft
-                        </div>
+                        Autonomous Response Draft
+                    </div>
 <div class="relative group">
 <textarea class="w-full h-56 bg-black/60 border border-accent/10 focus:border-accent/40 focus:ring-0 text-[13px] font-mono p-5 text-accent/90 leading-relaxed neon-cursor resize-none transition-all" spellcheck="false">Hello @dev_guru! Regarding the Webhooks API 403 error:
 1. Handshake Secret: Ensure you're using the Raw Body for HMAC calculation.
@@ -278,8 +282,8 @@ I've prepared a code snippet for the validation logic if you'd like to see it.</
 <span class="text-accent font-bold">14.2%</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">IO_LATENCY:</span>
-<span class="text-accent font-bold">42ms</span>
+<span class="uppercase text-slate-500 tracking-wider">SYSTEM_MEMORY:</span>
+<span class="text-accent font-bold">3.8GB</span>
 </div>
 </div>
 <div class="flex items-center gap-3 text-slate-400">
