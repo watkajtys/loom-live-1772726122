@@ -8,7 +8,13 @@ import {
   UpdatePipelineStageDTO,
   PipelineCard,
   CreatePipelineCardDTO,
-  UpdatePipelineCardDTO
+  UpdatePipelineCardDTO,
+  PipelineStep,
+  CreatePipelineStepDTO,
+  UpdatePipelineStepDTO,
+  PipelineRun,
+  CreatePipelineRunDTO,
+  UpdatePipelineRunDTO
 } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
 
@@ -118,4 +124,76 @@ export const updatePipelineCard = async (id: string, data: UpdatePipelineCardDTO
 
 export const deletePipelineCard = async (id: string): Promise<boolean> => {
   return await pb.collection(COLLECTIONS.PIPELINE_CARDS).delete(id);
+};
+
+// Pipeline Step API
+
+export interface FetchPipelineStepsOptions {
+  card_id: string;
+  page?: number;
+  perPage?: number;
+  sort?: string;
+}
+
+export const fetchPipelineSteps = async (options: FetchPipelineStepsOptions): Promise<{ items: PipelineStep[]; totalItems: number }> => {
+  const { card_id, page = 1, perPage = 50, sort = 'position' } = options;
+  
+  const result = await pb.collection(COLLECTIONS.PIPELINE_STEPS).getList<PipelineStep>(page, perPage, {
+    filter: `card_id="${card_id}"`,
+    sort,
+    requestKey: null,
+  });
+
+  return {
+    items: result.items,
+    totalItems: result.totalItems,
+  };
+};
+
+export const createPipelineStep = async (data: CreatePipelineStepDTO): Promise<PipelineStep> => {
+  return await pb.collection(COLLECTIONS.PIPELINE_STEPS).create<PipelineStep>(data);
+};
+
+export const updatePipelineStep = async (id: string, data: UpdatePipelineStepDTO): Promise<PipelineStep> => {
+  return await pb.collection(COLLECTIONS.PIPELINE_STEPS).update<PipelineStep>(id, data);
+};
+
+export const deletePipelineStep = async (id: string): Promise<boolean> => {
+  return await pb.collection(COLLECTIONS.PIPELINE_STEPS).delete(id);
+};
+
+// Pipeline Run API
+
+export interface FetchPipelineRunsOptions {
+  pipeline_id: string;
+  page?: number;
+  perPage?: number;
+  sort?: string;
+}
+
+export const fetchPipelineRuns = async (options: FetchPipelineRunsOptions): Promise<{ items: PipelineRun[]; totalItems: number }> => {
+  const { pipeline_id, page = 1, perPage = 50, sort = '-started_at' } = options;
+  
+  const result = await pb.collection(COLLECTIONS.PIPELINE_RUNS).getList<PipelineRun>(page, perPage, {
+    filter: `pipeline_id="${pipeline_id}"`,
+    sort,
+    requestKey: null,
+  });
+
+  return {
+    items: result.items,
+    totalItems: result.totalItems,
+  };
+};
+
+export const createPipelineRun = async (data: CreatePipelineRunDTO): Promise<PipelineRun> => {
+  return await pb.collection(COLLECTIONS.PIPELINE_RUNS).create<PipelineRun>(data);
+};
+
+export const updatePipelineRun = async (id: string, data: UpdatePipelineRunDTO): Promise<PipelineRun> => {
+  return await pb.collection(COLLECTIONS.PIPELINE_RUNS).update<PipelineRun>(id, data);
+};
+
+export const deletePipelineRun = async (id: string): Promise<boolean> => {
+  return await pb.collection(COLLECTIONS.PIPELINE_RUNS).delete(id);
 };

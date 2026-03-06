@@ -6,4 +6,6 @@ export const COLLECTIONS = {
   PIPELINES: 'pipelines',
   PIPELINE_STAGES: 'pipeline_stages',
   PIPELINE_CARDS: 'pipeline_cards',
+  PIPELINE_STEPS: 'pipeline_steps',
+  PIPELINE_RUNS: 'pipeline_runs',
 };
