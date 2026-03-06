@@ -617,3 +617,79 @@ test("Community Queue View integrates data fetching hook with skeletons and erro
 
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('Compact Pipeline Card view toggles correctly and renders design', async ({ page }) => {
+  // Setup mock data for reliable testing
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 2,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_test_card_1',
+            collectionId: 'content_pipeline_id',
+            collectionName: 'content_pipeline',
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            title: 'Test Compact Card 1',
+            markdown_body: 'Body text',
+            status: 'published'
+          },
+          {
+            id: 'mock_test_card_2',
+            collectionId: 'content_pipeline_id',
+            collectionName: 'content_pipeline',
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            title: 'Test Compact Card 2',
+            markdown_body: 'Body text',
+            status: 'drafting'
+          }
+        ]
+      })
+    });
+  });
+
+  // Navigate to compact view using deep link
+  await page.goto('/?view=compact');
+
+  // Verify compact header changes
+  await expect(page.locator('h2:has-text("System Logs")')).toBeVisible();
+  await expect(page.locator('text=LOG_MODE::DENSITY_HIGH')).toBeVisible();
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Verify compact cards are rendered
+  const compactCards = page.locator('.compact-log-card');
+  await expect(compactCards.first()).toBeVisible();
+  await expect(page.locator('text=Test Compact Card 1')).toBeVisible();
+  
+  // Verify standard cards are NOT rendered
+  await expect(page.locator('.content-card').first()).not.toBeVisible();
+
+  // Take the mandatory screenshot showing the new design
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+
+  // Test the view toggle interaction
+  await page.click('button:has-text("Standard")');
+  
+  // Verify URL updated
+  await expect(page).toHaveURL(/.*view=standard/);
+
+  // Verify standard header restored
+  await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
+  await expect(page.locator('text=ROUTE::/CONTENT-PIPELINE')).toBeVisible();
+
+  // Verify standard cards are rendered
+  const standardCards = page.locator('.content-card');
+  await expect(standardCards.first()).toBeVisible();
+});

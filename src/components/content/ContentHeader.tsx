@@ -9,6 +9,7 @@ export const ContentHeader: React.FC = () => {
   const agentFilter = searchParams.get('agent') || '';
   const statusFilter = searchParams.get('status') || '';
   const searchQuery = searchParams.get('search') || '';
+  const viewMode = searchParams.get('view') || 'standard';
 
   const setFilter = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
@@ -33,18 +34,41 @@ export const ContentHeader: React.FC = () => {
   const platforms = ['All', 'Github', 'X/Twitter', 'Discord'];
   const agents = ['Nexus_01', 'Echo_04'];
   const statuses = ['Live', 'Progress', 'Draft'];
+  const views = ['Standard', 'Compact'];
 
   return (
     <header className="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">
       <div className="flex items-center gap-8">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">ROUTE::/CONTENT-PIPELINE</span>
+            <span className="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">
+              {viewMode === 'compact' ? 'LOG_MODE::DENSITY_HIGH' : 'ROUTE::/CONTENT-PIPELINE'}
+            </span>
           </div>
-          <h2 className="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">Content Deck</h2>
+          <h2 className="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">
+            {viewMode === 'compact' ? 'System Logs' : 'Content Deck'}
+          </h2>
         </div>
         <div className="h-10 w-px bg-white/10"></div>
         <div className="flex items-center">
+          <div className="filter-group">
+            <span className="command-label">VIEW</span>
+            <div className="flex gap-1">
+              {views.map(v => {
+                const value = v.toLowerCase();
+                const isActive = viewMode === value;
+                return (
+                  <button
+                    key={v}
+                    onClick={() => setFilter('view', value)}
+                    className={`command-btn ${isActive ? 'active' : ''}`}
+                  >
+                    {v}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="filter-group">
             <span className="command-label">PLATFORM</span>
             <div className="flex gap-1">

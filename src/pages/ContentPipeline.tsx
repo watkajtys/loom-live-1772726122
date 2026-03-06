@@ -2,6 +2,7 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useContentPipeline } from '../hooks/useContentPipeline';
 import { PipelineCard } from '../components/content/PipelineCard';
+import { CompactPipelineCard } from '../components/content/CompactPipelineCard';
 import { ContentHeader } from '../components/content/ContentHeader';
 import { ContentFooter } from '../components/content/ContentFooter';
 import { LoadingState } from '../components/states/LoadingState';
@@ -13,6 +14,7 @@ export const ContentPipeline: React.FC = () => {
   const search = searchParams.get('search') || '';
   const statusFilter = searchParams.get('status') || '';
   const agentFilter = searchParams.get('agent') || '';
+  const viewMode = searchParams.get('view') || 'standard';
   
   // Note: Platform filter doesn't exist on the content model currently but is mockable
 
@@ -41,9 +43,11 @@ export const ContentPipeline: React.FC = () => {
           {!loading && !error && data.length === 0 && <EmptyState />}
 
           {!loading && !error && data.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${viewMode === 'compact' ? 'gap-2' : 'gap-6'}`}>
               {data.map((content) => (
-                <PipelineCard key={content.id} content={content} />
+                viewMode === 'compact' 
+                  ? <CompactPipelineCard key={content.id} content={content} />
+                  : <PipelineCard key={content.id} content={content} />
               ))}
             </div>
           )}

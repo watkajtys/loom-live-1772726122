@@ -94,6 +94,18 @@
   .neon-cursor {
       caret-color: theme('colors.accent');
   }
+  .compact-log-card {
+      @apply glass-panel py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12;
+  }
+  .mini-platform-icon {
+      @apply size-6 flex items-center justify-center bg-black/40 border border-white/5 text-slate-400 shrink-0;
+  }
+  .sparkline-container {
+      @apply flex items-end gap-[1px] h-3 w-12 shrink-0;
+  }
+  .spark-bar {
+      @apply w-1 bg-accent/40 rounded-t-[0.5px];
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {
