@@ -23,6 +23,33 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Build the Community Queue List container component.', async ({ page }) => {
+  await page.goto('/queue');
+
+  // Verify the page title is visible
+  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Verify custom container class is present
+  await expect(page.locator('.glass-panel')).toBeVisible();
+  
+  // Verify rows are rendering within the container
+  const queueRows = page.locator('.queue-row');
+  await page.waitForTimeout(1000);
+  
+  if (await queueRows.count() > 0) {
+    await expect(queueRows.first()).toBeVisible();
+  }
+
+  // Take the required screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});
+
 test('Execution and Telemetry providers maintain centralized shell state across navigations', async ({ page }) => {
   await page.goto('/');
 

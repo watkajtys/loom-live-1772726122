@@ -28,12 +28,13 @@ export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
   const statusColor = getStatusColor(mention.status);
   
   const isPulseActive = mention.status === 'drafting' || mention.status === 'queued';
+  const isIdle = mention.status === 'approved' || mention.status === 'rejected';
 
   return (
-    <div className="queue-row group">
-      <div className="flex items-center gap-4 min-w-[100px]">
+    <div className={`queue-row group ${isIdle ? 'opacity-60' : ''}`}>
+      <div className="flex items-center gap-4 min-w-[60px]">
         <div className="relative">
-          <div className="size-10 rounded-sm bg-slate-800/50 flex items-center justify-center border border-slate-700 group-hover:border-accent/40 transition-colors">
+          <div className="size-10 rounded-sm bg-slate-900/80 flex items-center justify-center border border-slate-800 group-hover:border-accent/40 transition-colors">
             <Icon name={iconName} className="text-slate-400 group-hover:text-accent" />
           </div>
           <div className={`absolute -top-1 -right-1 status-pulse ${isPulseActive ? 'opacity-100' : 'opacity-50'}`}></div>
@@ -43,9 +44,9 @@ export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 font-mono text-[11px] mb-1">
           <span className="text-accent">ID: {mention.id ? mention.id.slice(0, 5) : '0x000'}</span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-300 uppercase">USER: {mention.user}</span>
-          <span className="text-slate-600">|</span>
+          <span className="text-slate-700">|</span>
+          <span className="text-slate-300">USER: {mention.user}</span>
+          <span className="text-slate-700">|</span>
           <span className="text-slate-500 uppercase">PLATFORM: {mention.platform}</span>
         </div>
         <p className="text-sm text-slate-400 font-mono line-clamp-1">
@@ -58,12 +59,12 @@ export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
           <p className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Agent_State</p>
           <p className={`text-xs font-mono uppercase ${statusColor}`}>{mention.status}</p>
         </div>
-        <div className="text-right">
+        <div className="text-right min-w-[80px]">
           <p className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Priority</p>
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono text-accent">{mention.priority}</span>
-            <div className="w-12 h-1 bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-accent" style={{ width: `${mention.priority}%` }}></div>
+            <div className="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
+              <div className="h-full bg-accent shadow-[0_0_8px_rgba(0,242,255,0.5)]" style={{ width: `${mention.priority}%` }}></div>
             </div>
           </div>
         </div>
