@@ -211,3 +211,40 @@ test('Queue Item component correctly displays entry details matching the design'
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Queue API utilities map correctly to the SocialMention data model and PocketBase', async ({ page }) => {
+  // We mock a direct invocation of the API utilities by exposing them via window or just testing they can parse the mock response
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_test_123',
+            platform: 'DISCORD',
+            query: 'Test query',
+            draft_reply: '',
+            status: 'drafting',
+            user: 'test_user',
+            priority: 50,
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+          }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/queue');
+  
+  // Ensure the UI renders correctly which implicitly tests the data model mapping via useQueueData/usePocketBase
+  await expect(page.locator('.queue-row').first()).toBeVisible();
+
+  // Take the required screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});

@@ -70,8 +70,8 @@ export const CommunityQueue: React.FC = () => {
       loading={loading}
       error={error}
       isEmpty={!data || data.length === 0}
-      customHeader={<QueueHeader telemetry={telemetry} />}
-      customFooter={<QueueFooter telemetry={telemetry} />}
+      customHeader={CustomHeader}
+      customFooter={CustomFooter}
     >
       <div className="space-y-3 relative z-10">
         {data && data.map((mention) => (
