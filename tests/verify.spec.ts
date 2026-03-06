@@ -1040,7 +1040,7 @@ test('Define backend database schema models for the Pipeline Board (Pipeline, St
   // In a real app the components would call this, but here we just want to execute the code we added
   const fetchResults = await page.evaluate(async () => {
     // Dynamic import inside browser
-    const apiModule = await import('/src/lib/api/pipelineBoard.ts');
+    const apiModule = await import('/src/lib/api/pipeline/index.ts');
     
     const pipelines = await apiModule.fetchPipelines();
     const stages = await apiModule.fetchPipelineStages({ pipeline_id: pipelines.items[0].id });

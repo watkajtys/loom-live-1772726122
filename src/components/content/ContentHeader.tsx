@@ -2,6 +2,35 @@ import React, { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useContentFilters } from '../../hooks/useContentFilters';
 
+interface CommandButtonGroupProps {
+  label: string;
+  items: string[];
+  activeValue: string;
+  onSelect: (value: string) => void;
+  isLastGroup?: boolean;
+}
+
+const CommandButtonGroup: React.FC<CommandButtonGroupProps> = ({ label, items, activeValue, onSelect, isLastGroup }) => (
+  <div className={`filter-group ${isLastGroup ? 'border-r-0' : ''}`}>
+    <span className="command-label">{label}</span>
+    <div className="flex gap-1">
+      {items.map(item => {
+        const value = item.toLowerCase();
+        const isActive = activeValue === value;
+        return (
+          <button
+            key={item}
+            onClick={() => onSelect(value)}
+            className={`command-btn ${isActive ? 'active' : ''}`}
+          >
+            {item}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
 export const ContentHeader: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -20,6 +49,11 @@ export const ContentHeader: React.FC = () => {
     views,
   } = useContentFilters();
 
+  const isPlatformActive = (p: string) => {
+    const value = p.toLowerCase();
+    return platformFilter === value || (p === 'All' && !searchParams.get('platform'));
+  };
+
   return (
     <header className="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">
       <div className="flex items-center gap-8">
@@ -35,30 +69,18 @@ export const ContentHeader: React.FC = () => {
         </div>
         <div className="h-10 w-px bg-white/10"></div>
         <div className="flex items-center">
-          <div className="filter-group">
-            <span className="command-label">VIEW</span>
-            <div className="flex gap-1">
-              {views.map(v => {
-                const value = v.toLowerCase();
-                const isActive = viewMode === value;
-                return (
-                  <button
-                    key={v}
-                    onClick={() => setFilter('view', value)}
-                    className={`command-btn ${isActive ? 'active' : ''}`}
-                  >
-                    {v}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <CommandButtonGroup
+            label="VIEW"
+            items={views}
+            activeValue={viewMode}
+            onSelect={(val) => setFilter('view', val)}
+          />
           <div className="filter-group">
             <span className="command-label">PLATFORM</span>
             <div className="flex gap-1">
               {platforms.map(p => {
                 const value = p.toLowerCase();
-                const isActive = platformFilter === value || (p === 'All' && !searchParams.get('platform'));
+                const isActive = isPlatformActive(p);
                 return (
                   <button
                     key={p}
@@ -71,42 +93,19 @@ export const ContentHeader: React.FC = () => {
               })}
             </div>
           </div>
-          <div className="filter-group">
-            <span className="command-label">AGENT</span>
-            <div className="flex gap-1">
-              {agents.map(a => {
-                const value = a.toLowerCase();
-                const isActive = agentFilter === value;
-                return (
-                  <button
-                    key={a}
-                    onClick={() => setFilter('agent', value)}
-                    className={`command-btn ${isActive ? 'active' : ''}`}
-                  >
-                    {a}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="filter-group border-r-0">
-            <span className="command-label">STATUS</span>
-            <div className="flex gap-1">
-              {statuses.map(s => {
-                const value = s.toLowerCase();
-                const isActive = statusFilter === value;
-                return (
-                  <button
-                    key={s}
-                    onClick={() => setFilter('status', value)}
-                    className={`command-btn ${isActive ? 'active' : ''}`}
-                  >
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <CommandButtonGroup
+            label="AGENT"
+            items={agents}
+            activeValue={agentFilter}
+            onSelect={(val) => setFilter('agent', val)}
+          />
+          <CommandButtonGroup
+            label="STATUS"
+            items={statuses}
+            activeValue={statusFilter}
+            onSelect={(val) => setFilter('status', val)}
+            isLastGroup={true}
+          />
         </div>
       </div>
       
