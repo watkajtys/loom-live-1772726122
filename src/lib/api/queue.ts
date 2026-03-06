@@ -15,6 +15,7 @@ export const fetchQueueItems = async (options: FetchQueueOptions = {}): Promise<
   const result = await pb.collection(COLLECTIONS.SOCIAL_MENTIONS).getList<SocialMention>(page, perPage, {
     filter,
     sort,
+    requestKey: null,
   });
 
   return {
@@ -24,7 +25,7 @@ export const fetchQueueItems = async (options: FetchQueueOptions = {}): Promise<
 };
 
 export const fetchQueueItemById = async (id: string): Promise<SocialMention> => {
-  return await pb.collection(COLLECTIONS.SOCIAL_MENTIONS).getOne<SocialMention>(id);
+  return await pb.collection(COLLECTIONS.SOCIAL_MENTIONS).getOne<SocialMention>(id, { requestKey: null });
 };
 
 export const updateQueueItem = async (id: string, data: Partial<SocialMention>): Promise<SocialMention> => {

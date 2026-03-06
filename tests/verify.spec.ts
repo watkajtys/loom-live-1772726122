@@ -309,8 +309,30 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
   await page.screenshot({ path: 'evidence.png' });
 });
 
-test('', async ({ page }) => {
-  // Test scenario requested by user is empty String: ""
+test('usePocketBase uses SWR instead of raw useEffect', async ({ page }) => {
+  // We can't easily test the AST here, but we can verify the UI still loads properly
+  // with the new refactored usePocketBase data hook and the Community Queue SWR
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          generateMockQueueData({
+            id: 'mock_test_123',
+            platform: 'DISCORD',
+            query: 'Test query',
+            user: 'test_user',
+          }, 1)
+        ]
+      })
+    });
+  });
+
   await page.goto('/');
 
   // Verify the page title is visible to ensure app loads
@@ -321,6 +343,9 @@ test('', async ({ page }) => {
   if (await loadingIndicator.isVisible()) {
     await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
   }
+
+  // Ensure items loaded
+  await expect(page.locator('.queue-row').first()).toBeVisible();
 
   // Take the required screenshot
   await page.screenshot({ path: 'evidence.png' });

@@ -44,7 +44,7 @@ const IconMap = {
 } as const;
 
 // Allow using semantic names (like Google Material names or logical roles) mapping to Lucide
-const SemanticMap: Record<string, keyof typeof IconMap> = {
+const SemanticMap = {
   'home': 'Home',
   'smart_toy': 'Bot',
   'article': 'FileText',
@@ -63,9 +63,9 @@ const SemanticMap: Record<string, keyof typeof IconMap> = {
   'sort': 'ListFilter',
   'apps': 'LayoutGrid',
   'refresh': 'RefreshCw'
-};
+} as const satisfies Record<string, keyof typeof IconMap>;
 
-export type IconName = keyof typeof IconMap | keyof typeof SemanticMap | 'discord' | 'github' | 'x' | 'twitter' | string;
+export type IconName = keyof typeof IconMap | keyof typeof SemanticMap | 'discord' | 'github' | 'x' | 'twitter';
 
 type IconProps = {
   name: IconName;
@@ -77,7 +77,8 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
   if (name === 'github') return <GitHubIcon className={className} />;
   if (name === 'x' || name === 'twitter') return <XIcon className={className} />;
 
-  const lucideName = (SemanticMap[name] || name) as keyof typeof IconMap;
+  const semanticName = name as keyof typeof SemanticMap;
+  const lucideName = (SemanticMap[semanticName] || name) as keyof typeof IconMap;
   const LucideComponent = IconMap[lucideName] as LucideIcon | undefined;
 
   if (!LucideComponent) {
