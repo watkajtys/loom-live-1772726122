@@ -40,11 +40,11 @@ export const QueueControls: React.FC = () => {
 
   return (
     <div className="hud-bar w-full mb-4">
-      <label className="flex items-center bg-black/60 border border-slate-800 focus-within:border-accent/50 transition-colors rounded-sm px-3 py-1.5 group cursor-text w-64">
-        <Icon name="search" className="text-[14px] text-slate-500 group-focus-within:text-accent" />
+      <label className={`flex items-center bg-black/60 border border-slate-800 focus-within:border-accent/50 transition-all duration-300 rounded-sm px-3 py-1.5 group cursor-text ${searchValue ? 'w-64' : 'w-10 focus-within:w-64'}`}>
+        <Icon name="search" className="text-[14px] text-slate-500 group-focus-within:text-accent shrink-0" />
         <input
           type="text"
-          className="search-input-hud neon-cursor outline-none w-full"
+          className={`search-input-hud neon-cursor bg-transparent outline-none transition-all duration-300 ${searchValue ? 'w-full ml-2 opacity-100' : 'w-0 opacity-0 group-focus-within:w-full group-focus-within:ml-2 group-focus-within:opacity-100'}`}
           placeholder="SEARCH_ID..."
           value={searchValue}
           onChange={handleSearchChange}
@@ -87,7 +87,7 @@ export const QueueControls: React.FC = () => {
 
       <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded-sm border border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60 transition-all" title="Sort Options">
         <Icon name="sort" className="text-[14px]" />
-        SORT
+        SORT_BY
       </button>
     </div>
   );

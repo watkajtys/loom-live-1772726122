@@ -42,6 +42,7 @@ test('Queue Header/Controls component (search, filter, sort buttons)', async ({ 
   const searchInput = page.locator('.search-input-hud');
   await searchInput.evaluate((node) => node.scrollIntoView());
   await expect(page.locator('button[title="Sort Options"]')).toBeVisible();
+  await expect(page.locator('button[title="Sort Options"]')).toHaveText(/SORT_BY/);
 
   // Click on a filter and check URL parameter
   await page.click('button[title="Filter Discord"]');
