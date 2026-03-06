@@ -739,3 +739,74 @@ test('Compact Pipeline Card view toggles correctly and renders design', async ({
   const standardCards = page.locator('.content-card');
   await expect(standardCards.first()).toBeVisible();
 });
+
+test('Implement the Pipeline Stage (Column) UI component', async ({ page }) => {
+  // Mock data for the content pipeline
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 3,
+        totalPages: 1,
+        items: [
+          {
+            id: 'd_202_test',
+            title: 'API Reference Refactor',
+            status: 'drafting',
+            markdown_body: '...',
+            created: '2023-01-01T00:00:00Z',
+            updated: '2023-01-01T00:00:00Z'
+          },
+          {
+            id: 'r_405_test',
+            title: 'Community Update',
+            status: 'review',
+            markdown_body: '...',
+            created: '2023-01-01T00:00:00Z',
+            updated: '2023-01-01T00:00:00Z'
+          },
+          {
+            id: 'l_901_test',
+            title: 'Mainnet Launch Post',
+            status: 'published',
+            markdown_body: '...',
+            created: '2023-01-01T00:00:00Z',
+            updated: '2023-01-01T00:00:00Z'
+          }
+        ]
+      })
+    });
+  });
+
+  // Navigate to Content Pipeline in compact mode
+  await page.goto('/?view=compact');
+
+  // Wait for the pipeline stages to appear
+  await page.waitForSelector('.stage-column');
+
+  // Check that the three columns exist based on their titles
+  const draftingHeader = page.locator('.stage-column:has-text("Drafting")');
+  await expect(draftingHeader).toBeVisible();
+
+  const reviewHeader = page.locator('.stage-column:has-text("Review Pipeline")');
+  await expect(reviewHeader).toBeVisible();
+
+  const liveNodesHeader = page.locator('.stage-column:has-text("Live Nodes")');
+  await expect(liveNodesHeader).toBeVisible();
+
+  // Test toggling collapse by clicking the collapse button on the Review Pipeline stage
+  const reviewCollapseBtn = reviewHeader.locator('button').first();
+  await reviewCollapseBtn.click();
+
+  // Wait for React Router and state to settle
+  await page.waitForTimeout(500);
+
+  // Verify URL updated with deep linking state
+  await expect(page).toHaveURL(/collapsed=review/);
+
+  // Take a screenshot as requested
+  await page.screenshot({ path: 'evidence.png' });
+});

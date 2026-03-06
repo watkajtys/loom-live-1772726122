@@ -4,54 +4,70 @@ import {
   AtSign,
   Bell,
   Bot,
+  CheckSquare,
+  ChevronsLeft,
+  ChevronsRight,
   Clock,
   Code,
   Database,
+  FileEdit,
   FileText,
   Home,
+  LayoutGrid,
   LineChart,
+  ListFilter,
   MessageSquare,
   Network,
+  Radio,
   RefreshCw,
-  Settings,
-  Terminal,
   Search,
-  ListFilter,
-  LayoutGrid,
+  Settings,
+  Share2,
+  Terminal,
+  TrendingUp
 } from 'lucide-react';
 import { DiscordIcon, GitHubIcon, XIcon } from './icons/BrandIcons';
 
 export type SemanticIconName = 
-  | 'discord'
-  | 'github'
-  | 'x'
-  | 'twitter'
-  | 'home'
-  | 'smart_toy'
-  | 'bot'
-  | 'article'
-  | 'filetext'
-  | 'analytics'
-  | 'linechart'
-  | 'settings_input_component'
-  | 'database'
-  | 'terminal'
-  | 'schedule'
-  | 'clock'
-  | 'notifications'
-  | 'bell'
-  | 'hub'
-  | 'code'
-  | 'alternate_email'
-  | 'error'
   | 'alertcircle'
-  | 'settings'
-  | 'search'
-  | 'sort'
+  | 'alternate_email'
+  | 'analytics'
   | 'apps'
+  | 'article'
+  | 'bell'
+  | 'bot'
+  | 'checklist'
+  | 'clock'
+  | 'code'
+  | 'database'
+  | 'discord'
+  | 'edit_note'
+  | 'error'
+  | 'filetext'
+  | 'forum'
+  | 'github'
+  | 'grid_view'
+  | 'home'
+  | 'hub'
+  | 'keyboard_double_arrow_left'
+  | 'keyboard_double_arrow_right'
+  | 'linechart'
+  | 'notifications'
+  | 'priority_high'
   | 'refresh'
   | 'refreshcw'
-  | 'forum';
+  | 'schedule'
+  | 'search'
+  | 'sensors'
+  | 'settings'
+  | 'settings_input_component'
+  | 'share'
+  | 'show_chart'
+  | 'smart_toy'
+  | 'sort'
+  | 'terminal'
+  | 'twitter'
+  | 'x';
 
 // We map components that might be passed in differently (e.g., 'Bot' or 'smart_toy')
 // directly by normalizing the input type.
@@ -93,7 +109,16 @@ const iconMap: Record<SemanticIconName, React.ElementType> = {
   apps: LayoutGrid,
   refresh: RefreshCw,
   refreshcw: RefreshCw,
-  forum: MessageSquare
+  forum: MessageSquare,
+  edit_note: FileEdit,
+  keyboard_double_arrow_left: ChevronsLeft,
+  keyboard_double_arrow_right: ChevronsRight,
+  share: Share2,
+  priority_high: AlertCircle,
+  checklist: CheckSquare,
+  sensors: Radio,
+  grid_view: LayoutGrid,
+  show_chart: TrendingUp,
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {

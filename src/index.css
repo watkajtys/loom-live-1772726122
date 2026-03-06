@@ -106,6 +106,26 @@
   .spark-bar {
       @apply w-1 bg-accent/40 rounded-t-[0.5px];
   }
+  .stage-column {
+      @apply flex flex-col h-full bg-black/40 border-x border-white/5 transition-all duration-300 relative;
+      width: 380px;
+  }
+  .stage-column.collapsed {
+      @apply w-12 overflow-hidden shrink-0;
+  }
+  .action-gutter {
+      @apply w-10 flex flex-col items-center py-4 border-l border-white/10 bg-black/60 gap-4 shrink-0;
+  }
+  .gutter-btn {
+      @apply w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all;
+  }
+  .gutter-btn.active {
+      @apply text-accent border-accent/40 bg-accent/10;
+  }
+  .vertical-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {
