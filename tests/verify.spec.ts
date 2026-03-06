@@ -453,3 +453,35 @@ test('Feature hooks correctly implement generic usePocketBase wrapper logic', as
   await expect(page.locator('text=Error Loading Data')).not.toBeVisible();
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 });
+
+test('Community Queue handles empty states gracefully based on SWR and PocketBase types', async ({ page }) => {
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  // Verify the page title is visible
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // We should see the Empty state
+  await expect(page.locator('text=No Records Found')).toBeVisible();
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
