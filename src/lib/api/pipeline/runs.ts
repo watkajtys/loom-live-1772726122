@@ -3,7 +3,12 @@ import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineRun, CreatePipelineRunDTO, UpdatePipelineRunDTO } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
-import { CreatePipelineRunSchema, UpdatePipelineRunSchema } from '../../../schema/pipeline';
+import { 
+  CreatePipelineRunSchema, 
+  UpdatePipelineRunSchema,
+  UpdatePipelineRunStatusPayloadSchema,
+  UpdatePipelineRunStatusPayload
+} from '../../../schema/pipeline';
 
 export interface FetchPipelineRunsOptions {
   pipeline_id: string;
@@ -46,6 +51,18 @@ export const updatePipelineRun = async (id: string, data: UpdatePipelineRunDTO):
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new ValidationError('Bad Request: Invalid pipeline run payload', error.errors);
+    }
+    throw error;
+  }
+};
+
+export const updatePipelineRunStatus = async (id: string, data: UpdatePipelineRunStatusPayload): Promise<PipelineRun> => {
+  try {
+    const validatedData = UpdatePipelineRunStatusPayloadSchema.parse(data);
+    return await pb.collection(COLLECTIONS.PIPELINE_RUNS).update<PipelineRun>(id, validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid pipeline run status payload', error.errors);
     }
     throw error;
   }

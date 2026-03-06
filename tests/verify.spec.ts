@@ -1777,6 +1777,17 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
       requestInvalidFailed = e.status === 400;
     }
 
+    // 8. Pipeline Execution Status payload validation
+    let execPayloadInvalidFailed = false;
+    try {
+      await runsApi.updatePipelineRunStatus('id_1', {
+        status: 'completed' as any,
+        // Invalid: missing completed_at
+      });
+    } catch (e: any) {
+      execPayloadInvalidFailed = e.status === 400;
+    }
+
     return { 
       validSuccess, 
       pipelineInvalidFailed, 
@@ -1785,7 +1796,8 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
       cardInvalidFailed,
       stepInvalidFailed,
       runInvalidFailed,
-      requestInvalidFailed
+      requestInvalidFailed,
+      execPayloadInvalidFailed
     };
   });
 
@@ -1798,6 +1810,7 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
   expect(result.stepInvalidFailed).toBe(true);
   expect(result.runInvalidFailed).toBe(true);
   expect(result.requestInvalidFailed).toBe(true);
+  expect(result.execPayloadInvalidFailed).toBe(true);
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });

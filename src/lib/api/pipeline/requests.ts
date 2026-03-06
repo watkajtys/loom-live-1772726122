@@ -33,7 +33,6 @@ export async function fetchPipelineRequests(options?: {
     });
     return { items: records };
   } catch (error) {
-    console.error(`Error fetching ${COLLECTION}:`, error);
     throw error;
   }
 }
@@ -44,7 +43,6 @@ export async function fetchPipelineRequest(id: string): Promise<PipelineRequest>
       requestKey: null,
     });
   } catch (error) {
-    console.error(`Error fetching ${COLLECTION} item ${id}:`, error);
     throw error;
   }
 }
@@ -57,7 +55,6 @@ export async function createPipelineRequest(data: CreatePipelineRequestDTO): Pro
     if (error instanceof z.ZodError) {
       throw new ValidationError(`Bad Request: Invalid ${COLLECTION} payload`, error.errors);
     }
-    console.error(`Error creating ${COLLECTION}:`, error);
     throw error;
   }
 }
@@ -70,7 +67,6 @@ export async function updatePipelineRequest(id: string, data: UpdatePipelineRequ
     if (error instanceof z.ZodError) {
       throw new ValidationError(`Bad Request: Invalid ${COLLECTION} payload`, error.errors);
     }
-    console.error(`Error updating ${COLLECTION} item ${id}:`, error);
     throw error;
   }
 }
@@ -79,7 +75,6 @@ export async function deletePipelineRequest(id: string): Promise<void> {
   try {
     await pb.collection(COLLECTION).delete(id);
   } catch (error) {
-    console.error(`Error deleting ${COLLECTION} item ${id}:`, error);
     throw error;
   }
 }
