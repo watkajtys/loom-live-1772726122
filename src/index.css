@@ -40,6 +40,21 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: rgba(0, 242, 255, 0.4);
   }
+  .hud-bar {
+      @apply flex items-center gap-4 bg-black/40 border border-accent/20 rounded-sm px-4 py-2;
+  }
+  .hud-icon-btn {
+      @apply p-1.5 text-slate-400 hover:text-accent hover:bg-accent/10 rounded transition-all flex items-center justify-center;
+  }
+  .hud-icon-btn.active {
+      @apply text-accent bg-accent/10 border border-accent;
+  }
+  .search-input-hud {
+      @apply bg-transparent border-none focus:ring-0 text-[11px] font-mono text-accent placeholder:text-slate-600 w-48 px-2;
+  }
+  .neon-cursor {
+      caret-color: #00f2ff;
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {

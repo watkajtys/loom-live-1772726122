@@ -10,7 +10,7 @@ export const Dashboard: React.FC = () => {
   const data = useDashboardData();
 
   return (
-    <div className="flex-1 p-6 grid grid-cols-12 grid-rows-6 gap-4 overflow-hidden">
+    <div className="flex-1 p-6 grid grid-cols-12 grid-rows-6 gap-4 overflow-hidden relative">
       <ChannelHealth data={data.channelHealth} />
       <AgentStatusVisualization bars={data.agentVisualBars} opsPerMinute={data.opsPerMinute} />
       <LiveTerminalOutput logs={data.terminalLogs} />

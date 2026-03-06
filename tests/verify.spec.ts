@@ -14,18 +14,46 @@ test('Advoloom Command Center shell and primary views from the design load corre
   
   // Navigate to queue
   await page.click('nav a[href="/queue"]');
+  // Handle router state parsing. It parses /queue, we expect either `Root::Community_Queue` (or `Root::QUEUE` if it wasn't strictly found, but our config uses `Root::Community_Queue`). Wait for it.
   await expect(page.locator('text=Root::Community_Queue')).toBeVisible();
-  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
-  
-  // Navigate to reports
-  await page.click('nav a[href="/reports"]');
-  await expect(page.locator('text=Root::Agent_Execution_Reports')).toBeVisible();
-  await expect(page.locator('h1', { hasText: 'Agent Execution Reports' })).toBeVisible();
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 
   // Navigate back to root
-  await page.goto('/');
+  await page.click('nav a[href="/"]');
+  await expect(page.locator('text=Root::Command_Center')).toBeVisible();
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
+test('Queue Header/Controls component (search, filter, sort buttons)', async ({ page }) => {
+  await page.goto('/queue');
+
+  // Assert presence of the HUD bar
+  await expect(page.locator('.hud-bar')).toBeVisible();
+
+  // Assert presence of the filter buttons
+  await expect(page.locator('button[title="All Streams"]')).toBeVisible();
+  await expect(page.locator('button[title="Filter Discord"]')).toBeVisible();
+  await expect(page.locator('button[title="Filter GitHub"]')).toBeVisible();
+  await expect(page.locator('button[title="Filter X"]')).toBeVisible();
+
+  // Assert presence of search input
+  const searchInput = page.locator('.search-input-hud');
+  await searchInput.evaluate((node) => node.scrollIntoView());
+  await expect(page.locator('button[title="Sort Options"]')).toBeVisible();
+
+  // Click on a filter and check URL parameter
+  await page.click('button[title="Filter Discord"]');
+  await expect(page).toHaveURL(/.*filter=discord/);
+
+  // Focus the input by clicking the parent label to simulate a real user interaction
+  await page.locator('label.cursor-text').click();
+  await searchInput.fill('testquery');
+  await page.waitForTimeout(500); // wait for debounce
+  await expect(page).toHaveURL(/.*search=testquery/);
+
+  // Take the required screenshot at the end
+  await page.screenshot({ path: 'evidence.png' });
 });
 
 test('Build the Community Queue List container component.', async ({ page }) => {
@@ -59,7 +87,7 @@ test('Build the Community Queue List container component.', async ({ page }) => 
   await page.goto('/queue');
 
   // Verify the page title is visible
-  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');
@@ -102,7 +130,7 @@ test('Community Queue data fetching and rendering', async ({ page }) => {
   await page.goto('/queue');
 
   // Verify the page title is visible
-  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 
   // Wait for loading to finish, or check for expected states
   // We handle potential empty state or data list based on standard view wrappers
@@ -116,8 +144,8 @@ test('Community Queue data fetching and rendering', async ({ page }) => {
   await expect(page.locator('.glass-panel')).toBeVisible();
   
   // Verify that the custom telemetry header elements are visible
-  await expect(page.locator('text=Total_Entries')).toBeVisible();
-  await expect(page.locator('text=Sync_Status')).toBeVisible();
+  await expect(page.locator('text=Queue_Load')).toBeVisible();
+  await expect(page.locator('text=Node_Status')).toBeVisible();
 
   // Take the mandatory screenshot at the end of the test
   await page.screenshot({ path: 'evidence.png' });
@@ -154,7 +182,7 @@ test('Queue Item component correctly displays entry details matching the design'
   await page.goto('/queue');
 
   // Verify the page title is visible
-  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');

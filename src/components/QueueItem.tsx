@@ -8,10 +8,10 @@ interface QueueItemProps {
 
 const getPlatformIcon = (platform: string): IconName => {
   const p = platform.toLowerCase();
-  if (p === 'discord') return 'Network';
-  if (p === 'github') return 'Code';
-  if (p === 'x' || p === 'twitter') return 'AtSign';
-  return 'MessageSquare';
+  if (p === 'discord') return 'discord';
+  if (p === 'github') return 'github';
+  if (p === 'x' || p === 'twitter') return 'x';
+  return 'forum';
 };
 
 const getStatusColor = (status: string) => {
