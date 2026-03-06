@@ -1670,3 +1670,132 @@ test('Create validation schemas and apply them to the Pipeline creation (POST) A
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH) API routes', async ({ page }) => {
+  // Mock the PocketBase route so valid requests succeed for all pipeline collections
+  await page.route('**/api/collections/*/records/*', async route => {
+    if (route.request().method() === 'PATCH' || route.request().method() === 'PUT') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'updated_123',
+          title: 'Updated Title',
+          description: 'Updated successfully'
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+    const stagesApi = await import('/src/lib/api/pipeline/stages.ts');
+    const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+    const stepsApi = await import('/src/lib/api/pipeline/steps.ts');
+    const runsApi = await import('/src/lib/api/pipeline/runs.ts');
+    const requestsApi = await import('/src/lib/api/pipeline/requests.ts');
+    
+    let validSuccess = false;
+    let pipelineInvalidFailed = false;
+    let pipelineErrorStatus = null;
+    let stageInvalidFailed = false;
+    let cardInvalidFailed = false;
+    let stepInvalidFailed = false;
+    let runInvalidFailed = false;
+    let requestInvalidFailed = false;
+
+    // 1. Pipeline valid update
+    try {
+      await pipelinesApi.updatePipeline('id_1', {
+        title: 'Updated Title'
+      });
+      validSuccess = true;
+    } catch (e) {
+      validSuccess = false;
+    }
+
+    // 2. Pipeline invalid update
+    try {
+      await pipelinesApi.updatePipeline('id_1', {
+        title: '', // Invalid: min length 1
+      });
+    } catch (e: any) {
+      pipelineInvalidFailed = true;
+      pipelineErrorStatus = e.status;
+    }
+
+    // 3. Stage invalid update
+    try {
+      await stagesApi.updatePipelineStage('id_1', {
+        position: -5 // Invalid: min 0
+      });
+    } catch (e: any) {
+      stageInvalidFailed = e.status === 400;
+    }
+
+    // 4. Card invalid update
+    try {
+      await cardsApi.updatePipelineCard('id_1', {
+        title: '', // Invalid: min length 1
+      });
+    } catch (e: any) {
+      cardInvalidFailed = e.status === 400;
+    }
+
+    // 5. Step invalid update
+    try {
+      await stepsApi.updatePipelineStep('id_1', {
+        status: 'invalid_status' as any // Invalid enum
+      });
+    } catch (e: any) {
+      stepInvalidFailed = e.status === 400;
+    }
+
+    // 6. Run invalid update
+    try {
+      await runsApi.updatePipelineRun('id_1', {
+        status: 'failed',
+        // Invalid: missing completed_at and log for failed status
+      });
+    } catch (e: any) {
+      runInvalidFailed = e.status === 400;
+    }
+
+    // 7. Request invalid update
+    try {
+      await requestsApi.updatePipelineRequest('id_1', {
+        status: 'rejected',
+        // Invalid: missing rejection fields
+      });
+    } catch (e: any) {
+      requestInvalidFailed = e.status === 400;
+    }
+
+    return { 
+      validSuccess, 
+      pipelineInvalidFailed, 
+      pipelineErrorStatus,
+      stageInvalidFailed,
+      cardInvalidFailed,
+      stepInvalidFailed,
+      runInvalidFailed,
+      requestInvalidFailed
+    };
+  });
+
+  expect(result.validSuccess).toBe(true);
+  expect(result.pipelineInvalidFailed).toBe(true);
+  expect(result.pipelineErrorStatus).toBe(400);
+  expect(result.stageInvalidFailed).toBe(true);
+  expect(result.cardInvalidFailed).toBe(true);
+  expect(result.stepInvalidFailed).toBe(true);
+  expect(result.runInvalidFailed).toBe(true);
+  expect(result.requestInvalidFailed).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

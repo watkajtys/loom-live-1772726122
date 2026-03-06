@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { 
   PipelineRequest, 
@@ -52,6 +53,12 @@ export async function createPipelineRequest(data: CreatePipelineRequestDTO): Pro
     const validatedData = CreatePipelineRequestSchema.parse(data);
     return await pb.collection(COLLECTION).create<PipelineRequest>(validatedData);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error(`Bad Request: Invalid ${COLLECTION} payload`);
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
     console.error(`Error creating ${COLLECTION}:`, error);
     throw error;
   }
@@ -62,6 +69,12 @@ export async function updatePipelineRequest(id: string, data: UpdatePipelineRequ
     const validatedData = UpdatePipelineRequestSchema.parse(data);
     return await pb.collection(COLLECTION).update<PipelineRequest>(id, validatedData);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error(`Bad Request: Invalid ${COLLECTION} payload`);
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
     console.error(`Error updating ${COLLECTION} item ${id}:`, error);
     throw error;
   }
