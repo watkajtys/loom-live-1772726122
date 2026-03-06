@@ -14,13 +14,47 @@ test('Advoloom Command Center shell and primary views from the design load corre
   
   // Navigate to queue
   await page.click('nav a[href="/queue"]');
+  // Handle router state parsing. It parses /queue, we expect either `Root::Community_Queue` (or `Root::QUEUE` if it wasn't strictly found, but our config uses `Root::Community_Queue`). Wait for it.
   await expect(page.locator('text=Root::Community_Queue')).toBeVisible();
   await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
 
   // Navigate back to root
-  await page.goto('/');
+  await page.click('nav a[href="/"]');
+  await expect(page.locator('text=Root::Command_Center')).toBeVisible();
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
+test('Queue Header/Controls component (search, filter, sort buttons)', async ({ page }) => {
+  await page.goto('/');
+
+  // Assert presence of the HUD bar
+  await expect(page.locator('.hud-bar')).toBeVisible();
+
+  // Assert presence of the filter buttons
+  await expect(page.locator('button[title="All Streams"]')).toBeVisible();
+  await expect(page.locator('button[title="Filter Discord"]')).toBeVisible();
+  await expect(page.locator('button[title="Filter GitHub"]')).toBeVisible();
+  await expect(page.locator('button[title="Filter X"]')).toBeVisible();
+
+  // Assert presence of search input
+  const searchInput = page.locator('.search-input-hud');
+  await searchInput.evaluate((node) => node.scrollIntoView());
+  // The input has w-0 and requires focus to have width w-32. Playwright might see w-0 as hidden.
+  await expect(page.locator('button[title="Sort Options"]')).toBeVisible();
+
+  // Click on a filter and check URL parameter
+  await page.click('button[title="Filter Discord"]');
+  await expect(page).toHaveURL(/.*filter=discord/);
+
+  // Focus the input by clicking the parent label to simulate a real user interaction
+  await page.locator('label.cursor-text').click();
+  await searchInput.fill('testquery');
+  await page.waitForTimeout(500); // wait for debounce
+  await expect(page).toHaveURL(/.*search=testquery/);
+
+  // Take the required screenshot at the end
+  await page.screenshot({ path: 'evidence.png' });
 });
 
 test('Build the Community Queue List container component.', async ({ page }) => {

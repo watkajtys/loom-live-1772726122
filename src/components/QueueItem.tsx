@@ -8,9 +8,9 @@ interface QueueItemProps {
 
 const getPlatformIcon = (platform: string) => {
   const p = platform.toLowerCase();
-  if (p === 'discord') return 'hub';
-  if (p === 'github') return 'code';
-  if (p === 'x' || p === 'twitter') return 'alternate_email';
+  if (p === 'discord') return 'discord';
+  if (p === 'github') return 'github';
+  if (p === 'x' || p === 'twitter') return 'x';
   return 'forum';
 };
 
