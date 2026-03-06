@@ -5,14 +5,12 @@ import { LiveTerminalOutput } from '../components/dashboard/LiveTerminalOutput';
 import { RecentIngestsPanel } from '../components/dashboard/RecentIngestsPanel';
 import { SnapshotStats } from '../components/dashboard/SnapshotStats';
 import { useDashboardData } from '../hooks/useDashboardData';
-import { QueueControls } from '../components/QueueControls';
 
 export const Dashboard: React.FC = () => {
   const data = useDashboardData();
 
   return (
     <div className="flex-1 p-6 grid grid-cols-12 grid-rows-6 gap-4 overflow-hidden relative">
-      <QueueControls />
       <ChannelHealth data={data.channelHealth} />
       <AgentStatusVisualization bars={data.agentVisualBars} opsPerMinute={data.opsPerMinute} />
       <LiveTerminalOutput logs={data.terminalLogs} />
