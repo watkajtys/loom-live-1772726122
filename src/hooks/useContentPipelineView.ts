@@ -1,5 +1,6 @@
 import { useUrlState } from './useUrlState';
 import { useContentPipeline } from './useContentPipeline';
+import { pb } from '../lib/pocketbase';
 
 export const useContentPipelineView = () => {
   const { searchParams, setSearchParams } = useUrlState();
@@ -8,10 +9,24 @@ export const useContentPipelineView = () => {
   const agentFilter = searchParams.get('agent') || '';
   const viewMode = searchParams.get('view') || 'standard';
   
-  const filterString = [
-    search ? `title ~ "${search}" || markdown_body ~ "${search}"` : '',
-    statusFilter === 'live' ? 'status="published"' : statusFilter === 'progress' ? 'status="drafting" || status="review"' : statusFilter === 'draft' ? 'status="draft"' : '',
-  ].filter(Boolean).join(' && ');
+  let filterString = '';
+  const filters: string[] = [];
+
+  if (search) {
+    filters.push(pb.filter('(title ~ {:search} || markdown_body ~ {:search})', { search }));
+  }
+
+  if (statusFilter === 'live') {
+    filters.push(pb.filter('status="published"'));
+  } else if (statusFilter === 'progress') {
+    filters.push(pb.filter('(status="drafting" || status="review")'));
+  } else if (statusFilter === 'draft') {
+    filters.push(pb.filter('status="draft"'));
+  }
+
+  if (filters.length > 0) {
+    filterString = filters.join(' && ');
+  }
 
   const collapsedStages = searchParams.get('collapsed')?.split(',') || [];
 

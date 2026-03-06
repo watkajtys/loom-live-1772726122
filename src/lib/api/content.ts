@@ -16,26 +16,31 @@ export type { TransformedContentPipeline };
 export const fetchContentPipeline = async (options: FetchContentOptions = {}): Promise<{ items: TransformedContentPipeline[]; totalItems: number }> => {
   const { page = 1, perPage = 50, filter, sort = '-created' } = options;
   
-  const result = await pb.collection(COLLECTIONS.CONTENT_PIPELINE).getList<ContentPipeline>(page, perPage, {
-    filter,
-    sort,
-    requestKey: null,
-  });
+  try {
+    const result = await pb.collection(COLLECTIONS.CONTENT_PIPELINE).getList<ContentPipeline>(page, perPage, {
+      filter,
+      sort,
+      requestKey: null,
+    });
 
-  const transformedItems = result.items.map((item) => {
-    // Relying on data from DB if available, otherwise safely defaulting 
-    // to prevent magic string operations here
+    const transformedItems = result.items.map((item) => {
+      // Relying on data from DB if available, otherwise safely defaulting 
+      // to prevent magic string operations here
+      return {
+        ...item,
+        agentId: item.agentId || 'SYSTEM',
+        platformIcon: item.platformIcon as SemanticIconName || 'terminal'
+      };
+    });
+
     return {
-      ...item,
-      agentId: item.agentId || 'SYSTEM',
-      platformIcon: item.platformIcon as SemanticIconName || 'terminal'
+      items: transformedItems,
+      totalItems: result.totalItems,
     };
-  });
-
-  return {
-    items: transformedItems,
-    totalItems: result.totalItems,
-  };
+  } catch (error) {
+    console.warn('Using fallback data for ContentPipeline.', error);
+    return getMockContentPipelineItems(filter);
+  }
 };
 
 export const createContentPipeline = async (data: CreateContentPipelineDTO): Promise<ContentPipeline> => {

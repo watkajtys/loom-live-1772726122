@@ -39,6 +39,8 @@ const semanticMap: Record<string, keyof typeof dynamicIconImports> = {
   show_chart: 'trending-up',
 };
 
+const iconCache = new Map<string, React.LazyExoticComponent<React.ComponentType<any>>>();
+
 export type SemanticIconName = keyof typeof brandIconMap | keyof typeof semanticMap | keyof typeof dynamicIconImports;
 export type IconName = SemanticIconName | string;
 
@@ -61,7 +63,11 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
 
   // Render Lucide dynamically
   if (lucideName in dynamicIconImports) {
-    const LucideIcon = lazy(dynamicIconImports[lucideName as keyof typeof dynamicIconImports]);
+    // Cache lazy imports to prevent visual pop-in / remounting on every render
+    if (!iconCache.has(lucideName)) {
+      iconCache.set(lucideName, lazy(dynamicIconImports[lucideName as keyof typeof dynamicIconImports]));
+    }
+    const LucideIcon = iconCache.get(lucideName)!;
     
     return (
       <Suspense fallback={<span className={`inline-flex items-center justify-center ${className}`} style={{ width: '1em', height: '1em' }} />}>
