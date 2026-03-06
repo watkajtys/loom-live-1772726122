@@ -14,8 +14,8 @@ export default function App() {
       <ExecutionProvider>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/queue" element={<CommunityQueue />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<CommunityQueue />} />
             <Route path="/content" element={<ContentPipeline />} />
             <Route path="/reports" element={<AgentExecutionReports />} />
             <Route path="/knowledge" element={<KnowledgeBase />} />

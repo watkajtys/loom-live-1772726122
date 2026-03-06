@@ -2,32 +2,32 @@ import { test, expect } from '@playwright/test';
 import { generateMockQueueData } from '../src/lib/queueSimulation';
 
 test('App initializes correctly', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/dashboard');
   await expect(page.locator('text=Command::Live_Log')).toBeVisible();
 });
 
 test('Advoloom Command Center shell and primary views from the design load correctly', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/dashboard');
 
   // Check top bar and dashboard view
   await expect(page.locator('text=Root::Command_Center')).toBeVisible();
   await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
   
   // Navigate to queue
-  await page.click('nav a[href="/queue"]');
-  // Handle router state parsing. It parses /queue, we expect either `Root::Community_Queue` (or `Root::QUEUE` if it wasn't strictly found, but our config uses `Root::Community_Queue`). Wait for it.
+  await page.click('nav a[href="/"]');
+  // Handle router state parsing. It parses /, we expect `Root::Community_Queue`. Wait for it.
   await expect(page.locator('text=Root::Community_Queue')).toBeVisible();
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 
-  // Navigate back to root
-  await page.click('nav a[href="/"]');
+  // Navigate back to dashboard
+  await page.click('nav a[href="/dashboard"]');
   await expect(page.locator('text=Root::Command_Center')).toBeVisible();
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
 test('Queue Header/Controls component (search, filter, sort buttons)', async ({ page }) => {
-  await page.goto('/queue');
+  await page.goto('/');
 
   // Assert presence of the HUD bar
   await expect(page.locator('.hud-bar')).toBeVisible();
@@ -80,7 +80,7 @@ test('Build the Community Queue List container component.', async ({ page }) => 
     });
   });
 
-  await page.goto('/queue');
+  await page.goto('/');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -107,7 +107,7 @@ test('Build the Community Queue List container component.', async ({ page }) => 
 });
 
 test('Icon component handles string mapping and fallback logic without crashing', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/dashboard');
   // Checking that the Top Bar renders correctly without a crash from Icon.tsx
   await expect(page.locator('text=Command::Live_Log')).toBeVisible();
   
@@ -119,7 +119,7 @@ test('Icon component handles string mapping and fallback logic without crashing'
 });
 
 test('CommunityQueue handles telemetry passed to extracted Header and Footer components', async ({ page }) => {
-  await page.goto('/queue');
+  await page.goto('/');
 
   // Verify that the Extracted Header displays telemetry
   await expect(page.locator('text=Queue_Load')).toBeVisible();
@@ -131,7 +131,7 @@ test('CommunityQueue handles telemetry passed to extracted Header and Footer com
 });
 
 test('Execution and Telemetry providers maintain centralized shell state across navigations', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/dashboard');
 
   // Assert Top Bar system status logic derived from TelemetryProvider
   await expect(page.locator('text=SYSTEM_NOMINAL')).toBeVisible();
@@ -147,7 +147,7 @@ test('Execution and Telemetry providers maintain centralized shell state across 
 });
 
 test('Community Queue data fetching and rendering', async ({ page }) => {
-  await page.goto('/queue');
+  await page.goto('/');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -194,7 +194,7 @@ test('Queue Item component correctly displays entry details matching the design'
     });
   });
 
-  await page.goto('/queue');
+  await page.goto('/');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -250,7 +250,7 @@ test('Queue API utilities map correctly to the SocialMention data model and Pock
     });
   });
 
-  await page.goto('/queue');
+  await page.goto('/');
   
   // Ensure the UI renders correctly which implicitly tests the data model mapping via useQueueData/usePocketBase
   await expect(page.locator('.queue-row').first()).toBeVisible();
@@ -283,7 +283,7 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
     });
   });
 
-  await page.goto('/queue');
+  await page.goto('/');
 
   // Verify initial load
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -296,11 +296,11 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
   await expect(page.locator('.queue-row').first()).toBeVisible();
 
   // Navigate away
-  await page.goto('/');
+  await page.goto('/dashboard');
   await expect(page.locator('text=Root::Command_Center')).toBeVisible();
 
   // Navigate back to queue - SWR should render cached data immediately, then revalidate in background
-  await page.goto('/queue');
+  await page.goto('/');
   
   // Implicitly tests caching as UI should re-render fast and the route handler verifies correct background updates
   await expect(page.locator('.queue-row').first()).toBeVisible();
