@@ -2,8 +2,26 @@ import React from 'react';
 import { Icon } from './Icon';
 import { useUrlState } from '../hooks/useUrlState';
 
+import { useState, useEffect } from 'react';
+
 export const QueueControls: React.FC = () => {
-  const { searchValue, setSearchValue, currentFilter, setFilter } = useUrlState();
+  const { searchParams, setSearchParams, currentFilter, setLegacyFilter } = useUrlState();
+  const [searchValue, setSearchValue] = useState(searchParams.get('search') || '');
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchValue === (searchParams.get('search') || '')) return;
+      const newParams = new URLSearchParams(searchParams);
+      if (searchValue) {
+        newParams.set('search', searchValue);
+      } else {
+        newParams.delete('search');
+      }
+      setSearchParams(newParams);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchValue, searchParams, setSearchParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -24,7 +42,7 @@ export const QueueControls: React.FC = () => {
 
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setFilter('all')}
+          onClick={() => setLegacyFilter('all')}
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-sm border ${currentFilter === 'all' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="All Streams"
         >
@@ -32,21 +50,21 @@ export const QueueControls: React.FC = () => {
           ALL
         </button>
         <button
-          onClick={() => setFilter('discord')}
+          onClick={() => setLegacyFilter('discord')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'discord' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter Discord"
         >
           <Icon name="discord" className="text-[14px]" />
         </button>
         <button
-          onClick={() => setFilter('github')}
+          onClick={() => setLegacyFilter('github')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'github' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter GitHub"
         >
           <Icon name="github" className="text-[14px]" />
         </button>
         <button
-          onClick={() => setFilter('x')}
+          onClick={() => setLegacyFilter('x')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'x' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter X"
         >

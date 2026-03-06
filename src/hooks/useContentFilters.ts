@@ -1,8 +1,8 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useUrlState } from './useUrlState';
 
 export function useContentFilters() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchParams, setFilter: baseSetFilter, setSearchParams } = useUrlState();
 
   const platformFilter = searchParams.get('platform') || 'all';
   const agentFilter = searchParams.get('agent') || '';
@@ -11,13 +11,7 @@ export function useContentFilters() {
   const viewMode = searchParams.get('view') || 'standard';
 
   const setFilter = (key: string, value: string) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value && value !== 'all') {
-      newParams.set(key, value);
-    } else {
-      newParams.delete(key);
-    }
-    setSearchParams(newParams);
+    baseSetFilter(key, value);
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

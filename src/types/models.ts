@@ -12,6 +12,8 @@ export type SocialMention = RecordModel & {
 type ContentPipelineBase = RecordModel & {
   title: string;
   markdown_body: string;
+  agentId?: string;
+  platformIcon?: string;
 };
 
 export type ContentPipeline = ContentPipelineBase & (
@@ -24,6 +26,8 @@ export interface CreateContentPipelineDTO {
   title: string;
   markdown_body: string;
   status: 'drafting' | 'review' | 'published';
+  agentId?: string;
+  platformIcon?: string;
 }
 
 export interface UpdateContentPipelineDTO extends Partial<CreateContentPipelineDTO> {}

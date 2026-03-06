@@ -1,8 +1,8 @@
-import { useSearchParams } from 'react-router-dom';
+import { useUrlState } from './useUrlState';
 import { useContentPipeline } from './useContentPipeline';
 
 export const useContentPipelineView = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchParams, setSearchParams } = useUrlState();
   const search = searchParams.get('search') || '';
   const statusFilter = searchParams.get('status') || '';
   const agentFilter = searchParams.get('agent') || '';

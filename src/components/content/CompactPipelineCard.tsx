@@ -1,32 +1,14 @@
 import React from 'react';
 import { Icon } from '../Icon';
 import { TransformedContentPipeline } from '../../lib/api/content';
+import { getCompactPipelineStatusDisplay } from '../../utils/theme';
 
 interface CompactPipelineCardProps {
   content: TransformedContentPipeline;
 }
 
-type CompactStatusState = 
-  | { status: 'published'; borderClass: 'border-l-terminal-green'; textColor: 'text-terminal-green'; showSparkline: true; showProgress: false; label: 'LIVE' }
-  | { status: 'drafting'; borderClass: 'border-l-accent'; textColor: 'text-accent'; showSparkline: false; showProgress: true; label: 'PROGRESS' }
-  | { status: 'review'; borderClass: 'border-l-accent'; textColor: 'text-accent'; showSparkline: false; showProgress: true; label: 'PROGRESS' }
-  | { status: string; borderClass: 'border-l-slate-700'; textColor: 'text-slate-500'; showSparkline: false; showProgress: false; label: 'DRAFT' }; // fallback
-
-const getCompactStatusDisplay = (status: string): CompactStatusState => {
-  switch (status) {
-    case 'published':
-      return { status: 'published', borderClass: 'border-l-terminal-green', textColor: 'text-terminal-green', showSparkline: true, showProgress: false, label: 'LIVE' };
-    case 'drafting':
-      return { status: 'drafting', borderClass: 'border-l-accent', textColor: 'text-accent', showSparkline: false, showProgress: true, label: 'PROGRESS' };
-    case 'review':
-      return { status: 'review', borderClass: 'border-l-accent', textColor: 'text-accent', showSparkline: false, showProgress: true, label: 'PROGRESS' };
-    default:
-      return { status, borderClass: 'border-l-slate-700', textColor: 'text-slate-500', showSparkline: false, showProgress: false, label: 'DRAFT' };
-  }
-};
-
 export const CompactPipelineCard: React.FC<CompactPipelineCardProps> = ({ content }) => {
-  const statusDisplay = getCompactStatusDisplay(content.status);
+  const statusDisplay = getCompactPipelineStatusDisplay(content.status);
   
   return (
     <div className={`compact-log-card glass-panel py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12 ${statusDisplay.borderClass}`}>

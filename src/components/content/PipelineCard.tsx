@@ -1,32 +1,14 @@
 import React from 'react';
 import { Icon } from '../Icon';
 import { TransformedContentPipeline } from '../../lib/api/content';
+import { getPipelineStatusDisplay } from '../../utils/theme';
 
 interface PipelineCardProps {
   content: TransformedContentPipeline;
 }
 
-type StatusState = 
-  | { status: 'published'; tagClass: 'status-live'; label: 'Live'; borderClass: 'border-l-terminal-green' }
-  | { status: 'drafting'; tagClass: 'status-progress'; label: 'In Progress'; borderClass: 'border-l-accent' }
-  | { status: 'review'; tagClass: 'status-progress'; label: 'Review'; borderClass: 'border-l-accent' }
-  | { status: string; tagClass: 'status-draft'; label: string; borderClass: 'border-l-slate-800' }; // fallback
-
-const getStatusDisplay = (status: string): StatusState => {
-  switch (status) {
-    case 'published':
-      return { status: 'published', tagClass: 'status-live', label: 'Live', borderClass: 'border-l-terminal-green' };
-    case 'drafting':
-      return { status: 'drafting', tagClass: 'status-progress', label: 'In Progress', borderClass: 'border-l-accent' };
-    case 'review':
-      return { status: 'review', tagClass: 'status-progress', label: 'Review', borderClass: 'border-l-accent' };
-    default:
-      return { status, tagClass: 'status-draft', label: status, borderClass: 'border-l-slate-800' };
-  }
-};
-
 export const PipelineCard: React.FC<PipelineCardProps> = ({ content }) => {
-  const statusDisplay = getStatusDisplay(content.status);
+  const statusDisplay = getPipelineStatusDisplay(content.status);
 
   return (
     <div className={`content-card border-l-2 ${statusDisplay.borderClass}`}>

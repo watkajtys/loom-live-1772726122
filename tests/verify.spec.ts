@@ -885,6 +885,7 @@ test('ContentPipeline refactored hooks and DataViewLayout integration', async ({
             title: 'Business Logic Extraction Test',
             status: 'drafting',
             markdown_body: 'Testing agent and icon assignment',
+            agentId: 'ECHO_04',
             created: '2023-01-01T00:00:00Z',
             updated: '2023-01-01T00:00:00Z'
           }
@@ -903,8 +904,7 @@ test('ContentPipeline refactored hooks and DataViewLayout integration', async ({
   // The card should render with the expected title
   await expect(page.locator('text=Business Logic Extraction Test')).toBeVisible();
   
-  // Since the ID 'mock_biz_logic_test' starts with 'm' (char code 109, odd), 
-  // the hook logic should assign it 'ECHO_04'
+  // With magic logic removed, it relies on the db-provided field 'ECHO_04'
   await expect(page.locator('text=AGNT: ECHO_04')).toBeVisible();
 });
 
