@@ -87,13 +87,19 @@ export interface CreatePipelineCardDTO {
 
 export interface UpdatePipelineCardDTO extends Partial<CreatePipelineCardDTO> {}
 
-export type PipelineStep = RecordModel & {
+type PipelineStepBase = RecordModel & {
   card_id: string; // relation
   title: string;
   description?: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'failed';
   position: number;
 };
+
+export type PipelineStep = PipelineStepBase & (
+  | { status: 'pending' }
+  | { status: 'in_progress' }
+  | { status: 'completed' }
+  | { status: 'failed' }
+);
 
 export interface CreatePipelineStepDTO {
   card_id: string;
@@ -105,13 +111,16 @@ export interface CreatePipelineStepDTO {
 
 export interface UpdatePipelineStepDTO extends Partial<CreatePipelineStepDTO> {}
 
-export type PipelineRun = RecordModel & {
+type PipelineRunBase = RecordModel & {
   pipeline_id: string; // relation
-  status: 'running' | 'completed' | 'failed';
   started_at: string;
-  completed_at?: string;
-  log?: string;
 };
+
+export type PipelineRun = PipelineRunBase & (
+  | { status: 'running'; completed_at?: undefined; log?: undefined }
+  | { status: 'completed'; completed_at: string; log?: string }
+  | { status: 'failed'; completed_at: string; log: string }
+);
 
 export interface CreatePipelineRunDTO {
   pipeline_id: string;
