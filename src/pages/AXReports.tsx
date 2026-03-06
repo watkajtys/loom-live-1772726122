@@ -15,7 +15,7 @@ export const AXReports: React.FC = () => {
   return (
     <DataViewLayout
       title="AX Reports"
-      icon="analytics"
+      icon="LineChart"
       loading={loading}
       error={error}
       isEmpty={data.length === 0}
@@ -36,7 +36,7 @@ export const AXReports: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <p className="text-xs font-mono text-red-400 uppercase flex items-center gap-2">
-                  <Icon name="error" className="text-sm" />
+                  <Icon name="AlertCircle" className="text-sm" />
                   Error Log
                 </p>
                 <div className="p-4 bg-black/60 rounded border border-red-500/20 font-mono text-xs text-red-300 overflow-x-auto whitespace-pre">
@@ -46,7 +46,7 @@ export const AXReports: React.FC = () => {
 
               <div className="space-y-2">
                 <p className="text-xs font-mono text-green-400 uppercase flex items-center gap-2">
-                  <Icon name="settings" className="text-sm" />
+                  <Icon name="Settings" className="text-sm" />
                   Suggested Fix
                 </p>
                 <div className="p-4 bg-black/60 rounded border border-green-500/20 font-mono text-xs text-green-300 overflow-x-auto whitespace-pre">
@@ -57,7 +57,7 @@ export const AXReports: React.FC = () => {
             
             <div className="mt-4 flex justify-end">
               <button className="px-4 py-2 bg-primary/20 text-accent border border-primary/40 rounded text-xs font-mono uppercase hover:bg-primary/30 transition-colors flex items-center gap-2">
-                <Icon name="terminal" className="text-sm" />
+                <Icon name="Terminal" className="text-sm" />
                 Execute Fix
               </button>
             </div>

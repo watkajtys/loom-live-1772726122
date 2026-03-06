@@ -10,7 +10,7 @@ export const LiveTerminalOutput: React.FC<LiveTerminalOutputProps> = ({ logs }) 
   <section className="col-span-12 lg:col-span-9 row-span-4 glass-panel rounded-lg flex flex-col overflow-hidden border-t-2 border-t-accent/30">
     <div className="bg-primary/10 px-4 py-2 border-b border-primary/20 flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <Icon name="terminal" className="text-accent text-sm" />
+        <Icon name="Terminal" className="text-accent text-sm" />
         <span className="text-xs font-mono font-bold uppercase tracking-wider">Command::Live_Log</span>
       </div>
       <div className="flex gap-1">

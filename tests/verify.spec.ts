@@ -24,6 +24,33 @@ test('Advoloom Command Center shell and primary views from the design load corre
 });
 
 test('Build the Community Queue List container component.', async ({ page }) => {
+  // Mock PocketBase API response for social_mentions
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_test_123',
+            platform: 'DISCORD',
+            query: 'Test query',
+            draft_reply: '',
+            status: 'drafting',
+            user: 'test_user',
+            priority: 50,
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+          }
+        ]
+      })
+    });
+  });
+
   await page.goto('/queue');
 
   // Verify the page title is visible
@@ -92,6 +119,33 @@ test('Community Queue data fetching and rendering', async ({ page }) => {
 });
 
 test('Queue Item component correctly displays entry details matching the design', async ({ page }) => {
+  // Mock PocketBase API response for social_mentions
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_test_123',
+            platform: 'DISCORD',
+            query: 'Test query',
+            draft_reply: '',
+            status: 'drafting',
+            user: 'test_user',
+            priority: 50,
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+          }
+        ]
+      })
+    });
+  });
+
   await page.goto('/queue');
 
   // Verify the page title is visible

@@ -1,17 +1,18 @@
 import React from 'react';
 import { SocialMention } from '../types/models';
 import { Icon } from './Icon';
+import * as LucideIcons from 'lucide-react';
 
 interface QueueItemProps {
   mention: SocialMention;
 }
 
-const getPlatformIcon = (platform: string) => {
+const getPlatformIcon = (platform: string): keyof typeof LucideIcons => {
   const p = platform.toLowerCase();
-  if (p === 'discord') return 'hub';
-  if (p === 'github') return 'code';
-  if (p === 'x' || p === 'twitter') return 'alternate_email';
-  return 'forum';
+  if (p === 'discord') return 'Network';
+  if (p === 'github') return 'Code';
+  if (p === 'x' || p === 'twitter') return 'AtSign';
+  return 'MessageSquare';
 };
 
 const getStatusColor = (status: string) => {

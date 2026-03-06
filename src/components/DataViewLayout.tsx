@@ -1,9 +1,10 @@
 import React from 'react';
 import { Icon } from './Icon';
+import * as LucideIcons from 'lucide-react';
 
 type DataViewLayoutProps = {
   title: string;
-  icon: string;
+  icon: keyof typeof LucideIcons;
   loading?: boolean;
   error?: Error | null;
   isEmpty?: boolean;
@@ -47,7 +48,7 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
 
         {error && !loading && (
           <div className="absolute inset-0 bg-background-dark z-10 flex flex-col items-center justify-center text-center p-6">
-            <Icon name="error" className="text-red-500 text-5xl mb-4" />
+            <Icon name="AlertCircle" className="text-red-500 text-5xl mb-4" />
             <h2 className="text-xl font-bold text-slate-100 mb-2">Error Loading Data</h2>
             <p className="text-slate-400 font-mono text-sm max-w-md">{error.message || 'An unknown error occurred while fetching data.'}</p>
           </div>
@@ -55,7 +56,7 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
 
         {!loading && !error && isEmpty && (
           <div className="absolute inset-0 bg-background-dark/30 z-10 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-primary/20 m-4 rounded-lg">
-            <Icon name="database" className="text-slate-600 text-5xl mb-4" />
+            <Icon name="Database" className="text-slate-600 text-5xl mb-4" />
             <h2 className="text-lg font-bold text-slate-300 mb-2">No Records Found</h2>
             <p className="text-slate-500 font-mono text-xs">The current data view returned 0 results.</p>
           </div>
