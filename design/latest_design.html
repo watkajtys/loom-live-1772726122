@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Content Pipeline: Compact System-Log</title>
+<title>Advoloom Pipeline: Collapsible Gutter Stage</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -35,32 +35,21 @@
             }
             .glass-panel {
                 background: #06070a;
-                border: 1px solid rgba(0, 242, 255, 0.2);
-                box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.02);
+                border: 1px solid rgba(0, 242, 255, 0.15);
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            }
+            .stage-column {
+                @apply flex flex-col h-full bg-black/40 border-x border-white/5 transition-all duration-300 relative;
+                width: 380px;
+            }
+            .stage-column.collapsed {
+                @apply w-12 overflow-hidden;
+            }
+            .action-gutter {
+                @apply w-10 flex flex-col items-center py-4 border-l border-white/10 bg-black/60 gap-4 shrink-0;
             }
             .compact-log-card {
-                @apply glass-panel py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12;
-            }
-            .filter-group {
-                @apply flex items-center gap-2 px-3 border-r border-white/10 last:border-r-0;
-            }
-            .command-label {
-                @apply text-[9px] font-mono text-slate-500 uppercase tracking-tighter;
-            }
-            .command-btn {
-                @apply px-2 py-1 text-[10px] font-mono border border-white/10 hover:border-accent/50 text-slate-400 hover:text-accent transition-all uppercase tracking-tighter bg-white/5 cursor-pointer;
-            }
-            .command-btn.active {
-                @apply border-accent text-accent bg-accent/10;
-            }
-            .custom-scrollbar::-webkit-scrollbar {
-                width: 4px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(0, 242, 255, 0.1);
+                @apply bg-black/40 border border-white/10 py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12 mb-1.5 cursor-pointer;
             }
             .mini-platform-icon {
                 @apply size-6 flex items-center justify-center bg-black/40 border border-white/5 text-slate-400 shrink-0;
@@ -71,222 +60,213 @@
             .spark-bar {
                 @apply w-1 bg-accent/40 rounded-t-[0.5px];
             }
+            .gutter-btn {
+                @apply w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all;
+            }
+            .gutter-btn.active {
+                @apply text-accent border-accent/40 bg-accent/10;
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 3px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(0, 242, 255, 0.1);
+            }
+            .vertical-text {
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+            }
         }
     </style>
 </head>
-<body class="bg-[#020305] text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen flex items-center justify-center p-4">
-<div class="w-full max-w-[1600px] glass-panel relative overflow-hidden flex flex-col h-[900px]">
+<body class="bg-[#020305] text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen flex items-center justify-center p-6">
+<div class="w-full h-[860px] glass-panel relative overflow-hidden flex flex-col">
 <div class="absolute inset-0 grid-bg pointer-events-none"></div>
 <header class="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">
 <div class="flex items-center gap-8">
 <div class="space-y-0.5">
-<div class="flex items-center gap-2">
-<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">LOG_MODE::DENSITY_HIGH</span>
+<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">CORE_PIPELINE::CLUSTER_04</span>
+<h2 class="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">Autonomous Content Pipeline</h2>
 </div>
-<h2 class="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">System Logs</h2>
-</div>
-<div class="h-10 w-px bg-white/10"></div>
-<div class="flex items-center">
-<div class="filter-group">
-<span class="command-label">VIEW</span>
-<div class="flex gap-1">
-<button class="command-btn">Standard</button>
-<button class="command-btn active">Compact</button>
-</div>
-</div>
-<div class="filter-group">
-<span class="command-label">SORT</span>
-<div class="flex gap-1">
-<button class="command-btn active">Latest</button>
-<button class="command-btn">ID</button>
-<button class="command-btn">Status</button>
+<div class="h-8 w-px bg-white/10"></div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[9px] font-mono text-slate-500 uppercase">Status</span>
+<span class="text-[10px] font-mono text-terminal-green">SYSTEM_OPTIMAL</span>
 </div>
 </div>
 </div>
-</div>
-<div class="flex items-center gap-6 font-mono text-[10px]">
 <div class="flex items-center gap-4">
-<div class="relative flex items-center">
-<span class="material-symbols-outlined absolute left-2 text-[14px] text-slate-500 pointer-events-none">search</span>
-<input class="bg-white/5 border border-white/10 focus:border-accent/50 focus:ring-0 text-[10px] font-mono text-accent placeholder:text-slate-600 w-64 h-8 pl-7 transition-all uppercase" placeholder="QUICK_SEARCH..." type="text"/>
-</div>
-</div>
+<button class="px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-[11px] font-mono uppercase tracking-widest hover:bg-accent/20 transition-all">
+                Force_Sync_Nodes
+            </button>
 </div>
 </header>
-<main class="flex-1 overflow-y-auto custom-scrollbar p-4 relative z-10">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-<div class="compact-log-card border-l-terminal-green">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">terminal</span>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-accent font-bold shrink-0">#PR_9022</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">V2 Schema Migration Docs</h4>
+<main class="flex-1 flex overflow-x-auto overflow-y-hidden custom-scrollbar relative z-10 bg-black/20">
+<section class="stage-column shrink-0">
+<header class="h-14 flex items-center justify-between px-4 border-b border-white/10 bg-white/[0.02]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent text-lg">edit_note</span>
+<div>
+<h3 class="text-[11px] font-bold text-white uppercase tracking-wider">Drafting</h3>
+<p class="text-[9px] font-mono text-slate-500">12 UNITS ACTIVE</p>
 </div>
 </div>
-<div class="sparkline-container">
-<div class="spark-bar h-1"></div>
-<div class="spark-bar h-2"></div>
-<div class="spark-bar h-3 bg-terminal-green"></div>
-<div class="spark-bar h-1.5"></div>
-<div class="spark-bar h-2.5"></div>
-</div>
-</div>
+<button class="hover:text-accent text-slate-500 transition-colors">
+<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+</button>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<div class="flex-1 overflow-y-auto p-3 custom-scrollbar">
 <div class="compact-log-card border-l-accent">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">alternate_email</span>
-</div>
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">terminal</span></div>
 <div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-accent font-bold shrink-0">#TH_A4</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">Latency Matters 2024</h4>
+<span class="text-[9px] font-mono text-accent font-bold">#D_202</span>
+<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">API Reference Refactor</h4>
 </div>
-</div>
-<div class="w-16 h-1 bg-white/5 shrink-0 relative overflow-hidden">
-<div class="absolute inset-0 bg-accent w-[75%]"></div>
-</div>
+<div class="w-10 h-1 bg-white/5 shrink-0 relative"><div class="absolute inset-0 bg-accent w-[60%]"></div></div>
 </div>
 <div class="compact-log-card border-l-slate-700">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">forum</span>
-</div>
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">alternate_email</span></div>
 <div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-slate-500 font-bold shrink-0">#ANN_66</span>
-<h4 class="text-[11px] font-bold text-slate-300 uppercase truncate tracking-tight">Community Bounty Program</h4>
+<span class="text-[9px] font-mono text-slate-500 font-bold">#D_203</span>
+<h4 class="text-[11px] font-bold text-slate-300 truncate uppercase tracking-tight">Weekly X Thread: Rust</h4>
 </div>
-</div>
-<div class="text-[9px] font-mono text-slate-500 shrink-0 uppercase tracking-tighter">DRAFT</div>
-</div>
-<div class="compact-log-card border-l-terminal-green">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">article</span>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-accent font-bold shrink-0">#P_128</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">0xScale Infra Migration</h4>
-</div>
-</div>
-<div class="sparkline-container">
-<div class="spark-bar h-3 bg-terminal-green"></div>
-<div class="spark-bar h-2.5 bg-terminal-green"></div>
-<div class="spark-bar h-3 bg-terminal-green"></div>
-<div class="spark-bar h-3.5 bg-terminal-green"></div>
-<div class="spark-bar h-3 bg-terminal-green"></div>
-</div>
+<span class="text-[8px] font-mono text-slate-500">DRAFT</span>
 </div>
 <div class="compact-log-card border-l-accent">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">terminal</span>
-</div>
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">forum</span></div>
 <div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-accent font-bold shrink-0">#IS_442</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">React-Native Leak Fix</h4>
+<span class="text-[9px] font-mono text-accent font-bold">#D_204</span>
+<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">Discord AMA Summary</h4>
+</div>
+<div class="w-10 h-1 bg-white/5 shrink-0 relative"><div class="absolute inset-0 bg-accent w-[85%]"></div></div>
+</div>
+<div class="compact-log-card border-l-slate-700 opacity-60">
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">description</span></div>
+<div class="flex-1 min-w-0">
+<span class="text-[9px] font-mono text-slate-500">#D_205</span>
+<h4 class="text-[11px] font-bold text-slate-400 truncate uppercase">Internal Spec Sheet</h4>
 </div>
 </div>
-<div class="w-16 h-1 bg-white/5 shrink-0 relative">
-<div class="absolute inset-0 bg-accent w-[42%]"></div>
+</div>
+<aside class="action-gutter">
+<span class="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Filters</span>
+<button class="gutter-btn active" title="Filter: Code">
+<span class="material-symbols-outlined text-[16px]">code</span>
+</button>
+<button class="gutter-btn" title="Filter: Social">
+<span class="material-symbols-outlined text-[16px]">share</span>
+</button>
+<button class="gutter-btn" title="Filter: Blog">
+<span class="material-symbols-outlined text-[16px]">article</span>
+</button>
+<div class="w-4 h-px bg-white/10 my-1"></div>
+<button class="gutter-btn" title="Sort by priority">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+</button>
+<button class="gutter-btn" title="Batch Action">
+<span class="material-symbols-outlined text-[16px]">checklist</span>
+</button>
+</aside>
+</div>
+</section>
+<section class="stage-column collapsed border-r-accent/20">
+<header class="h-14 flex flex-col items-center justify-center gap-4 bg-accent/5 border-b border-white/10 pt-2 cursor-pointer hover:bg-accent/10">
+<span class="material-symbols-outlined text-accent text-sm">keyboard_double_arrow_right</span>
+<span class="vertical-text text-[10px] font-bold text-accent uppercase tracking-widest pb-4">REVIEW_PIPELINE</span>
+</header>
+<div class="flex-1 flex flex-col items-center py-4 gap-2 opacity-30">
+<div class="w-6 h-6 border border-white/20"></div>
+<div class="w-6 h-6 border border-white/20"></div>
+<div class="w-6 h-6 border border-white/20"></div>
+</div>
+</section>
+<section class="stage-column shrink-0 bg-black/60">
+<header class="h-14 flex items-center justify-between px-4 border-b border-white/10 bg-terminal-green/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-terminal-green text-lg">sensors</span>
+<div>
+<h3 class="text-[11px] font-bold text-white uppercase tracking-wider">Live Nodes</h3>
+<p class="text-[9px] font-mono text-terminal-green">482 TOTAL</p>
 </div>
 </div>
+<button class="text-slate-500">
+<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+</button>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<div class="flex-1 overflow-y-auto p-3 custom-scrollbar">
 <div class="compact-log-card border-l-terminal-green">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">alternate_email</span>
-</div>
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">terminal</span></div>
 <div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-accent font-bold shrink-0">#TW_X1</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">Weekly Alpha: Top 5 Tools</h4>
-</div>
+<span class="text-[9px] font-mono text-terminal-green font-bold">#L_901</span>
+<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">Mainnet Launch Post</h4>
 </div>
 <div class="sparkline-container">
 <div class="spark-bar h-1"></div>
-<div class="spark-bar h-2"></div>
-<div class="spark-bar h-1"></div>
-<div class="spark-bar h-2"></div>
+<div class="spark-bar h-3 bg-terminal-green"></div>
+<div class="spark-bar h-2 bg-terminal-green"></div>
+</div>
+</div>
+<div class="compact-log-card border-l-terminal-green">
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">article</span></div>
+<div class="flex-1 min-w-0">
+<span class="text-[9px] font-mono text-terminal-green font-bold">#L_902</span>
+<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">ZK-Proofs Deep Dive</h4>
+</div>
+<div class="sparkline-container">
+<div class="spark-bar h-2 bg-terminal-green"></div>
+<div class="spark-bar h-1 bg-terminal-green"></div>
 <div class="spark-bar h-3 bg-terminal-green"></div>
 </div>
 </div>
-<div class="compact-log-card border-l-accent">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">forum</span>
-</div>
+<div class="compact-log-card border-l-terminal-green opacity-40">
+<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">forum</span></div>
 <div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-accent font-bold shrink-0">#MSG_82</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">AMA: Future of DevRel</h4>
+<span class="text-[9px] font-mono text-slate-500">#L_899</span>
+<h4 class="text-[11px] font-bold text-slate-400 truncate uppercase">Community Update</h4>
 </div>
 </div>
-<div class="w-16 h-1 bg-white/5 shrink-0 relative">
-<div class="absolute inset-0 bg-accent w-[90%]"></div>
 </div>
+<aside class="action-gutter border-l border-white/5">
+<span class="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Metrics</span>
+<button class="gutter-btn" title="View Heatmap">
+<span class="material-symbols-outlined text-[16px]">grid_view</span>
+</button>
+<button class="gutter-btn" title="Performance">
+<span class="material-symbols-outlined text-[16px]">show_chart</span>
+</button>
+<button class="gutter-btn" title="Alerts">
+<span class="material-symbols-outlined text-[16px]">notifications</span>
+</button>
+</aside>
 </div>
-<div class="compact-log-card border-l-primary">
-<div class="mini-platform-icon">
-<span class="material-symbols-outlined text-[14px]">description</span>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-baseline gap-2">
-<span class="text-[10px] font-mono text-primary font-bold shrink-0">#DOC_11</span>
-<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">Internal Workflow Guide</h4>
-</div>
-</div>
-<div class="text-[9px] font-mono text-primary shrink-0 uppercase">REVIEW</div>
-</div>
-<script>
-                // Simulating a bulk list
-                const main = document.querySelector('main div');
-                const platforms = ['terminal', 'alternate_email', 'forum', 'article'];
-                const statuses = ['terminal-green', 'accent', 'slate-700', 'primary'];
-                const statusLabels = ['LIVE', 'PROGRESS', 'DRAFT', 'REVIEW'];
-                for(let i=0; i<32; i++) {
-                    const statusIdx = Math.floor(Math.random() * 4);
-                    const platIdx = Math.floor(Math.random() * 4);
-                    const html = `
-                        <div class="compact-log-card border-l-${statuses[statusIdx]}">
-                            <div class="mini-platform-icon">
-                                <span class="material-symbols-outlined text-[14px]">${platforms[platIdx]}</span>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-baseline gap-2">
-                                    <span class="text-[10px] font-mono text-slate-500 font-bold shrink-0">#LOG_${1000 + i}</span>
-                                    <h4 class="text-[11px] font-bold text-white/80 uppercase truncate tracking-tight">Bulk Processed Content Node Unit ${i}</h4>
-                                </div>
-                            </div>
-                            ${statusIdx === 1 ? 
-                                `<div class="w-16 h-1 bg-white/5 shrink-0 relative"><div class="absolute inset-0 bg-accent w-[${Math.random()*100}%]"></div></div>` :
-                                `<div class="sparkline-container">
-                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
-                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
-                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
-                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
-                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)} bg-${statuses[statusIdx]}"></div>
-                                </div>`
-                            }
-                        </div>
-                    `;
-                    main.insertAdjacentHTML('beforeend', html);
-                }
-            </script>
-</div>
+</section>
 </main>
 <footer class="relative z-20 px-6 py-3 border-t border-white/10 bg-black/95 flex justify-between items-center text-[10px] font-mono">
 <div class="flex gap-8">
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">VISIBLE_RECORDS:</span>
-<span class="text-accent font-bold">512 UNITS</span>
+<span class="uppercase text-slate-500 tracking-wider">COLLAPSIBLE_CHANNELS:</span>
+<span class="text-accent font-bold">ENABLED</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">AVG_DENSITY:</span>
-<span class="text-terminal-green font-bold">HIGH</span>
+<span class="uppercase text-slate-500 tracking-wider">ACTIVE_GUTTERS:</span>
+<span class="text-accent font-bold">MULTI_ACTION</span>
 </div>
 </div>
-<div class="flex items-center gap-3 text-slate-400">
-<span class="material-symbols-outlined text-[14px]">memory</span>
-<span class="uppercase tracking-wider">BUFFER_SYNC:</span>
-<span class="text-accent font-bold uppercase">STABLE</span>
+<div class="flex items-center gap-4 text-slate-400">
+<div class="flex items-center gap-2 border-r border-white/10 pr-4">
+<span class="size-1.5 rounded-full bg-terminal-green animate-pulse"></span>
+<span class="uppercase tracking-widest">AGENT_01: LISTENING</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">database</span>
+<span class="uppercase">v3.4.2_STABLE</span>
+</div>
 </div>
 </footer>
 </div>
