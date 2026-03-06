@@ -43,15 +43,74 @@ export const CreatePipelineStepSchema = z.object({
 
 export const UpdatePipelineStepSchema = CreatePipelineStepSchema.partial();
 
-export const CreatePipelineRunSchema = z.object({
+const CreatePipelineRunBaseSchema = z.object({
   pipeline_id: z.string().min(1, 'Pipeline ID is required'),
-  status: z.enum(['running', 'completed', 'failed']),
   started_at: z.string().datetime(),
-  completed_at: z.string().datetime().optional(),
-  log: z.string().optional(),
 });
 
-export const UpdatePipelineRunSchema = CreatePipelineRunSchema.partial();
+export const CreatePipelineRunSchema = z.discriminatedUnion('status', [
+  CreatePipelineRunBaseSchema.extend({
+    status: z.literal('running'),
+  }),
+  CreatePipelineRunBaseSchema.extend({
+    status: z.literal('completed'),
+    completed_at: z.string().datetime(),
+    log: z.string().optional(),
+  }),
+  CreatePipelineRunBaseSchema.extend({
+    status: z.literal('failed'),
+    completed_at: z.string().datetime(),
+    log: z.string().min(1, 'Log is required for failed runs'),
+  }),
+]);
+
+export const UpdatePipelineRunSchema = z.object({
+  pipeline_id: z.string().optional(),
+  status: z.enum(['running', 'completed', 'failed']).optional(),
+  started_at: z.string().datetime().optional(),
+  completed_at: z.string().datetime().optional(),
+  log: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.status === 'completed') {
+    if (!data.completed_at) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'completed_at is required when status is completed',
+        path: ['completed_at'],
+      });
+    }
+  } else if (data.status === 'failed') {
+    if (!data.completed_at) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'completed_at is required when status is failed',
+        path: ['completed_at'],
+      });
+    }
+    if (!data.log || data.log.trim() === '') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'log is required when status is failed',
+        path: ['log'],
+      });
+    }
+  } else if (data.status === 'running') {
+    if (data.completed_at !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'completed_at should not be present when status is running',
+        path: ['completed_at'],
+      });
+    }
+    if (data.log !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'log should not be present when status is running',
+        path: ['log'],
+      });
+    }
+  }
+});
 
 export type CreatePipelineDTO = z.infer<typeof CreatePipelineSchema>;
 export type UpdatePipelineDTO = z.infer<typeof UpdatePipelineSchema>;

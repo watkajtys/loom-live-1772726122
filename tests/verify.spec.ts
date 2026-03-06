@@ -1146,6 +1146,79 @@ test('Define backend database schema models for the Pipeline Board (Pipeline, St
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Define validation schemas for Pipeline CRUD payloads', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const validationResults = await page.evaluate(async () => {
+    // Dynamic import to fetch the new Zod schemas directly inside the browser
+    const schemaModule = await import('/src/schema/pipeline.ts');
+
+    // 1. Valid Creation (Running)
+    const validCreateRunning = {
+      pipeline_id: 'pipe_1',
+      status: 'running',
+      started_at: '2023-01-01T00:00:00.000Z'
+    };
+
+    // 2. Valid Creation (Completed)
+    const validCreateCompleted = {
+      pipeline_id: 'pipe_1',
+      status: 'completed',
+      started_at: '2023-01-01T00:00:00.000Z',
+      completed_at: '2023-01-01T01:00:00.000Z'
+    };
+
+    // 3. Invalid Creation (Completed missing completed_at)
+    const invalidCreateCompleted = {
+      pipeline_id: 'pipe_1',
+      status: 'completed',
+      started_at: '2023-01-01T00:00:00.000Z'
+    };
+
+    // 4. Invalid Creation (Failed missing log)
+    const invalidCreateFailed = {
+      pipeline_id: 'pipe_1',
+      status: 'failed',
+      started_at: '2023-01-01T00:00:00.000Z',
+      completed_at: '2023-01-01T01:00:00.000Z'
+    };
+
+    // 5. Valid Update (Failed)
+    const validUpdateFailed = {
+      status: 'failed',
+      completed_at: '2023-01-01T01:00:00.000Z',
+      log: 'Error occurred'
+    };
+
+    // 6. Invalid Update (Running with completed_at)
+    const invalidUpdateRunning = {
+      status: 'running',
+      completed_at: '2023-01-01T01:00:00.000Z'
+    };
+
+    let p1 = false; let p2 = false; let p3 = false; let p4 = false; let p5 = false; let p6 = false;
+
+    try { schemaModule.CreatePipelineRunSchema.parse(validCreateRunning); p1 = true; } catch (e) {}
+    try { schemaModule.CreatePipelineRunSchema.parse(validCreateCompleted); p2 = true; } catch (e) {}
+    try { schemaModule.CreatePipelineRunSchema.parse(invalidCreateCompleted); } catch (e) { p3 = true; }
+    try { schemaModule.CreatePipelineRunSchema.parse(invalidCreateFailed); } catch (e) { p4 = true; }
+    try { schemaModule.UpdatePipelineRunSchema.parse(validUpdateFailed); p5 = true; } catch (e) {}
+    try { schemaModule.UpdatePipelineRunSchema.parse(invalidUpdateRunning); } catch (e) { p6 = true; }
+
+    return { p1, p2, p3, p4, p5, p6 };
+  });
+
+  expect(validationResults.p1).toBe(true);
+  expect(validationResults.p2).toBe(true);
+  expect(validationResults.p3).toBe(true);
+  expect(validationResults.p4).toBe(true);
+  expect(validationResults.p5).toBe(true);
+  expect(validationResults.p6).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('PipelineStep and PipelineRun CRUD APIs format correctly', async ({ page }) => {
   // Mock PocketBase API responses to verify the structure and logic matches our types
   await page.route('**/api/collections/pipeline_steps/records*', async route => {
