@@ -1,6 +1,6 @@
 import { ContentPipeline } from '../types/models';
 import { COLLECTIONS } from '../constants/collections';
-import { fetchContentPipeline, type FetchContentOptions } from '../lib/api/content';
+import { fetchContentPipeline, type FetchContentOptions, type TransformedContentPipeline } from '../lib/api/content';
 import { usePocketBase } from './usePocketBase';
 
 export interface ContentPipelineFetchOptions extends FetchContentOptions {
@@ -8,7 +8,7 @@ export interface ContentPipelineFetchOptions extends FetchContentOptions {
 }
 
 export interface ContentPipelineDataResponse {
-  data: ContentPipeline[];
+  data: TransformedContentPipeline[];
   loading: boolean;
   error: Error | null;
 }
@@ -26,7 +26,7 @@ export function useContentPipeline(options: ContentPipelineFetchOptions = { subs
   );
 
   return {
-    data: data as ContentPipeline[],
+    data: data as unknown as TransformedContentPipeline[],
     loading,
     error: error || null,
   };

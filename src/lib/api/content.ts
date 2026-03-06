@@ -1,7 +1,6 @@
 import { pb } from '../pocketbase';
 import { ContentPipeline, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
-import { simulateFetchContentPipeline } from '../contentSimulation';
 
 
 export interface FetchContentOptions {
@@ -11,24 +10,43 @@ export interface FetchContentOptions {
   sort?: string;
 }
 
-export const fetchContentPipeline = async (options: FetchContentOptions = {}): Promise<{ items: ContentPipeline[]; totalItems: number }> => {
+import { SemanticIconName } from '../../components/Icon';
+
+export type TransformedContentPipeline = ContentPipeline & {
+  agentId: string;
+  platformIcon: SemanticIconName;
+};
+
+export const fetchContentPipeline = async (options: FetchContentOptions = {}): Promise<{ items: TransformedContentPipeline[]; totalItems: number }> => {
   const { page = 1, perPage = 50, filter, sort = '-created' } = options;
   
-  try {
-    const result = await pb.collection(COLLECTIONS.CONTENT_PIPELINE).getList<ContentPipeline>(page, perPage, {
-      filter,
-      sort,
-      requestKey: null,
-    });
+  const result = await pb.collection(COLLECTIONS.CONTENT_PIPELINE).getList<ContentPipeline>(page, perPage, {
+    filter,
+    sort,
+    requestKey: null,
+  });
+
+  const icons: SemanticIconName[] = ['terminal', 'alternate_email', 'forum', 'article'];
+
+  const transformedItems = result.items.map((item) => {
+    // Transformer logic for Agent assignment
+    const agentId = (item.id.charCodeAt(0) % 2 === 0) ? 'NEXUS_01' : 'ECHO_04';
+    
+    // Transformer logic for platform icon
+    const iconIndex = item.id ? item.id.charCodeAt(0) % icons.length : 3;
+    const platformIcon = icons[iconIndex];
 
     return {
-      items: result.items,
-      totalItems: result.totalItems,
+      ...item,
+      agentId,
+      platformIcon
     };
-  } catch (error) {
-    console.warn('Using mock data for Content Pipeline due to error:', error);
-    return simulateFetchContentPipeline(options);
-  }
+  });
+
+  return {
+    items: transformedItems,
+    totalItems: result.totalItems,
+  };
 };
 
 export const createContentPipeline = async (data: CreateContentPipelineDTO): Promise<ContentPipeline> => {

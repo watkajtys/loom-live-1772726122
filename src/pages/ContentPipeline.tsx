@@ -57,20 +57,20 @@ export const ContentPipeline: React.FC = () => {
               actionGutter={
                 <>
                   <span className="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Filters</span>
-                  <button className="gutter-btn active" title="Filter: Code">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-accent/40 bg-accent/10 text-accent transition-all" title="Filter: Code">
                     <Icon name="code" className="text-[16px]" />
                   </button>
-                  <button className="gutter-btn" title="Filter: Social">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Filter: Social">
                     <Icon name="share" className="text-[16px]" />
                   </button>
-                  <button className="gutter-btn" title="Filter: Blog">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Filter: Blog">
                     <Icon name="article" className="text-[16px]" />
                   </button>
                   <div className="w-4 h-px bg-white/10 my-1"></div>
-                  <button className="gutter-btn" title="Sort by priority">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Sort by priority">
                     <Icon name="priority_high" className="text-[16px]" />
                   </button>
-                  <button className="gutter-btn" title="Batch Action">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Batch Action">
                     <Icon name="checklist" className="text-[16px]" />
                   </button>
                 </>
@@ -104,13 +104,13 @@ export const ContentPipeline: React.FC = () => {
               actionGutter={
                 <>
                   <span className="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Metrics</span>
-                  <button className="gutter-btn" title="View Heatmap">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="View Heatmap">
                     <Icon name="grid_view" className="text-[16px]" />
                   </button>
-                  <button className="gutter-btn" title="Performance">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Performance">
                     <Icon name="show_chart" className="text-[16px]" />
                   </button>
-                  <button className="gutter-btn" title="Alerts">
+                  <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Alerts">
                     <Icon name="notifications" className="text-[16px]" />
                   </button>
                 </>

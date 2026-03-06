@@ -9,11 +9,16 @@ export type SocialMention = RecordModel & {
   priority: number;
 };
 
-export interface ContentPipeline extends RecordModel {
+type ContentPipelineBase = RecordModel & {
   title: string;
   markdown_body: string;
-  status: 'drafting' | 'review' | 'published';
-}
+};
+
+export type ContentPipeline = ContentPipelineBase & (
+  | { status: 'drafting' }
+  | { status: 'review' }
+  | { status: 'published' }
+);
 
 export interface CreateContentPipelineDTO {
   title: string;

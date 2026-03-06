@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import { TransformedContentPipeline } from '../../hooks/useContentPipelineView';
+import { TransformedContentPipeline } from '../../lib/api/content';
 
 interface PipelineCardProps {
   content: TransformedContentPipeline;

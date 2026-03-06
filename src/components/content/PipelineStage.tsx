@@ -41,9 +41,12 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
 }) => {
   const styles = getStageStyles(status);
 
+  const stageColumnBaseClass = "flex flex-col h-full bg-black/40 border-x border-white/5 transition-all duration-300 relative";
+  const actionGutterBaseClass = "w-10 flex flex-col items-center py-4 border-l border-white/10 bg-black/60 gap-4 shrink-0";
+
   if (isCollapsed) {
     return (
-      <section className={`stage-column collapsed ${styles.collapsedBorder}`}>
+      <section className={`stage-column ${stageColumnBaseClass} w-12 overflow-hidden shrink-0 ${styles.collapsedBorder}`}>
         <header 
           className={`h-14 flex flex-col items-center justify-center gap-4 ${styles.collapsedBg} border-b border-white/10 pt-2 cursor-pointer transition-colors`}
           onClick={onToggleCollapse}
@@ -63,7 +66,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
   }
 
   return (
-    <section className={`stage-column shrink-0 ${status === 'published' ? 'bg-black/60' : ''}`}>
+    <section className={`stage-column ${stageColumnBaseClass} w-[380px] shrink-0 ${status === 'published' ? 'bg-black/60' : ''}`}>
       <header className={`h-14 flex items-center justify-between px-4 border-b border-white/10 ${styles.headerBg}`}>
         <div className="flex items-center gap-3">
           <Icon name={icon} className={`text-[18px] ${styles.iconColor}`} />
@@ -86,7 +89,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
         </div>
         
         {actionGutter && (
-          <aside className={`action-gutter ${status === 'published' ? 'border-l border-white/5' : ''}`}>
+          <aside className={`${actionGutterBaseClass} ${status === 'published' ? 'border-l border-white/5' : ''}`}>
             {actionGutter}
           </aside>
         )}
