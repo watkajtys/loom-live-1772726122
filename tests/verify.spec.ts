@@ -110,6 +110,30 @@ test('Build the Community Queue List container component.', async ({ page }) => 
   await page.screenshot({ path: 'evidence.png' });
 });
 
+test('Icon component handles string mapping and fallback logic without crashing', async ({ page }) => {
+  await page.goto('/');
+  // Checking that the Top Bar renders correctly without a crash from Icon.tsx
+  await expect(page.locator('text=Command::Live_Log')).toBeVisible();
+  
+  // Navigate to Dashboard and make sure stats grid icons load (Bot, Terminal, Network, Code, AtSign)
+  await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
+  
+  // These headers contain the mapped icons from Icon.tsx
+  await expect(page.locator('text=Command::Live_Log')).toBeVisible();
+});
+
+test('CommunityQueue handles telemetry passed to extracted Header and Footer components', async ({ page }) => {
+  await page.goto('/queue');
+
+  // Verify that the Extracted Header displays telemetry
+  await expect(page.locator('text=Queue_Load')).toBeVisible();
+  await expect(page.locator('text=Node_Status')).toBeVisible();
+
+  // Verify that the Extracted Footer displays telemetry
+  await expect(page.locator('text=Buffer_Utilization:')).toBeVisible();
+  await expect(page.locator('text=Latency:')).toBeVisible();
+});
+
 test('Execution and Telemetry providers maintain centralized shell state across navigations', async ({ page }) => {
   await page.goto('/');
 

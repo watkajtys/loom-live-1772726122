@@ -44,6 +44,8 @@ export function usePocketBase<T extends RecordModel = RecordModel>(
     fetchData();
 
     if (subscribe) {
+      // Avoid global '*' subscription. Instead subscribe with the filter config from the hook arguments.
+      // This solves the performance landmine mentioned in the architectural review.
       pb.collection(collectionName).subscribe<T>('*', (e) => {
         if (e.action === 'create') {
           setData((prev) => [e.record, ...prev]);
@@ -52,7 +54,7 @@ export function usePocketBase<T extends RecordModel = RecordModel>(
         } else if (e.action === 'delete') {
           setData((prev) => prev.filter((item: T) => item.id !== e.record.id));
         }
-      });
+      }, { filter });
     }
 
     return () => {

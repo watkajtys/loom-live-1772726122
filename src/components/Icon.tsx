@@ -15,6 +15,9 @@ import {
   RefreshCw,
   Settings,
   Terminal,
+  Search,
+  ListFilter,
+  LayoutGrid,
   type LucideIcon
 } from 'lucide-react';
 
@@ -34,43 +37,46 @@ export const IconMap = {
   RefreshCw,
   Settings,
   Terminal,
+  Search,
+  ListFilter,
+  LayoutGrid,
 } as const;
 
-export type IconName = keyof typeof IconMap;
+const StringMap: Record<string, keyof typeof IconMap> = {
+  'home': 'Home',
+  'smart_toy': 'Bot',
+  'article': 'FileText',
+  'analytics': 'LineChart',
+  'settings_input_component': 'Database',
+  'terminal': 'Terminal',
+  'schedule': 'Clock',
+  'notifications': 'Bell',
+  'hub': 'Network',
+  'code': 'Code',
+  'alternate_email': 'AtSign',
+  'error': 'AlertCircle',
+  'database': 'Database',
+  'settings': 'Settings',
+  'search': 'Search',
+  'sort': 'ListFilter',
+  'apps': 'LayoutGrid',
+  'refresh': 'RefreshCw'
+};
+
+export type IconName = keyof typeof IconMap | keyof typeof StringMap | 'discord' | 'github' | 'x' | 'twitter' | string;
 
 type IconProps = {
   name: IconName;
   className?: string;
 };
 
-const mapIconName = (name: string): LucideIcon | null => {
-  const map: Record<string, keyof typeof LucideIcons> = {
-    'home': 'Home',
-    'smart_toy': 'Bot',
-    'article': 'FileText',
-    'analytics': 'LineChart',
-    'settings_input_component': 'Database',
-    'terminal': 'Terminal',
-    'schedule': 'Clock',
-    'notifications': 'Bell',
-    'hub': 'Network',
-    'code': 'Code',
-    'alternate_email': 'AtSign',
-    'error': 'AlertCircle',
-    'database': 'Database',
-    'settings': 'Settings',
-    'search': 'Search',
-    'sort': 'ListFilter',
-    'apps': 'LayoutGrid'
-  };
-
-  const iconName = map[name];
-  if (!iconName) return null;
-  return LucideIcons[iconName] as LucideIcon;
-};
-
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
-  const LucideComponent = IconMap[name] as LucideIcon;
+  let lucideName = name as keyof typeof IconMap;
+  if (StringMap[name]) {
+    lucideName = StringMap[name];
+  }
+
+  const LucideComponent = IconMap[lucideName] as LucideIcon;
 
   if (name === 'discord') {
     return (

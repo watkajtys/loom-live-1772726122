@@ -3,9 +3,24 @@
 > vite --host
 
 
-  VITE v6.4.1  ready in 248 ms
+  VITE v6.4.1  ready in 313 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://192.168.0.2:5173/
-3:41:34 AM [vite] (client) page reload playwright-report/index.html
-3:44:04 AM [vite] (client) hmr update /src/pages/CommunityQueue.tsx, /src/index.css
+3:54:47 AM [vite] (client) page reload playwright-report/index.html
+3:54:47 AM [vite] (client) page reload playwright-report/index.html
+3:57:36 AM [vite] (client) hmr update /src/components/Icon.tsx, /src/index.css
+3:57:56 AM [vite] (client) hmr update /src/components/Icon.tsx, /src/index.css
+3:58:02 AM [vite] (client) hmr update /src/components/Icon.tsx, /src/index.css
+3:58:07 AM [vite] (client) hmr update /src/components/Icon.tsx, /src/index.css
+3:58:42 AM [vite] (client) hmr update /src/pages/CommunityQueue.tsx, /src/index.css
+3:58:53 AM [vite] (client) page reload src/components/dashboard/QueueHeader.tsx
+3:59:17 AM [vite] (client) hmr update /src/index.css, /src/pages/AgentExecutionReports.tsx, /src/pages/ContentPipeline.tsx, /src/pages/KnowledgeBase.tsx, /src/pages/CommunityQueue.tsx
+3:59:31 AM [vite] (client) hmr update /src/index.css, /src/pages/AgentExecutionReports.tsx, /src/pages/ContentPipeline.tsx, /src/pages/KnowledgeBase.tsx, /src/pages/CommunityQueue.tsx
+3:59:43 AM [vite] (client) hmr update /src/index.css, /src/pages/CommunityQueue.tsx
+4:00:07 AM [vite] (client) page reload playwright-report/index.html
+4:02:56 AM [vite] (client) hmr update /src/index.css, /src/pages/CommunityQueue.tsx
+4:03:29 AM [vite] (client) hmr update /src/index.css, /src/pages/CommunityQueue.tsx
+4:05:02 AM [vite] (client) page reload playwright-report/index.html
+4:05:02 AM [vite] (client) page reload playwright-report/index.html
+4:05:39 AM [vite] (client) page reload playwright-report/index.html
