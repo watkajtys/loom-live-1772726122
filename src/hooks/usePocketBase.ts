@@ -1,7 +1,7 @@
 import useSWR from 'swr';
-import { useEffect } from 'react';
 import { RecordModel } from 'pocketbase';
 import { pb } from '../lib/pocketbase';
+import { useRealtimeSubscription } from './useRealtimeSubscription';
 
 export interface UsePocketBaseOptions {
   page?: number;
@@ -36,41 +36,11 @@ export function usePocketBase<T extends RecordModel = RecordModel>(
     }
   );
 
-  useEffect(() => {
-    let isMounted = true;
-    let unsubscribeFunc: (() => void) | undefined;
-
-    if (subscribe) {
-      // Avoid global '*' subscription. Instead subscribe with the filter config from the hook arguments.
-      // This solves the performance landmine mentioned in the architectural review.
-      pb.collection(collectionName).subscribe<T>('*', (e) => {
-        mutate((prevData) => {
-          if (!prevData) return prevData;
-          if (e.action === 'create') {
-            return [e.record, ...prevData];
-          } else if (e.action === 'update') {
-            return prevData.map((item) => (item.id === e.record.id ? e.record : item));
-          } else if (e.action === 'delete') {
-            return prevData.filter((item) => item.id !== e.record.id);
-          }
-          return prevData;
-        }, false);
-      }, { filter: fetchOptions.filter }).then((unsub) => {
-        if (!isMounted) {
-          unsub();
-        } else {
-          unsubscribeFunc = unsub;
-        }
-      }).catch(console.error);
-    }
-
-    return () => {
-      isMounted = false;
-      if (unsubscribeFunc) {
-        unsubscribeFunc();
-      }
-    };
-  }, [collectionName, subscribe, fetchOptions.filter, mutate]);
+  useRealtimeSubscription<T>({
+    collectionName,
+    subscribe,
+    filter: fetchOptions.filter,
+  }, mutate);
 
   return { data: data || [], loading: isLoading, error };
 }

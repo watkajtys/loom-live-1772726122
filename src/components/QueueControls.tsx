@@ -1,42 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React from 'react';
 import { Icon } from './Icon';
+import { useUrlState } from '../hooks/useUrlState';
 
 export const QueueControls: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchValue, setSearchValue] = useState(searchParams.get('search') || '');
-
-  const currentFilter = searchParams.get('filter') || 'all';
-
-  const handleFilterClick = (filterName: string) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (filterName === 'all') {
-      newParams.delete('filter');
-    } else {
-      newParams.set('filter', filterName);
-    }
-    setSearchParams(newParams);
-  };
+  const { searchValue, setSearchValue, currentFilter, setFilter } = useUrlState();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
-
-  // Debounce search update to URL parameters
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchValue === (searchParams.get('search') || '')) return;
-      const newParams = new URLSearchParams(searchParams);
-      if (searchValue) {
-        newParams.set('search', searchValue);
-      } else {
-        newParams.delete('search');
-      }
-      setSearchParams(newParams);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchValue, searchParams, setSearchParams]);
 
   return (
     <div className="hud-bar w-full mb-4">
@@ -53,7 +24,7 @@ export const QueueControls: React.FC = () => {
 
       <div className="flex items-center gap-2">
         <button
-          onClick={() => handleFilterClick('all')}
+          onClick={() => setFilter('all')}
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-sm border ${currentFilter === 'all' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="All Streams"
         >
@@ -61,21 +32,21 @@ export const QueueControls: React.FC = () => {
           ALL
         </button>
         <button
-          onClick={() => handleFilterClick('discord')}
+          onClick={() => setFilter('discord')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'discord' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter Discord"
         >
           <Icon name="discord" className="text-[14px]" />
         </button>
         <button
-          onClick={() => handleFilterClick('github')}
+          onClick={() => setFilter('github')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'github' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter GitHub"
         >
           <Icon name="github" className="text-[14px]" />
         </button>
         <button
-          onClick={() => handleFilterClick('x')}
+          onClick={() => setFilter('x')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'x' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter X"
         >

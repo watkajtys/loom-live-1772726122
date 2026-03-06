@@ -3,22 +3,14 @@ import { Icon } from './Icon';
 import { useExecution } from '../providers/ExecutionProvider';
 import { useTelemetry } from '../providers/TelemetryProvider';
 import { useClock } from '../hooks/useClock';
+import { getSystemStatusColor } from '../utils/theme';
 
 export const TopBar: React.FC = () => {
   const { currentRouteName } = useExecution();
   const { systemStatus, uptime } = useTelemetry();
   const currentTime = useClock();
 
-  const getSystemStatusColor = () => {
-    switch (systemStatus) {
-      case 'nominal': return { text: 'text-green-500', bg: 'bg-green-500' };
-      case 'degraded': return { text: 'text-yellow-500', bg: 'bg-yellow-500' };
-      case 'offline': return { text: 'text-red-500', bg: 'bg-red-500' };
-      default: return { text: 'text-green-500', bg: 'bg-green-500' };
-    }
-  };
-
-  const { text: textColorClass, bg: bgColorClass } = getSystemStatusColor();
+  const { text: textColorClass, bg: bgColorClass } = getSystemStatusColor(systemStatus);
 
   return (
     <header className="h-14 border-b border-primary/20 flex items-center justify-between px-6 bg-background-dark/50 backdrop-blur-md z-10">

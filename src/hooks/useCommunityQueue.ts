@@ -1,10 +1,9 @@
 import useSWR from 'swr';
-import { useEffect } from 'react';
-import { pb } from '../lib/pocketbase';
 import { SocialMention } from '../types/models';
 import { COLLECTIONS } from '../constants/collections';
 import { useQueueTelemetry, QueueTelemetry } from './useQueueTelemetry';
 import { fetchQueueItems, type FetchQueueOptions } from '../lib/api/queue';
+import { useRealtimeSubscription } from './useRealtimeSubscription';
 
 export type { QueueTelemetry };
 
@@ -36,39 +35,11 @@ export function useCommunityQueue(options: QueueFetchOptions = {}): QueueDataRes
     }
   );
 
-  useEffect(() => {
-    let isMounted = true;
-    let unsubscribeFunc: (() => void) | undefined;
-
-    if (subscribe) {
-      pb.collection(COLLECTIONS.SOCIAL_MENTIONS).subscribe<SocialMention>('*', (e) => {
-        mutate((prevData) => {
-          if (!prevData) return prevData;
-          if (e.action === 'create') {
-            return [e.record, ...prevData];
-          } else if (e.action === 'update') {
-            return prevData.map((item) => (item.id === e.record.id ? e.record : item));
-          } else if (e.action === 'delete') {
-            return prevData.filter((item) => item.id !== e.record.id);
-          }
-          return prevData;
-        }, false);
-      }, { filter: fetchOptions.filter }).then((unsub) => {
-        if (!isMounted) {
-          unsub();
-        } else {
-          unsubscribeFunc = unsub;
-        }
-      }).catch(console.error);
-    }
-
-    return () => {
-      isMounted = false;
-      if (unsubscribeFunc) {
-        unsubscribeFunc();
-      }
-    };
-  }, [subscribe, fetchOptions.filter, mutate]);
+  useRealtimeSubscription<SocialMention>({
+    collectionName: COLLECTIONS.SOCIAL_MENTIONS,
+    subscribe,
+    filter: fetchOptions.filter,
+  }, mutate);
 
   const telemetry = useQueueTelemetry(data?.length || 0);
 

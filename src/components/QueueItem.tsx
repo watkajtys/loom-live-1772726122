@@ -1,6 +1,7 @@
 import React from 'react';
 import { SocialMention } from '../types/models';
 import { Icon, type IconName } from './Icon';
+import { getQueueItemStatusColor } from '../utils/theme';
 
 interface QueueItemProps {
   mention: SocialMention;
@@ -14,18 +15,9 @@ const getPlatformIcon = (platform: string): IconName => {
   return 'forum';
 };
 
-const getStatusColor = (status: string) => {
-  if (status === 'drafting') return 'text-terminal-green';
-  if (status === 'pending_approval') return 'text-primary';
-  if (status === 'queued') return 'text-yellow-500';
-  if (status === 'approved') return 'text-terminal-green';
-  if (status === 'rejected') return 'text-red-500';
-  return 'text-slate-400';
-};
-
 export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
   const iconName = getPlatformIcon(mention.platform);
-  const statusColor = getStatusColor(mention.status);
+  const statusColor = getQueueItemStatusColor(mention.status);
   
   const isPulseActive = mention.status === 'drafting' || mention.status === 'queued';
   const isIdle = mention.status === 'approved' || mention.status === 'rejected';

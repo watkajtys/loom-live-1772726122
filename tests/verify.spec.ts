@@ -58,6 +58,37 @@ test('Queue Header/Controls component (search, filter, sort buttons)', async ({ 
   await page.screenshot({ path: 'evidence.png' });
 });
 
+test('Theme logic is correctly abstracted for colors', async ({ page }) => {
+  // Mock PocketBase API response to generate an item in drafting
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          generateMockQueueData({
+            id: 'mock_test_123',
+            platform: 'forum',
+            status: 'drafting',
+            query: 'Test query',
+            user: 'test_user',
+          }, 1)
+        ]
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  await expect(page.locator('text=DRAFTING')).toBeVisible();
+  // Ensure the text color style text-terminal-green applied to it correctly
+  await expect(page.locator('.text-terminal-green', { hasText: 'drafting' })).toBeVisible();
+});
+
 test('Build the Community Queue List container component.', async ({ page }) => {
   // Mock PocketBase API response for social_mentions
   await page.route('**/api/collections/social_mentions/records*', async route => {
