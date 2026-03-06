@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import { QueueTelemetry } from '../../hooks/useQueueData';
+import { QueueTelemetry } from '../../hooks/useCommunityQueue';
 
 export const QueueFooter: React.FC<{ telemetry: QueueTelemetry }> = ({ telemetry }) => (
   <footer className="px-6 py-4 border-t border-accent/20 bg-black/60 flex justify-between items-center text-[10px] font-mono text-slate-500 rounded-b-lg">

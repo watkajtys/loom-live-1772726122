@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQueueData } from '../hooks/useQueueData';
+import { useCommunityQueue } from '../hooks/useCommunityQueue';
 import { QueueItem } from '../components/QueueItem';
 import { QueueControls } from '../components/QueueControls';
 import { Icon } from '../components/Icon';
@@ -8,7 +8,7 @@ import { QueueHeader } from '../components/dashboard/QueueHeader';
 import { QueueFooter } from '../components/dashboard/QueueFooter';
 
 export const CommunityQueue: React.FC = () => {
-  const { data, loading, error, telemetry } = useQueueData();
+  const { data, loading, error, telemetry } = useCommunityQueue();
 
   return (
     <DataViewLayout

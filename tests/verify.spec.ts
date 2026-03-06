@@ -308,3 +308,20 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
 
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('', async ({ page }) => {
+  // Test scenario requested by user is empty String: ""
+  await page.goto('/');
+
+  // Verify the page title is visible to ensure app loads
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Take the required screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});

@@ -24,6 +24,7 @@ export function usePocketBase<T extends RecordModel = RecordModel>(
           {
             filter: filter,
             sort: sort,
+            requestKey: null,
           }
         );
         if (isMounted) {

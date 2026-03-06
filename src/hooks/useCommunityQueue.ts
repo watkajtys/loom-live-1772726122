@@ -22,19 +22,24 @@ export interface QueueDataResponse {
   telemetry: QueueTelemetry;
 }
 
-const fetcher = async ([collection, options]: [string, QueueFetchOptions]) => {
-  const records = await pb.collection(collection).getList<SocialMention>(
+export const fetchCommunityQueue = async (options: QueueFetchOptions) => {
+  const records = await pb.collection(COLLECTIONS.SOCIAL_MENTIONS).getList<SocialMention>(
     options.page || 1,
     options.perPage || 50,
     {
       filter: options.filter,
       sort: options.sort || '-created',
+      requestKey: null,
     }
   );
   return records.items;
 };
 
-export function useQueueData(options: QueueFetchOptions = {}): QueueDataResponse {
+const fetcher = async ([collection, options]: [string, QueueFetchOptions]) => {
+  return fetchCommunityQueue(options);
+};
+
+export function useCommunityQueue(options: QueueFetchOptions = {}): QueueDataResponse {
   const { subscribe = true, ...fetchOptions } = options;
   const swrKey = [COLLECTIONS.SOCIAL_MENTIONS, fetchOptions] as const;
 

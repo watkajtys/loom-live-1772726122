@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import { QueueTelemetry } from '../../hooks/useQueueData';
+import { QueueTelemetry } from '../../hooks/useCommunityQueue';
 
 export const QueueHeader: React.FC<{ telemetry: QueueTelemetry }> = ({ telemetry }) => (
   <header className="mb-4 flex items-center justify-between">
