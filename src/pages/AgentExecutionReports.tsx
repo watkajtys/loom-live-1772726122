@@ -6,7 +6,7 @@ import { Icon } from '../components/Icon';
 import { AXReport } from '../types/models';
 import { COLLECTIONS } from '../constants/collections';
 
-export const AXReports: React.FC = () => {
+export const AgentExecutionReports: React.FC = () => {
   const { data, loading, error } = usePocketBase<AXReport>(COLLECTIONS.AX_REPORTS, {
     sort: '-created',
     subscribe: true,
@@ -14,7 +14,7 @@ export const AXReports: React.FC = () => {
 
   return (
     <DataViewLayout
-      title="AX Reports"
+      title="Agent Execution Reports"
       icon="LineChart"
       loading={loading}
       error={error}

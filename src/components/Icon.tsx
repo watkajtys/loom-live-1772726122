@@ -1,14 +1,50 @@
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import {
+  AlertCircle,
+  AtSign,
+  Bell,
+  Bot,
+  Clock,
+  Code,
+  Database,
+  FileText,
+  Home,
+  LineChart,
+  MessageSquare,
+  Network,
+  RefreshCw,
+  Settings,
+  Terminal,
+  type LucideIcon
+} from 'lucide-react';
+
+export const IconMap = {
+  AlertCircle,
+  AtSign,
+  Bell,
+  Bot,
+  Clock,
+  Code,
+  Database,
+  FileText,
+  Home,
+  LineChart,
+  MessageSquare,
+  Network,
+  RefreshCw,
+  Settings,
+  Terminal,
+} as const;
+
+export type IconName = keyof typeof IconMap;
 
 type IconProps = {
-  name: keyof typeof LucideIcons;
+  name: IconName;
   className?: string;
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
-  const LucideComponent = LucideIcons[name] as LucideIcon;
+  const LucideComponent = IconMap[name] as LucideIcon;
 
   if (!LucideComponent) {
     console.warn(`Icon ${name} not found`);

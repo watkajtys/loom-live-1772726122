@@ -3,7 +3,7 @@ import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { CommunityQueue } from './pages/CommunityQueue';
 import { ContentPipeline } from './pages/ContentPipeline';
-import { AXReports } from './pages/AXReports';
+import { AgentExecutionReports } from './pages/AgentExecutionReports';
 import { KnowledgeBase } from './pages/KnowledgeBase';
 import { ExecutionProvider } from './providers/ExecutionProvider';
 import { TelemetryProvider } from './providers/TelemetryProvider';
@@ -17,7 +17,7 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/queue" element={<CommunityQueue />} />
             <Route path="/content" element={<ContentPipeline />} />
-            <Route path="/reports" element={<AXReports />} />
+            <Route path="/reports" element={<AgentExecutionReports />} />
             <Route path="/knowledge" element={<KnowledgeBase />} />
           </Route>
         </Routes>

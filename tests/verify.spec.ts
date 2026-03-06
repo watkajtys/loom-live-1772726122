@@ -16,6 +16,11 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.click('nav a[href="/queue"]');
   await expect(page.locator('text=Root::Community_Queue')).toBeVisible();
   await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
+  
+  // Navigate to reports
+  await page.click('nav a[href="/reports"]');
+  await expect(page.locator('text=Root::Agent_Execution_Reports')).toBeVisible();
+  await expect(page.locator('h1', { hasText: 'Agent Execution Reports' })).toBeVisible();
 
   // Navigate back to root
   await page.goto('/');

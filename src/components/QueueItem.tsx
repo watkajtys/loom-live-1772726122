@@ -1,13 +1,12 @@
 import React from 'react';
 import { SocialMention } from '../types/models';
-import { Icon } from './Icon';
-import * as LucideIcons from 'lucide-react';
+import { Icon, type IconName } from './Icon';
 
 interface QueueItemProps {
   mention: SocialMention;
 }
 
-const getPlatformIcon = (platform: string): keyof typeof LucideIcons => {
+const getPlatformIcon = (platform: string): IconName => {
   const p = platform.toLowerCase();
   if (p === 'discord') return 'Network';
   if (p === 'github') return 'Code';

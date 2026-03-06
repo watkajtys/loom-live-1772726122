@@ -1,10 +1,9 @@
 import React from 'react';
-import { Icon } from './Icon';
-import * as LucideIcons from 'lucide-react';
+import { Icon, type IconName } from './Icon';
 
 type DataViewLayoutProps = {
   title: string;
-  icon: keyof typeof LucideIcons;
+  icon: IconName;
   loading?: boolean;
   error?: Error | null;
   isEmpty?: boolean;
