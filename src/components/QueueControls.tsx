@@ -5,7 +5,7 @@ import { useUrlState } from '../hooks/useUrlState';
 import { useState, useEffect } from 'react';
 
 export const QueueControls: React.FC = () => {
-  const { searchParams, setSearchParams, currentFilter, setLegacyFilter } = useUrlState();
+  const { searchParams, setSearchParams, currentFilter, setFilter } = useUrlState();
   const [searchValue, setSearchValue] = useState(searchParams.get('search') || '');
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export const QueueControls: React.FC = () => {
 
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setLegacyFilter('all')}
+          onClick={() => setFilter('filter', 'all')}
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-sm border ${currentFilter === 'all' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="All Streams"
         >
@@ -50,21 +50,21 @@ export const QueueControls: React.FC = () => {
           ALL
         </button>
         <button
-          onClick={() => setLegacyFilter('discord')}
+          onClick={() => setFilter('filter', 'discord')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'discord' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter Discord"
         >
           <Icon name="discord" className="text-[14px]" />
         </button>
         <button
-          onClick={() => setLegacyFilter('github')}
+          onClick={() => setFilter('filter', 'github')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'github' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter GitHub"
         >
           <Icon name="github" className="text-[14px]" />
         </button>
         <button
-          onClick={() => setLegacyFilter('x')}
+          onClick={() => setFilter('filter', 'x')}
           className={`p-1.5 rounded-sm border ${currentFilter === 'x' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="Filter X"
         >

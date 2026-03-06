@@ -15,16 +15,10 @@ export function useUrlState() {
     setSearchParams(newParams);
   };
 
-  // For backward compatibility with single-argument setFilter (from QueueControls)
-  const setLegacyFilter = (filterName: string) => {
-    setFilter('filter', filterName);
-  };
-
   return {
     searchParams,
     setSearchParams,
     currentFilter,
-    setFilter,
-    setLegacyFilter
+    setFilter
   };
 }

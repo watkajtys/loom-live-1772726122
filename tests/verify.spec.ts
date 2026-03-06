@@ -2,6 +2,13 @@ import { test, expect } from '@playwright/test';
 import { generateMockQueueData } from '../src/lib/queueSimulation';
 
 test('App initializes correctly', async ({ page }) => {
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ page: 1, perPage: 50, totalItems: 0, totalPages: 1, items: [] })
+    });
+  });
   await page.goto('/dashboard');
   await expect(page.locator('text=Command::Live_Log')).toBeVisible();
 });
@@ -288,6 +295,13 @@ test('Build the Community Queue List container component.', async ({ page }) => 
 });
 
 test('Icon component handles string mapping and fallback logic without crashing', async ({ page }) => {
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ page: 1, perPage: 50, totalItems: 0, totalPages: 1, items: [] })
+    });
+  });
   await page.goto('/dashboard');
   // Checking that the Top Bar renders correctly without a crash from Icon.tsx
   await expect(page.locator('text=Command::Live_Log')).toBeVisible();
@@ -312,6 +326,13 @@ test('CommunityQueue handles telemetry passed to extracted Header and Footer com
 });
 
 test('Execution and Telemetry providers maintain centralized shell state across navigations', async ({ page }) => {
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ page: 1, perPage: 50, totalItems: 0, totalPages: 1, items: [] })
+    });
+  });
   await page.goto('/dashboard');
 
   // Assert Top Bar system status logic derived from TelemetryProvider
@@ -738,6 +759,8 @@ test("Community Queue View integrates data fetching hook with skeletons and erro
 });
 
 test('Compact Pipeline Card view toggles correctly and renders design', async ({ page }) => {
+  page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+  page.on('pageerror', err => console.log('PAGE ERROR:', err.message));
   // Setup mock data for reliable testing
   await page.route('**/api/collections/content_pipeline/records*', async route => {
     await route.fulfill({
