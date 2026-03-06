@@ -58,26 +58,20 @@ test('Queue Header/Controls component (search, filter, sort buttons)', async ({ 
   await page.screenshot({ path: 'evidence.png' });
 });
 
+
 test('Content Pipeline view layout shell and deep-linking filters are verified', async ({ page }) => {
-  // Test empty state
+  // Test fallback mock state by aborting the route
   await page.route('**/api/collections/content_pipeline/records*', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        page: 1,
-        perPage: 50,
-        totalItems: 0,
-        totalPages: 1,
-        items: []
-      })
-    });
+    await route.abort();
   });
 
   await page.goto('/');
 
   // Verify custom Content Deck title from the new header
   await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
+
+  // Wait for the mock card "Advoloom Architecture V2 Documentation"
+  await expect(page.locator('text=Advoloom Architecture V2 Documentation')).toBeVisible();
 
   // Test deep-linkable filters
   await page.click('button:has-text("Github")');
@@ -88,6 +82,9 @@ test('Content Pipeline view layout shell and deep-linking filters are verified',
 
   await page.click('button:has-text("Live")');
   await expect(page).toHaveURL(/.*status=live/i);
+  
+  // The filter Live should hide drafting items like "Agent Execution Reports Analysis Q1"
+  await expect(page.locator('text=Agent Execution Reports Analysis Q1')).not.toBeVisible();
 
   // Take the required screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
