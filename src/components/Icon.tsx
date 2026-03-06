@@ -67,56 +67,56 @@ type IconProps = {
 };
 
 // Normalize names internally to avoid redundant casing map entries
-const iconMap: Record<string, React.ReactNode> = {
-  discord: <DiscordIcon />,
-  github: <GitHubIcon />,
-  x: <XIcon />,
-  twitter: <XIcon />,
-  home: <Home size="1em" />,
-  smart_toy: <Bot size="1em" />,
-  bot: <Bot size="1em" />,
-  article: <FileText size="1em" />,
-  filetext: <FileText size="1em" />,
-  analytics: <LineChart size="1em" />,
-  linechart: <LineChart size="1em" />,
-  settings_input_component: <Database size="1em" />,
-  database: <Database size="1em" />,
-  terminal: <Terminal size="1em" />,
-  schedule: <Clock size="1em" />,
-  clock: <Clock size="1em" />,
-  notifications: <Bell size="1em" />,
-  bell: <Bell size="1em" />,
-  hub: <Network size="1em" />,
-  code: <Code size="1em" />,
-  alternate_email: <AtSign size="1em" />,
-  error: <AlertCircle size="1em" />,
-  alertcircle: <AlertCircle size="1em" />,
-  settings: <Settings size="1em" />,
-  search: <Search size="1em" />,
-  sort: <ListFilter size="1em" />,
-  apps: <LayoutGrid size="1em" />,
-  refresh: <RefreshCw size="1em" />,
-  refreshcw: <RefreshCw size="1em" />,
-  forum: <MessageSquare size="1em" />
+const iconMap: Record<string, React.ElementType> = {
+  discord: DiscordIcon,
+  github: GitHubIcon,
+  x: XIcon,
+  twitter: XIcon,
+  home: Home,
+  smart_toy: Bot,
+  bot: Bot,
+  article: FileText,
+  filetext: FileText,
+  analytics: LineChart,
+  linechart: LineChart,
+  settings_input_component: Database,
+  database: Database,
+  terminal: Terminal,
+  schedule: Clock,
+  clock: Clock,
+  notifications: Bell,
+  bell: Bell,
+  hub: Network,
+  code: Code,
+  alternate_email: AtSign,
+  error: AlertCircle,
+  alertcircle: AlertCircle,
+  settings: Settings,
+  search: Search,
+  sort: ListFilter,
+  apps: LayoutGrid,
+  refresh: RefreshCw,
+  refreshcw: RefreshCw,
+  forum: MessageSquare
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
   const normalizedName = name.toLowerCase();
-  const renderedIcon = iconMap[normalizedName];
+  const IconComponent = iconMap[normalizedName];
 
-  if (!renderedIcon) {
+  if (!IconComponent) {
     console.warn(`Icon '${name}' not found.`);
     return null;
   }
 
-  // Brand icons have their own wrappers, others need the inline-flex wrapper
+  // Brand icons have their own wrappers, others need the inline-flex wrapper and sizing
   if (['discord', 'github', 'x', 'twitter'].includes(normalizedName)) {
-    return <span className={className}>{renderedIcon}</span>;
+    return <span className={className}><IconComponent /></span>;
   }
 
   return (
     <span className={`inline-flex items-center justify-center ${className}`}>
-      {renderedIcon}
+      <IconComponent size="1em" />
     </span>
   );
 };

@@ -1,9 +1,8 @@
-import useSWR from 'swr';
 import { SocialMention } from '../types/models';
 import { COLLECTIONS } from '../constants/collections';
 import { useQueueTelemetry, QueueTelemetry } from './useQueueTelemetry';
 import { fetchQueueItems, type FetchQueueOptions } from '../lib/api/queue';
-import { useRealtimeSubscription } from './useRealtimeSubscription';
+import { usePocketBase } from './usePocketBase';
 
 export type { QueueTelemetry };
 
@@ -18,34 +17,23 @@ export interface QueueDataResponse {
   telemetry: QueueTelemetry;
 }
 
-const fetcher = async ([collection, options]: readonly [string, QueueFetchOptions]) => {
+const fetcher = async ([_, options]: readonly [string, QueueFetchOptions]) => {
   const result = await fetchQueueItems(options);
   return result.items;
 };
 
-export function useCommunityQueue(options: QueueFetchOptions = {}): QueueDataResponse {
-  const { subscribe = true, ...fetchOptions } = options;
-  const swrKey = [COLLECTIONS.SOCIAL_MENTIONS, fetchOptions] as const;
-
-  const { data, error, isLoading, mutate } = useSWR<SocialMention[], Error>(
-    swrKey,
-    fetcher,
-    {
-      keepPreviousData: true,
-    }
+export function useCommunityQueue(options: QueueFetchOptions = { subscribe: true }): QueueDataResponse {
+  const { data, loading, error } = usePocketBase<SocialMention, QueueFetchOptions>(
+    COLLECTIONS.SOCIAL_MENTIONS,
+    options,
+    fetcher
   );
-
-  useRealtimeSubscription<SocialMention>({
-    collectionName: COLLECTIONS.SOCIAL_MENTIONS,
-    subscribe,
-    filter: fetchOptions.filter,
-  }, mutate);
 
   const telemetry = useQueueTelemetry(data?.length || 0);
 
   return {
-    data,
-    loading: isLoading,
+    data: data as SocialMention[] | undefined,
+    loading,
     error: error || null,
     telemetry,
   };

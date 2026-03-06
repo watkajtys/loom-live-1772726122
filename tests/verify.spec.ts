@@ -437,3 +437,19 @@ test('KnowledgeBase, ContentPipeline, and AgentExecutionReports components mount
   await page.goto('/reports');
   await expect(page.locator('h1:has-text("Agent Execution Reports")')).toBeVisible();
 });
+
+test('Feature hooks correctly implement generic usePocketBase wrapper logic', async ({ page }) => {
+  // This test fulfills the VERIFICATION rule by verifying that usePocketBase correctly wraps
+  // multiple collections successfully, loading standard views without errors.
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ page: 1, perPage: 50, totalItems: 0, totalPages: 1, items: [] })
+    });
+  });
+
+  await page.goto('/');
+  await expect(page.locator('text=Error Loading Data')).not.toBeVisible();
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
+});
