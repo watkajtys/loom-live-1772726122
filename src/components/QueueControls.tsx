@@ -46,7 +46,7 @@ export const QueueControls: React.FC = () => {
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-sm border ${currentFilter === 'all' ? 'border-accent text-accent bg-accent/10' : 'border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60'} transition-all`}
           title="All Streams"
         >
-          <Icon name="apps" className="text-[14px]" />
+          <Icon name="layout-grid" className="text-[14px]" />
           ALL
         </button>
         <button
@@ -75,7 +75,7 @@ export const QueueControls: React.FC = () => {
       <div className="flex-1"></div>
 
       <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded-sm border border-slate-800 text-slate-500 hover:border-slate-600 bg-black/60 transition-all" title="Sort Options">
-        <Icon name="sort" className="text-[14px]" />
+        <Icon name="list-filter" className="text-[14px]" />
         SORT_BY
       </button>
     </div>

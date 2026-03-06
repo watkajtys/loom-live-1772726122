@@ -24,7 +24,7 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
       <PipelineStage
         title="Drafting"
         count={draftingData.length}
-        icon="edit_note"
+        icon="file-edit"
         status="drafting"
         isCollapsed={collapsedStages.includes('drafting')}
         onToggleCollapse={() => toggleCollapse('drafting')}
@@ -38,14 +38,14 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
               <Icon name="share" className="text-[16px]" />
             </button>
             <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Filter: Blog">
-              <Icon name="article" className="text-[16px]" />
+              <Icon name="file-text" className="text-[16px]" />
             </button>
             <div className="w-4 h-px bg-white/10 my-1"></div>
             <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Sort by priority">
-              <Icon name="priority_high" className="text-[16px]" />
+              <Icon name="alert-circle" className="text-[16px]" />
             </button>
             <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Batch Action">
-              <Icon name="checklist" className="text-[16px]" />
+              <Icon name="check-square" className="text-[16px]" />
             </button>
           </>
         }
@@ -58,7 +58,7 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
       <PipelineStage
         title="Review Pipeline"
         count={reviewData.length}
-        icon="forum"
+        icon="message-square"
         status="review"
         isCollapsed={collapsedStages.includes('review')}
         onToggleCollapse={() => toggleCollapse('review')}
@@ -71,7 +71,7 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
       <PipelineStage
         title="Live Nodes"
         count={liveData.length}
-        icon="sensors"
+        icon="radio"
         status="published"
         isCollapsed={collapsedStages.includes('published')}
         onToggleCollapse={() => toggleCollapse('published')}
@@ -79,13 +79,13 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
           <>
             <span className="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Metrics</span>
             <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="View Heatmap">
-              <Icon name="grid_view" className="text-[16px]" />
+              <Icon name="layout-grid" className="text-[16px]" />
             </button>
             <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Performance">
-              <Icon name="show_chart" className="text-[16px]" />
+              <Icon name="trending-up" className="text-[16px]" />
             </button>
             <button className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all" title="Alerts">
-              <Icon name="notifications" className="text-[16px]" />
+              <Icon name="bell" className="text-[16px]" />
             </button>
           </>
         }

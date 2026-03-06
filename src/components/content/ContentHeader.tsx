@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useContentFilters } from '../../hooks/useContentFilters';
 import { CommandButtonGroup } from '../CommandButtonGroup';
+import { CONTENT_QUEUE_LOAD } from '../../constants/config';
 
 export const ContentHeader: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -23,8 +24,17 @@ export const ContentHeader: React.FC = () => {
 
   const isPlatformActive = (p: string) => {
     const value = p.toLowerCase();
-    return platformFilter === value || (p === 'All' && !searchParams.get('platform'));
+    return platformFilter === value || (value === 'all' && !searchParams.get('platform'));
   };
+
+  const getHeaderDetails = () => {
+    if (viewMode === 'compact') {
+      return { route: 'LOG_MODE::DENSITY_HIGH', title: 'System Logs' };
+    }
+    return { route: 'ROUTE::/CONTENT-PIPELINE', title: 'Content Deck' };
+  };
+
+  const { route, title } = getHeaderDetails();
 
   return (
     <header className="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">
@@ -32,11 +42,11 @@ export const ContentHeader: React.FC = () => {
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span className="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">
-              {viewMode === 'compact' ? 'LOG_MODE::DENSITY_HIGH' : 'ROUTE::/CONTENT-PIPELINE'}
+              {route}
             </span>
           </div>
           <h2 className="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">
-            {viewMode === 'compact' ? 'System Logs' : 'Content Deck'}
+            {title}
           </h2>
         </div>
         <div className="h-10 w-px bg-white/10"></div>
@@ -85,7 +95,7 @@ export const ContentHeader: React.FC = () => {
         <div className="flex items-center gap-4">
           <div className="text-right">
             <span className="text-slate-500 text-[8px] uppercase tracking-widest block leading-none">QUEUE_LOAD</span>
-            <span className="text-accent font-bold">0xAF24</span>
+            <span className="text-accent font-bold">{CONTENT_QUEUE_LOAD}</span>
           </div>
           <div className="h-6 w-px bg-white/5"></div>
           <label className="relative flex items-center cursor-text group">

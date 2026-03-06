@@ -1388,6 +1388,16 @@ test('Define validation schemas for Pipeline Execution payloads', async ({ page 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Ensure configuration constants are extracted into config file', async ({ page }) => {
+  await page.goto('/');
+  // Test asserting that CONTENT_PLATFORMS etc are exported correctly by checking the UI strings we extracted
+  await expect(page.locator('text=Github')).toBeVisible();
+  await expect(page.locator('text=Nexus_01')).toBeVisible();
+  await expect(page.locator('text=Live')).toBeVisible();
+  await expect(page.locator('text=Standard')).toBeVisible();
+  await expect(page.locator('text=0xAF24')).toBeVisible();
+});
+
 test('Define validation schemas for Pipeline requests', async ({ page }) => {
   // Navigate to app so we can evaluate in browser
   await page.goto('http://localhost:5173/');

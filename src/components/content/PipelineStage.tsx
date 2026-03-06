@@ -51,7 +51,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
           className={`h-14 flex flex-col items-center justify-center gap-4 ${styles.collapsedBg} border-b border-white/10 pt-2 cursor-pointer transition-colors`}
           onClick={onToggleCollapse}
         >
-          <Icon name="keyboard_double_arrow_right" className={`text-[14px] ${styles.iconColor}`} />
+          <Icon name="chevrons-right" className={`text-[14px] ${styles.iconColor}`} />
           <span className={`vertical-text text-[10px] font-bold ${styles.iconColor} uppercase tracking-widest pb-4`}>
             {title.replace(' ', '_')}
           </span>
@@ -79,7 +79,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
           onClick={onToggleCollapse}
           className="hover:text-accent text-slate-500 transition-colors"
         >
-          <Icon name="keyboard_double_arrow_left" className="text-[18px]" />
+          <Icon name="chevrons-left" className="text-[18px]" />
         </button>
       </header>
       

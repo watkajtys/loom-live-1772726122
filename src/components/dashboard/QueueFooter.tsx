@@ -15,7 +15,7 @@ export const QueueFooter: React.FC<{ telemetry: QueueTelemetry }> = ({ telemetry
       </div>
     </div>
     <div className="flex items-center gap-2 text-slate-400">
-      <Icon name="RefreshCw" className="text-[12px] animate-pulse" />
+      <Icon name="refresh-cw" className="text-[12px] animate-pulse" />
       <span className="uppercase">Last_Sync:</span>
       <span className="text-accent">{telemetry.lastSync}</span>
     </div>

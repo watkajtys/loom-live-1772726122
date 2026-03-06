@@ -16,7 +16,7 @@ export const CommunityQueue: React.FC = () => {
     <ErrorBoundary fallbackMessage="Failed to load Community Queue data. Please try again later.">
       <DataViewLayout
         title="Active Agent Tasks"
-        icon="Bot"
+        icon="bot"
         loading={false} // Disable default layout spinner since we use skeletons
         error={error}
         isEmpty={!loading && (!data || data.length === 0)}

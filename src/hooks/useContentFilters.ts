@@ -1,5 +1,6 @@
 import React from 'react';
 import { useUrlState } from './useUrlState';
+import { CONTENT_PLATFORMS, CONTENT_AGENTS, CONTENT_STATUSES, CONTENT_VIEWS } from '../constants/config';
 
 export function useContentFilters() {
   const { searchParams, setFilter: baseSetFilter, setSearchParams } = useUrlState();
@@ -24,11 +25,6 @@ export function useContentFilters() {
     setSearchParams(newParams);
   };
 
-  const platforms = ['All', 'Github', 'X/Twitter', 'Discord'];
-  const agents = ['Nexus_01', 'Echo_04'];
-  const statuses = ['Live', 'Progress', 'Draft'];
-  const views = ['Standard', 'Compact'];
-
   return {
     platformFilter,
     agentFilter,
@@ -37,9 +33,9 @@ export function useContentFilters() {
     viewMode,
     setFilter,
     handleSearch,
-    platforms,
-    agents,
-    statuses,
-    views,
+    platforms: CONTENT_PLATFORMS,
+    agents: CONTENT_AGENTS,
+    statuses: CONTENT_STATUSES,
+    views: CONTENT_VIEWS,
   };
 }

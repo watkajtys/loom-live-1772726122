@@ -9,39 +9,9 @@ const brandIconMap = {
   twitter: XIcon,
 } as const;
 
-// Semantic mapping for non-brand icons that don't directly match Lucide names
-const semanticMap: Record<string, keyof typeof dynamicIconImports> = {
-  smart_toy: 'bot',
-  article: 'file-text',
-  filetext: 'file-text',
-  analytics: 'line-chart',
-  linechart: 'line-chart',
-  settings_input_component: 'database',
-  schedule: 'clock',
-  notifications: 'bell',
-  hub: 'network',
-  alternate_email: 'at-sign',
-  error: 'alert-circle',
-  alertcircle: 'alert-circle',
-  sort: 'list-filter',
-  apps: 'layout-grid',
-  refresh: 'refresh-cw',
-  refreshcw: 'refresh-cw',
-  forum: 'message-square',
-  edit_note: 'file-edit',
-  keyboard_double_arrow_left: 'chevrons-left',
-  keyboard_double_arrow_right: 'chevrons-right',
-  share: 'share-2',
-  priority_high: 'alert-circle',
-  checklist: 'check-square',
-  sensors: 'radio',
-  grid_view: 'layout-grid',
-  show_chart: 'trending-up',
-};
-
 const iconCache = new Map<string, React.LazyExoticComponent<React.ComponentType<any>>>();
 
-export type SemanticIconName = keyof typeof brandIconMap | keyof typeof semanticMap | keyof typeof dynamicIconImports;
+export type SemanticIconName = keyof typeof brandIconMap | keyof typeof dynamicIconImports;
 export type IconName = SemanticIconName | string;
 
 type IconProps = {
@@ -58,8 +28,19 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
     return <span className={className}><BrandComponent /></span>;
   }
 
-  // Resolve semantic alias or use normalized name directly
-  const lucideName = semanticMap[normalizedName] || normalizedName;
+  // Use normalized name directly to map to Lucide icons, translating TitleCase to kebab-case just in case
+  let lucideName = name.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+  
+  // Fallback map for legacy titles
+  const legacyMap: Record<string, string> = {
+    'home': 'home',
+    'line-chart': 'line-chart',
+    'file-edit': 'file-edit',
+    'alert-circle': 'alert-circle',
+    'check-square': 'check-square',
+    'file-text': 'file-text'
+  };
+  lucideName = legacyMap[lucideName] || lucideName;
 
   // Render Lucide dynamically
   if (lucideName in dynamicIconImports) {

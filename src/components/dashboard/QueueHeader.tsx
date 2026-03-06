@@ -10,7 +10,7 @@ export const QueueHeader: React.FC<{ telemetry: QueueTelemetry }> = ({ telemetry
       </div>
       <h2 className="text-xl font-bold tracking-tight text-slate-100 font-display flex items-center gap-3 uppercase">
         <div className="p-2 rounded bg-primary/10 text-accent">
-          <Icon name="smart_toy" />
+          <Icon name="bot" />
         </div>
         Community Queue
       </h2>

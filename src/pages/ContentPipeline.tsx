@@ -25,7 +25,7 @@ export const ContentPipeline: React.FC = () => {
       
       <DataViewLayout
         title="Content Pipeline"
-        icon="article"
+        icon="file-text"
         loading={loading}
         error={error}
         isEmpty={data.length === 0}

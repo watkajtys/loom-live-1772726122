@@ -17,7 +17,7 @@ export const MOCK_CONTENT_ITEMS: TransformedContentPipeline[] = [
     markdown_body: 'Comprehensive overview of the new distributed architecture and agent coordination protocols.',
     status: 'published',
     agentId: 'NEXUS_01',
-    platformIcon: 'article',
+    platformIcon: 'file-text',
   },
   {
     id: 'mock_doc_2',
@@ -29,7 +29,7 @@ export const MOCK_CONTENT_ITEMS: TransformedContentPipeline[] = [
     markdown_body: 'Summary of autonomous agent performance metrics and incident resolution times for Q1.',
     status: 'drafting',
     agentId: 'ECHO_04',
-    platformIcon: 'analytics',
+    platformIcon: 'line-chart',
   },
   {
     id: 'mock_doc_3',
@@ -41,7 +41,7 @@ export const MOCK_CONTENT_ITEMS: TransformedContentPipeline[] = [
     markdown_body: 'Revised guidelines for community participation and automated moderation thresholds.',
     status: 'review',
     agentId: 'NEXUS_01',
-    platformIcon: 'forum',
+    platformIcon: 'message-square',
   },
   {
     id: 'mock_doc_4',

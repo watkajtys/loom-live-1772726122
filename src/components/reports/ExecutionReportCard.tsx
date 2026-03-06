@@ -23,7 +23,7 @@ export const ExecutionReportCard: React.FC<ExecutionReportCardProps> = ({ report
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-2">
           <p className="text-xs font-mono text-red-400 uppercase flex items-center gap-2">
-            <Icon name="AlertCircle" className="text-sm" />
+            <Icon name="alert-circle" className="text-sm" />
             Error Log
           </p>
           <div className="p-4 bg-black/60 rounded border border-red-500/20 font-mono text-xs text-red-300 overflow-x-auto whitespace-pre">
@@ -33,7 +33,7 @@ export const ExecutionReportCard: React.FC<ExecutionReportCardProps> = ({ report
 
         <div className="space-y-2">
           <p className="text-xs font-mono text-green-400 uppercase flex items-center gap-2">
-            <Icon name="Settings" className="text-sm" />
+            <Icon name="settings" className="text-sm" />
             Suggested Fix
           </p>
           <div className="p-4 bg-black/60 rounded border border-green-500/20 font-mono text-xs text-green-300 overflow-x-auto whitespace-pre">
@@ -44,7 +44,7 @@ export const ExecutionReportCard: React.FC<ExecutionReportCardProps> = ({ report
       
       <div className="mt-4 flex justify-end">
         <button className="px-4 py-2 bg-primary/20 text-accent border border-primary/40 rounded text-xs font-mono uppercase hover:bg-primary/30 transition-colors flex items-center gap-2">
-          <Icon name="Terminal" className="text-sm" />
+          <Icon name="terminal" className="text-sm" />
           Execute Fix
         </button>
       </div>

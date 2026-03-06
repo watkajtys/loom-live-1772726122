@@ -2,7 +2,6 @@ import { pb } from '../pocketbase';
 import { ContentPipeline, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
 import { SemanticIconName } from '../../components/Icon';
-import { getMockContentPipelineItems, TransformedContentPipeline } from '../contentSimulation';
 
 export interface FetchContentOptions {
   page?: number;
@@ -11,36 +10,34 @@ export interface FetchContentOptions {
   sort?: string;
 }
 
-export type { TransformedContentPipeline };
+export type TransformedContentPipeline = ContentPipeline & {
+  agentId: string;
+  platformIcon: SemanticIconName;
+};
 
 export const fetchContentPipeline = async (options: FetchContentOptions = {}): Promise<{ items: TransformedContentPipeline[]; totalItems: number }> => {
   const { page = 1, perPage = 50, filter, sort = '-created' } = options;
   
-  try {
-    const result = await pb.collection(COLLECTIONS.CONTENT_PIPELINE).getList<ContentPipeline>(page, perPage, {
-      filter,
-      sort,
-      requestKey: null,
-    });
+  const result = await pb.collection(COLLECTIONS.CONTENT_PIPELINE).getList<ContentPipeline>(page, perPage, {
+    filter,
+    sort,
+    requestKey: null,
+  });
 
-    const transformedItems = result.items.map((item) => {
-      // Relying on data from DB if available, otherwise safely defaulting 
-      // to prevent magic string operations here
-      return {
-        ...item,
-        agentId: item.agentId || 'SYSTEM',
-        platformIcon: item.platformIcon as SemanticIconName || 'terminal'
-      };
-    });
-
+  const transformedItems = result.items.map((item) => {
+    // Relying on data from DB if available, otherwise safely defaulting 
+    // to prevent magic string operations here
     return {
-      items: transformedItems,
-      totalItems: result.totalItems,
+      ...item,
+      agentId: item.agentId || 'SYSTEM',
+      platformIcon: item.platformIcon as SemanticIconName || 'terminal'
     };
-  } catch (error) {
-    console.warn('Using fallback data for ContentPipeline.', error);
-    return getMockContentPipelineItems(filter);
-  }
+  });
+
+  return {
+    items: transformedItems,
+    totalItems: result.totalItems,
+  };
 };
 
 export const createContentPipeline = async (data: CreateContentPipelineDTO): Promise<ContentPipeline> => {

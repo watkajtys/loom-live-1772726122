@@ -27,13 +27,13 @@ export const TopBar: React.FC = () => {
       
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2 text-slate-400 text-sm font-mono">
-          <Icon name="Clock" className="text-sm" />
+          <Icon name="clock" className="text-sm" />
           <span>{currentTime}</span>
         </div>
         
         <div className="flex items-center gap-4">
           <button className="text-slate-400 hover:text-accent transition-colors">
-            <Icon name="Bell" />
+            <Icon name="bell" />
           </button>
           <div className="h-6 w-px bg-primary/20"></div>
           <div className="flex items-center gap-3">

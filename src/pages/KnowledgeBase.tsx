@@ -12,7 +12,7 @@ export const KnowledgeBase: React.FC = () => {
   return (
     <DataViewLayout
       title="Knowledge Base"
-      icon="settings_input_component"
+      icon="database"
       loading={loading}
       error={error}
       isEmpty={data.length === 0}

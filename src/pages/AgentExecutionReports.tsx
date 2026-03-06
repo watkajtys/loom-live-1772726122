@@ -12,7 +12,7 @@ export const AgentExecutionReports: React.FC = () => {
   return (
     <DataViewLayout
       title="Agent Execution Reports"
-      icon="LineChart"
+      icon="line-chart"
       loading={loading}
       error={error}
       isEmpty={data.length === 0}

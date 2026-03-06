@@ -9,11 +9,11 @@ export interface AppRoute {
 }
 
 export const APP_ROUTES: AppRoute[] = [
-  { path: '/dashboard', id: 'Root::Command_Center', icon: 'Home', label: 'Command Center', showInSidebar: true },
-  { path: '/queue', id: 'Root::Community_Queue', icon: 'Bot', label: 'Community Queue', showInSidebar: true },
-  { path: '/', id: 'Root::Content_Pipeline', icon: 'FileText', label: 'Content Pipeline', showInSidebar: true },
-  { path: '/reports', id: 'Root::Agent_Execution_Reports', icon: 'LineChart', label: 'Agent Execution Reports', showInSidebar: true },
-  { path: '/knowledge', id: 'Root::Knowledge_Base', icon: 'Database', label: 'Knowledge Base', showInSidebar: true },
+  { path: '/dashboard', id: 'Root::Command_Center', icon: 'home', label: 'Command Center', showInSidebar: true },
+  { path: '/queue', id: 'Root::Community_Queue', icon: 'bot', label: 'Community Queue', showInSidebar: true },
+  { path: '/', id: 'Root::Content_Pipeline', icon: 'file-text', label: 'Content Pipeline', showInSidebar: true },
+  { path: '/reports', id: 'Root::Agent_Execution_Reports', icon: 'line-chart', label: 'Agent Execution Reports', showInSidebar: true },
+  { path: '/knowledge', id: 'Root::Knowledge_Base', icon: 'database', label: 'Knowledge Base', showInSidebar: true },
 ];
 
 export const getRouteById = (path: string): AppRoute | undefined => {
