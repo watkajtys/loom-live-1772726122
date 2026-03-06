@@ -4,7 +4,9 @@ export type SocialMention = RecordModel & {
   platform: string;
   query: string;
   draft_reply: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: 'drafting' | 'pending_approval' | 'queued' | 'approved' | 'rejected';
+  user: string;
+  priority: number;
 };
 
 export type ContentPipeline = RecordModel & {

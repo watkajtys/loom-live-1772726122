@@ -3,13 +3,12 @@
 > vite --host
 
 
-  VITE v6.4.1  ready in 226 ms
+  VITE v6.4.1  ready in 313 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://192.168.0.2:5173/
-12:02:57 AM [vite] (client) page reload index.html
-12:04:24 AM [vite] (client) ✨ new dependencies optimized: lucide-react
-12:04:24 AM [vite] (client) ✨ optimized dependencies changed. reloading
-12:04:28 AM [vite] (client) page reload playwright-report/index.html
-12:04:28 AM [vite] (client) page reload playwright-report/index.html
-12:10:22 AM [vite] (client) page reload playwright-report/index.html
+12:34:40 AM [vite] (client) page reload playwright-report/index.html
+12:36:13 AM [vite] (client) page reload src/types/models.ts
+12:36:45 AM [vite] (client) hmr update /src/components/DataViewLayout.tsx, /src/index.css
+12:37:06 AM [vite] (client) hmr update /src/components/QueueItem.tsx, /src/index.css
+12:37:23 AM [vite] (client) hmr update /src/pages/CommunityQueue.tsx, /src/index.css

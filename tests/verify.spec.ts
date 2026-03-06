@@ -15,7 +15,7 @@ test('Advoloom Command Center shell and primary views from the design load corre
   // Navigate to queue
   await page.click('nav a[href="/queue"]');
   await expect(page.locator('text=Root::Community_Queue')).toBeVisible();
-  await expect(page.locator('h1', { hasText: 'Community Queue' })).toBeVisible();
+  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
 
   // Navigate back to root
   await page.goto('/');
@@ -43,7 +43,7 @@ test('Community Queue data fetching and rendering', async ({ page }) => {
   await page.goto('/queue');
 
   // Verify the page title is visible
-  await expect(page.locator('h1', { hasText: 'Community Queue' })).toBeVisible();
+  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
 
   // Wait for loading to finish, or check for expected states
   // We handle potential empty state or data list based on standard view wrappers
@@ -64,7 +64,7 @@ test('Queue Item component correctly displays entry details matching the design'
   await page.goto('/queue');
 
   // Verify the page title is visible
-  await expect(page.locator('h1', { hasText: 'Community Queue' })).toBeVisible();
+  await expect(page.locator('text=Active Agent Tasks')).toBeVisible();
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');

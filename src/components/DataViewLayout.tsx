@@ -7,6 +7,8 @@ type DataViewLayoutProps = {
   loading?: boolean;
   error?: Error | null;
   isEmpty?: boolean;
+  customHeader?: React.ReactNode;
+  customFooter?: React.ReactNode;
   children: React.ReactNode;
 };
 
@@ -16,18 +18,24 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
   loading = false,
   error = null,
   isEmpty = false,
+  customHeader,
+  customFooter,
   children,
 }) => {
   return (
     <div className="flex-1 p-6 flex flex-col h-full overflow-hidden">
-      <header className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded bg-primary/10 text-accent">
-            <Icon name={icon} />
+      {customHeader ? (
+        customHeader
+      ) : (
+        <header className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded bg-primary/10 text-accent">
+              <Icon name={icon} />
+            </div>
+            <h1 className="text-xl font-display font-bold text-slate-100">{title}</h1>
           </div>
-          <h1 className="text-xl font-display font-bold text-slate-100">{title}</h1>
-        </div>
-      </header>
+        </header>
+      )}
 
       <div className="flex-1 glass-panel rounded-lg overflow-hidden flex flex-col relative">
         {loading && (
@@ -57,6 +65,11 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
           {children}
         </div>
       </div>
+      {customFooter && (
+        <div className="mt-4">
+          {customFooter}
+        </div>
+      )}
     </div>
   );
 };
