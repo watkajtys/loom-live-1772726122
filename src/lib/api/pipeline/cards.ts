@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineCard, CreatePipelineCardDTO, UpdatePipelineCardDTO } from '../../../types/models';
@@ -32,10 +33,7 @@ export const createPipelineCard = async (data: CreatePipelineCardDTO): Promise<P
     return await pb.collection(COLLECTIONS.PIPELINE_CARDS).create<PipelineCard>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline card payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline card payload', error.errors);
     }
     throw error;
   }
@@ -47,10 +45,7 @@ export const updatePipelineCard = async (id: string, data: UpdatePipelineCardDTO
     return await pb.collection(COLLECTIONS.PIPELINE_CARDS).update<PipelineCard>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline card payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline card payload', error.errors);
     }
     throw error;
   }

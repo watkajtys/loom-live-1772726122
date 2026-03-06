@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineStep, CreatePipelineStepDTO, UpdatePipelineStepDTO } from '../../../types/models';
@@ -32,10 +33,7 @@ export const createPipelineStep = async (data: CreatePipelineStepDTO): Promise<P
     return await pb.collection(COLLECTIONS.PIPELINE_STEPS).create<PipelineStep>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline step payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline step payload', error.errors);
     }
     throw error;
   }
@@ -47,10 +45,7 @@ export const updatePipelineStep = async (id: string, data: UpdatePipelineStepDTO
     return await pb.collection(COLLECTIONS.PIPELINE_STEPS).update<PipelineStep>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline step payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline step payload', error.errors);
     }
     throw error;
   }

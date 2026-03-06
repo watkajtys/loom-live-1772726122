@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineStage, CreatePipelineStageDTO, UpdatePipelineStageDTO } from '../../../types/models';
@@ -32,10 +33,7 @@ export const createPipelineStage = async (data: CreatePipelineStageDTO): Promise
     return await pb.collection(COLLECTIONS.PIPELINE_STAGES).create<PipelineStage>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline stage payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline stage payload', error.errors);
     }
     throw error;
   }
@@ -47,10 +45,7 @@ export const updatePipelineStage = async (id: string, data: UpdatePipelineStageD
     return await pb.collection(COLLECTIONS.PIPELINE_STAGES).update<PipelineStage>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline stage payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline stage payload', error.errors);
     }
     throw error;
   }

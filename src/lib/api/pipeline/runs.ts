@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineRun, CreatePipelineRunDTO, UpdatePipelineRunDTO } from '../../../types/models';
@@ -32,10 +33,7 @@ export const createPipelineRun = async (data: CreatePipelineRunDTO): Promise<Pip
     return await pb.collection(COLLECTIONS.PIPELINE_RUNS).create<PipelineRun>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline run payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline run payload', error.errors);
     }
     throw error;
   }
@@ -47,10 +45,7 @@ export const updatePipelineRun = async (id: string, data: UpdatePipelineRunDTO):
     return await pb.collection(COLLECTIONS.PIPELINE_RUNS).update<PipelineRun>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const validationError = new Error('Bad Request: Invalid pipeline run payload');
-      (validationError as any).status = 400;
-      (validationError as any).errors = error.errors;
-      throw validationError;
+      throw new ValidationError('Bad Request: Invalid pipeline run payload', error.errors);
     }
     throw error;
   }

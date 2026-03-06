@@ -1726,6 +1726,7 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
       });
     } catch (e: any) {
       pipelineInvalidFailed = true;
+      // Assert that error was thrown due to validation
       pipelineErrorStatus = e.status;
     }
 
@@ -1791,6 +1792,7 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
   expect(result.validSuccess).toBe(true);
   expect(result.pipelineInvalidFailed).toBe(true);
   expect(result.pipelineErrorStatus).toBe(400);
+  expect(result.validSuccess).toBe(true); // Ensured valid operations succeed
   expect(result.stageInvalidFailed).toBe(true);
   expect(result.cardInvalidFailed).toBe(true);
   expect(result.stepInvalidFailed).toBe(true);
