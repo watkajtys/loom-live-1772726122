@@ -14,7 +14,7 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
   
   // Navigate to queue
-  await page.click('nav a[href="/"]');
+  await page.click('nav a[href="/queue"]');
   // Handle router state parsing. It parses /, we expect `Root::Community_Queue`. Wait for it.
   await expect(page.locator('text=Root::Community_Queue')).toBeVisible();
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -27,7 +27,7 @@ test('Advoloom Command Center shell and primary views from the design load corre
 });
 
 test('Queue Header/Controls component (search, filter, sort buttons)', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Assert presence of the HUD bar
   await expect(page.locator('.hud-bar')).toBeVisible();
@@ -58,6 +58,41 @@ test('Queue Header/Controls component (search, filter, sort buttons)', async ({ 
   await page.screenshot({ path: 'evidence.png' });
 });
 
+test('Content Pipeline view layout shell and deep-linking filters are verified', async ({ page }) => {
+  // Test empty state
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  // Verify custom Content Deck title from the new header
+  await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
+
+  // Test deep-linkable filters
+  await page.click('button:has-text("Github")');
+  await expect(page).toHaveURL(/.*platform=github/i);
+
+  await page.click('button:has-text("Nexus_01")');
+  await expect(page).toHaveURL(/.*agent=nexus_01/i);
+
+  await page.click('button:has-text("Live")');
+  await expect(page).toHaveURL(/.*status=live/i);
+
+  // Take the required screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Content Pipeline API and data models are defined correctly and fetch data', async ({ page }) => {
   await page.route('**/api/collections/content_pipeline/records*', async route => {
     await route.fulfill({
@@ -84,10 +119,10 @@ test('Content Pipeline API and data models are defined correctly and fetch data'
     });
   });
 
-  await page.goto('/content');
+  await page.goto('/');
 
   // Verify the page title is visible
-  await expect(page.locator('h1:has-text("Content Pipeline")')).toBeVisible();
+  await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');
@@ -126,7 +161,7 @@ test('Theme logic is correctly abstracted for colors', async ({ page }) => {
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   await expect(page.locator('text=DRAFTING')).toBeVisible();
   // Ensure the text color style text-terminal-green applied to it correctly
@@ -156,7 +191,7 @@ test('Build the Community Queue List container component.', async ({ page }) => 
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -195,7 +230,7 @@ test('Icon component handles string mapping and fallback logic without crashing'
 });
 
 test('CommunityQueue handles telemetry passed to extracted Header and Footer components', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify that the Extracted Header displays telemetry
   await expect(page.locator('text=Queue_Load')).toBeVisible();
@@ -223,7 +258,8 @@ test('Execution and Telemetry providers maintain centralized shell state across 
 });
 
 test('Community Queue data fetching and rendering', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/queue');
+  await page.goto('/queue');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -270,7 +306,7 @@ test('Queue Item component correctly displays entry details matching the design'
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -326,7 +362,7 @@ test('Queue API utilities map correctly to the SocialMention data model and Pock
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
   
   // Ensure the UI renders correctly which implicitly tests the data model mapping via useQueueData/usePocketBase
   await expect(page.locator('.queue-row').first()).toBeVisible();
@@ -359,7 +395,7 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify initial load
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -376,7 +412,7 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
   await expect(page.locator('text=Root::Command_Center')).toBeVisible();
 
   // Navigate back to queue - SWR should render cached data immediately, then revalidate in background
-  await page.goto('/');
+  await page.goto('/queue');
   
   // Implicitly tests caching as UI should re-render fast and the route handler verifies correct background updates
   await expect(page.locator('.queue-row').first()).toBeVisible();
@@ -408,7 +444,7 @@ test('usePocketBase uses SWR instead of raw useEffect', async ({ page }) => {
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify the page title is visible to ensure app loads
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -460,8 +496,8 @@ test('KnowledgeBase, ContentPipeline, and AgentExecutionReports components mount
     });
   });
 
-  await page.goto('/content');
-  await expect(page.locator('h1:has-text("Content Pipeline")')).toBeVisible();
+  await page.goto('/');
+  await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
 
   // Test AgentExecutionReports
   await page.route('**/api/collections/ax_reports/records*', async route => {
@@ -493,7 +529,7 @@ test('Feature hooks correctly implement generic usePocketBase wrapper logic', as
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
   await expect(page.locator('text=Error Loading Data')).not.toBeVisible();
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
 });
@@ -513,7 +549,7 @@ test('Community Queue handles empty states gracefully based on SWR and PocketBas
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
@@ -562,7 +598,7 @@ test("Community Queue View integrates data fetching hook with skeletons and erro
     });
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
 
   // Verify skeletons are visible during load
   const skeletonCount = await page.locator('.queue-row.animate-pulse').count();
@@ -579,7 +615,7 @@ test("Community Queue View integrates data fetching hook with skeletons and erro
     await route.abort('failed');
   });
 
-  await page.goto('/');
+  await page.goto('/queue');
   await expect(page.locator('text=Error Loading Data')).toBeVisible();
 
   await page.screenshot({ path: 'evidence.png' });

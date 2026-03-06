@@ -10,8 +10,8 @@ export interface AppRoute {
 
 export const APP_ROUTES: AppRoute[] = [
   { path: '/dashboard', id: 'Root::Command_Center', icon: 'Home', label: 'Command Center', showInSidebar: true },
-  { path: '/', id: 'Root::Community_Queue', icon: 'Bot', label: 'Community Queue', showInSidebar: true },
-  { path: '/content', id: 'Root::Content_Pipeline', icon: 'FileText', label: 'Content Pipeline', showInSidebar: true },
+  { path: '/queue', id: 'Root::Community_Queue', icon: 'Bot', label: 'Community Queue', showInSidebar: true },
+  { path: '/', id: 'Root::Content_Pipeline', icon: 'FileText', label: 'Content Pipeline', showInSidebar: true },
   { path: '/reports', id: 'Root::Agent_Execution_Reports', icon: 'LineChart', label: 'Agent Execution Reports', showInSidebar: true },
   { path: '/knowledge', id: 'Root::Knowledge_Base', icon: 'Database', label: 'Knowledge Base', showInSidebar: true },
 ];

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Badge } from '../Badge';
 import { ContentPipeline } from '../../types/models';
 
 interface PipelineCardProps {
@@ -7,24 +6,47 @@ interface PipelineCardProps {
 }
 
 export const PipelineCard: React.FC<PipelineCardProps> = ({ content }) => {
+  // Map content status to display state classes
+  const getStatusDisplay = () => {
+    switch(content.status) {
+      case 'published':
+        return { tagClass: 'status-live', label: 'Live', borderClass: 'border-l-terminal-green' };
+      case 'drafting':
+        return { tagClass: 'status-progress', label: 'In Progress', borderClass: 'border-l-accent' };
+      case 'review':
+        return { tagClass: 'status-progress', label: 'Review', borderClass: 'border-l-accent' };
+      default:
+        return { tagClass: 'status-draft', label: content.status, borderClass: 'border-l-slate-800' };
+    }
+  };
+
+  const statusDisplay = getStatusDisplay();
+  const agentId = (content.id.charCodeAt(0) % 2 === 0) ? 'NEXUS_01' : 'ECHO_04'; // Mocked agent assignment based on ID
+
   return (
-    <div className="p-4 bg-background-dark/50 rounded-lg border border-primary/20 hover:border-accent/40 transition-colors flex flex-col h-64">
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-sm font-bold text-slate-100 line-clamp-2 pr-2">{content.title}</h3>
-        <Badge variant={
-          content.status === 'drafting' ? 'outline' :
-          content.status === 'review' ? 'warning' : 'success'
-        }>
-          {content.status}
-        </Badge>
+    <div className={`content-card border-l-2 ${statusDisplay.borderClass}`}>
+      <div className="flex justify-between items-start">
+        <div className="platform-icon">
+          <span className="material-symbols-outlined text-[18px]">article</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {content.status === 'drafting' && <div className="size-1.5 rounded-full bg-accent pulse-cyan"></div>}
+          <span className={`status-tag ${statusDisplay.tagClass}`}>{statusDisplay.label}</span>
+        </div>
       </div>
-      <div className="flex-1 bg-black/40 rounded border border-slate-800 p-3 overflow-hidden relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10"></div>
-        <p className="text-xs text-slate-400 font-mono whitespace-pre-wrap">{content.markdown_body}</p>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+          <span className="text-accent">#{content.id.substring(0, 6).toUpperCase()}</span>
+          <span>•</span>
+          <span>AGNT: {agentId}</span>
+        </div>
+        <h4 className="text-sm font-bold text-white uppercase tracking-tight line-clamp-2">{content.title}</h4>
+        <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+          {content.markdown_body}
+        </p>
       </div>
-      <div className="mt-3 pt-3 border-t border-primary/10 flex justify-between items-center">
-        <span className="text-[10px] text-slate-500 font-mono uppercase">ID: {content.id.substring(0, 8)}</span>
-        <button className="text-xs text-accent hover:text-primary transition-colors font-mono">EDIT</button>
+      <div className="pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[9px]">
+        <span className="text-slate-500 uppercase tracking-widest">{content.status === 'published' ? 'Published' : 'Updated'} recently</span>
       </div>
     </div>
   );
