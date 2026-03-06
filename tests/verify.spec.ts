@@ -599,6 +599,7 @@ test('PipelineStep and PipelineRun interfaces enforce state-driven types', async
   });
 
   await page.goto('/');
+  await page.waitForLoadState('networkidle');
 
   const result = await page.evaluate(async () => {
     // Dynamically fetch using our specific API pattern to verify the structure matches 
@@ -1548,4 +1549,61 @@ test('Define validation schemas for Pipeline requests', async ({ page }) => {
 
   // Take screenshot as required
   await page.screenshot({ path: 'evidence.png' });
+});
+
+test('Create validation schemas and apply them to the Pipeline creation (POST) API route', async ({ page }) => {
+  // Mock the PocketBase route so valid requests succeed
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    if (route.request().method() === 'POST') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'new_pipe_123',
+          title: 'Valid Pipeline',
+          description: 'It passed validation'
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const apiModule = await import('/src/lib/api/pipeline/pipelines.ts');
+    
+    let validSuccess = false;
+    let invalidFailed = false;
+    let errorStatus = null;
+
+    try {
+      await apiModule.createPipeline({
+        title: 'Valid Pipeline',
+        description: 'It passed validation'
+      });
+      validSuccess = true;
+    } catch (e) {
+      validSuccess = false;
+    }
+
+    try {
+      await apiModule.createPipeline({
+        title: '', // Invalid, min length 1
+      });
+    } catch (e: any) {
+      invalidFailed = true;
+      errorStatus = e.status;
+    }
+
+    return { validSuccess, invalidFailed, errorStatus };
+  });
+
+  expect(result.validSuccess).toBe(true);
+  expect(result.invalidFailed).toBe(true);
+  expect(result.errorStatus).toBe(400);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
