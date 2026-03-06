@@ -90,6 +90,52 @@ test('Content Pipeline view layout shell and deep-linking filters are verified',
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('PipelineCard uses semantic icons mapped through Icon component', async ({ page }) => {
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_test_card_icon_1',
+            collectionId: 'content_pipeline_id',
+            collectionName: 'content_pipeline',
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            title: 'Test Icon Card',
+            markdown_body: 'Body text',
+            status: 'published'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Ensure items loaded
+  await expect(page.locator('.content-card').first()).toBeVisible();
+
+  // Validate that the svg icon is present inside the platform-icon div, proving Icon component rendered
+  // instead of a span with class "material-symbols-outlined"
+  const iconSpan = page.locator('.content-card .platform-icon span.inline-flex');
+  await expect(iconSpan).toBeVisible();
+  
+  // Validate it doesn't have material-symbols-outlined
+  await expect(page.locator('.content-card .platform-icon span.material-symbols-outlined')).not.toBeVisible();
+});
+
 test('Content Pipeline API and data models are defined correctly and fetch data', async ({ page }) => {
   await page.route('**/api/collections/content_pipeline/records*', async route => {
     await route.fulfill({

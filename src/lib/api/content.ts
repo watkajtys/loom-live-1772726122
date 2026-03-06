@@ -1,7 +1,7 @@
 import { pb } from '../pocketbase';
 import { ContentPipeline, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
-import { MOCK_CONTENT_ITEMS } from '../contentSimulation';
+import { simulateFetchContentPipeline } from '../contentSimulation';
 
 
 export interface FetchContentOptions {
@@ -27,18 +27,7 @@ export const fetchContentPipeline = async (options: FetchContentOptions = {}): P
     };
   } catch (error) {
     console.warn('Using mock data for Content Pipeline due to error:', error);
-    // Basic mock filtering to allow UI to function
-    let items = [...MOCK_CONTENT_ITEMS];
-    if (filter) {
-      if (filter.includes('status="published"')) items = items.filter(i => i.status === 'published');
-      if (filter.includes('status="drafting"')) items = items.filter(i => i.status === 'drafting' || i.status === 'review');
-      if (filter.includes('status="draft"')) items = items.filter(i => false); // Mock empty state
-      if (filter.includes('~')) items = items.filter(i => filter.includes(i.title) || filter.includes(i.markdown_body)); // simple search
-    }
-    return {
-      items,
-      totalItems: items.length,
-    };
+    return simulateFetchContentPipeline(options);
   }
 };
 

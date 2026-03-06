@@ -22,52 +22,48 @@ import {
 import { DiscordIcon, GitHubIcon, XIcon } from './icons/BrandIcons';
 
 export type SemanticIconName = 
+  | 'discord'
+  | 'github'
+  | 'x'
+  | 'twitter'
   | 'home'
   | 'smart_toy'
+  | 'bot'
   | 'article'
+  | 'filetext'
   | 'analytics'
+  | 'linechart'
   | 'settings_input_component'
+  | 'database'
   | 'terminal'
   | 'schedule'
+  | 'clock'
   | 'notifications'
+  | 'bell'
   | 'hub'
   | 'code'
   | 'alternate_email'
   | 'error'
-  | 'database'
+  | 'alertcircle'
   | 'settings'
   | 'search'
   | 'sort'
   | 'apps'
   | 'refresh'
-  | 'forum'
-  // Support original components names and platform names for backward compatibility if needed, 
-  // or restrict strictly. Based on usage in components like DataViewLayout ('Bot', 'Database', etc) 
-  // and Sidebar routes ('Home', 'FileText', 'LineChart', 'Database')
-  | 'Home'
-  | 'Bot'
-  | 'FileText'
-  | 'LineChart'
-  | 'Database'
-  | 'Terminal'
-  | 'Clock'
-  | 'Bell'
-  | 'AlertCircle'
-  | 'RefreshCw'
-  | 'discord'
-  | 'github'
-  | 'x'
-  | 'twitter';
+  | 'refreshcw'
+  | 'forum';
 
-export type IconName = SemanticIconName;
+// We map components that might be passed in differently (e.g., 'Bot' or 'smart_toy')
+// directly by normalizing the input type.
+export type IconName = SemanticIconName | string;
 
 type IconProps = {
   name: IconName;
   className?: string;
 };
 
-// Normalize names internally to avoid redundant casing map entries
-const iconMap: Record<string, React.ElementType> = {
+// Strongly-typed mapping object
+const iconMap: Record<SemanticIconName, React.ElementType> = {
   discord: DiscordIcon,
   github: GitHubIcon,
   x: XIcon,
@@ -101,7 +97,7 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
-  const normalizedName = name.toLowerCase();
+  const normalizedName = name.toLowerCase() as SemanticIconName;
   const IconComponent = iconMap[normalizedName];
 
   if (!IconComponent) {
@@ -109,8 +105,9 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
     return null;
   }
 
-  // Brand icons have their own wrappers, others need the inline-flex wrapper and sizing
-  if (['discord', 'github', 'x', 'twitter'].includes(normalizedName)) {
+  const isBrandIcon = ['discord', 'github', 'x', 'twitter'].includes(normalizedName);
+
+  if (isBrandIcon) {
     return <span className={className}><IconComponent /></span>;
   }
 

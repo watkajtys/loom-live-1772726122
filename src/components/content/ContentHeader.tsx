@@ -1,40 +1,24 @@
 import React, { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useContentFilters } from '../../hooks/useContentFilters';
 
 export const ContentHeader: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const platformFilter = searchParams.get('platform') || 'all';
-  const agentFilter = searchParams.get('agent') || '';
-  const statusFilter = searchParams.get('status') || '';
-  const searchQuery = searchParams.get('search') || '';
-  const viewMode = searchParams.get('view') || 'standard';
-
-  const setFilter = (key: string, value: string) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value && value !== 'all') {
-      newParams.set(key, value);
-    } else {
-      newParams.delete(key);
-    }
-    setSearchParams(newParams);
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (e.target.value) {
-      newParams.set('search', e.target.value);
-    } else {
-      newParams.delete('search');
-    }
-    setSearchParams(newParams);
-  };
-
-  const platforms = ['All', 'Github', 'X/Twitter', 'Discord'];
-  const agents = ['Nexus_01', 'Echo_04'];
-  const statuses = ['Live', 'Progress', 'Draft'];
-  const views = ['Standard', 'Compact'];
+  const {
+    platformFilter,
+    agentFilter,
+    statusFilter,
+    searchQuery,
+    viewMode,
+    setFilter,
+    handleSearch,
+    platforms,
+    agents,
+    statuses,
+    views,
+  } = useContentFilters();
 
   return (
     <header className="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">

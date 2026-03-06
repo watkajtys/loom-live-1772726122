@@ -1,5 +1,6 @@
 import React from 'react';
 import { ContentPipeline } from '../../types/models';
+import { Icon, SemanticIconName } from '../Icon';
 
 interface CompactPipelineCardProps {
   content: ContentPipeline;
@@ -22,14 +23,14 @@ export const CompactPipelineCard: React.FC<CompactPipelineCardProps> = ({ conten
   const statusDisplay = getStatusDisplay();
   
   // Assign a consistent random-looking platform icon based on ID length/characters for visual variety as in design
-  const icons = ['terminal', 'alternate_email', 'forum', 'article'];
+  const icons: SemanticIconName[] = ['terminal', 'alternate_email', 'forum', 'article'];
   const iconIndex = content.id ? content.id.charCodeAt(0) % icons.length : 3;
   const platformIcon = icons[iconIndex];
 
   return (
     <div className={`compact-log-card ${statusDisplay.borderClass}`}>
       <div className="mini-platform-icon">
-        <span className="material-symbols-outlined text-[14px]">{platformIcon}</span>
+        <Icon name={platformIcon} className="text-[14px]" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">

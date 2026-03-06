@@ -14,6 +14,32 @@ export const generateMockContentData = (overrides: Partial<ContentPipeline> = {}
   };
 };
 
+export const simulateFetchContentPipeline = (options: { filter?: string; sort?: string; page?: number; perPage?: number }) => {
+  const { filter } = options;
+  let items = [...MOCK_CONTENT_ITEMS];
+  
+  if (filter) {
+    if (filter.includes('status="published"')) items = items.filter(i => i.status === 'published');
+    if (filter.includes('status="drafting"')) items = items.filter(i => i.status === 'drafting' || i.status === 'review');
+    if (filter.includes('status="draft"')) items = items.filter(i => false); // Mock empty state
+    
+    // Simple mock search simulation
+    const searchMatch = filter.match(/~ "([^"]+)"/);
+    if (searchMatch && searchMatch[1]) {
+      const searchTerm = searchMatch[1].toLowerCase();
+      items = items.filter(i => 
+        i.title.toLowerCase().includes(searchTerm) || 
+        i.markdown_body.toLowerCase().includes(searchTerm)
+      );
+    }
+  }
+  
+  return {
+    items,
+    totalItems: items.length,
+  };
+};
+
 export const MOCK_CONTENT_ITEMS: ContentPipeline[] = [
   generateMockContentData({
     id: 'mock_content_nexus_1',

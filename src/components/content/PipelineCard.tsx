@@ -1,5 +1,6 @@
 import React from 'react';
 import { ContentPipeline } from '../../types/models';
+import { Icon } from '../Icon';
 
 interface PipelineCardProps {
   content: ContentPipeline;
@@ -27,7 +28,7 @@ export const PipelineCard: React.FC<PipelineCardProps> = ({ content }) => {
     <div className={`content-card border-l-2 ${statusDisplay.borderClass}`}>
       <div className="flex justify-between items-start">
         <div className="platform-icon">
-          <span className="material-symbols-outlined text-[18px]">article</span>
+          <Icon name="article" className="text-[18px]" />
         </div>
         <div className="flex items-center gap-2">
           {content.status === 'drafting' && <div className="size-1.5 rounded-full bg-accent pulse-cyan"></div>}
