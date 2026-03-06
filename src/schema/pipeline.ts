@@ -224,3 +224,16 @@ export const UpdatePipelineRequestSchema = z.object({
 
 export type CreatePipelineRequestDTO = z.infer<typeof CreatePipelineRequestSchema>;
 export type UpdatePipelineRequestDTO = z.infer<typeof UpdatePipelineRequestSchema>;
+
+// Pipeline GET / DELETE options
+
+export const FetchPipelinesOptionsSchema = z.object({
+  page: z.number().int().min(1).optional(),
+  perPage: z.number().int().min(1).max(500).optional(),
+  filter: z.string().optional(),
+  sort: z.string().optional(),
+});
+
+export const DeletePipelineIdSchema = z.string().min(1, 'Pipeline ID is required');
+
+export type FetchPipelinesOptionsDTO = z.infer<typeof FetchPipelinesOptionsSchema>;

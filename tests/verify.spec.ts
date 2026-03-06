@@ -1814,3 +1814,105 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+test('Apply validation schemas for parameters and queries to GET and DELETE Pipeline API routes', async ({ page }) => {
+  // Mock the PocketBase route so valid requests succeed
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          items: [],
+          totalItems: 0
+        })
+      });
+    } else if (route.request().method() === 'DELETE') {
+      await route.fulfill({
+        status: 204, // PocketBase returns 204 no content
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+    
+    let validGetSuccess = false;
+    let getInvalidFailed = false;
+    let getErrorStatus = null;
+
+    let validDeleteSuccess = false;
+    let deleteInvalidFailed = false;
+    let deleteErrorStatus = null;
+
+    // Test GET options validation
+    try {
+      await pipelinesApi.fetchPipelines({
+        page: 1,
+        perPage: 50,
+        sort: '-created'
+      });
+      validGetSuccess = true;
+    } catch (e: any) {
+      validGetSuccess = false;
+    }
+
+    try {
+      await pipelinesApi.fetchPipelines({
+        page: -1, // Invalid page number
+      });
+    } catch (e: any) {
+      getInvalidFailed = true;
+      getErrorStatus = e.status;
+    }
+
+    // Test DELETE id validation
+    try {
+      // Sometimes PocketBase's JS SDK throws on 204 if it tries to parse JSON.
+      // We wrap the mock in a try/catch, if it's not a ValidationError it's considered valid
+      // or we can mock it differently to avoid PocketBase parsing errors if that's what's happening
+      // Let's actually just mock pb.collection.delete to return true
+      const pbModule = await import('/src/lib/pocketbase.ts');
+      
+      const originalDelete = pbModule.pb.collection('pipelines').delete;
+      pbModule.pb.collection('pipelines').delete = async () => true;
+
+      await pipelinesApi.deletePipeline('valid_id_123');
+      validDeleteSuccess = true;
+
+      pbModule.pb.collection('pipelines').delete = originalDelete;
+    } catch (e: any) {
+      validDeleteSuccess = false;
+    }
+
+    try {
+      await pipelinesApi.deletePipeline(''); // Invalid empty id
+    } catch (e: any) {
+      deleteInvalidFailed = true;
+      deleteErrorStatus = e.status;
+    }
+
+    return { 
+      validGetSuccess, 
+      getInvalidFailed, 
+      getErrorStatus,
+      validDeleteSuccess,
+      deleteInvalidFailed,
+      deleteErrorStatus
+    };
+  });
+
+  expect(result.validGetSuccess).toBe(true);
+  expect(result.getInvalidFailed).toBe(true);
+  expect(result.getErrorStatus).toBe(400);
+
+  expect(result.validDeleteSuccess).toBe(true);
+  expect(result.deleteInvalidFailed).toBe(true);
+  expect(result.deleteErrorStatus).toBe(400);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
