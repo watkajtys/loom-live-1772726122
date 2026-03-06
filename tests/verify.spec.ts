@@ -511,6 +511,62 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
   await page.screenshot({ path: 'evidence.png' });
 });
 
+test('Define validation schemas for Pipeline entities', async ({ page }) => {
+  await page.goto('/');
+
+  const validationResults = await page.evaluate(async () => {
+    // Dynamic import to fetch the new Zod schemas directly inside the browser
+    const schemaModule = await import('/src/schema/pipeline.ts');
+
+    const validPipeline = {
+      title: 'Valid Pipeline',
+      description: 'A test pipeline',
+      config: {
+        color: '#ff0000',
+        icon: 'test-icon',
+        is_active: true
+      }
+    };
+
+    const invalidPipeline = {
+      title: '', // Title is required and minimum 1 char
+      description: 'An invalid pipeline',
+      config: {
+        is_active: 'yes' // Should be a boolean
+      }
+    };
+
+    let isValidPipelinePassed = false;
+    let isInvalidPipelineFailed = false;
+
+    try {
+      schemaModule.CreatePipelineSchema.parse(validPipeline);
+      isValidPipelinePassed = true;
+    } catch (e) {
+      isValidPipelinePassed = false;
+    }
+
+    try {
+      schemaModule.CreatePipelineSchema.parse(invalidPipeline);
+      // Should not reach here
+      isInvalidPipelineFailed = false;
+    } catch (e) {
+      // It should fail
+      isInvalidPipelineFailed = true;
+    }
+
+    return {
+      isValidPipelinePassed,
+      isInvalidPipelineFailed
+    };
+  });
+
+  expect(validationResults.isValidPipelinePassed).toBe(true);
+  expect(validationResults.isInvalidPipelineFailed).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('PipelineStep and PipelineRun interfaces enforce state-driven types', async ({ page }) => {
   // Test that the newly added TypeScript discriminated union interfaces for PipelineStep 
   // and PipelineRun correctly define their states without runtime errors in the API fetches.

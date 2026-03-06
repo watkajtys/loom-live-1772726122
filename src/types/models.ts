@@ -45,17 +45,28 @@ export type KnowledgeSource = RecordModel & {
   last_synced: string;
 };
 
+import {
+  CreatePipelineDTO as SchemaCreatePipelineDTO,
+  UpdatePipelineDTO as SchemaUpdatePipelineDTO,
+  CreatePipelineStageDTO as SchemaCreatePipelineStageDTO,
+  UpdatePipelineStageDTO as SchemaUpdatePipelineStageDTO,
+  CreatePipelineCardDTO as SchemaCreatePipelineCardDTO,
+  UpdatePipelineCardDTO as SchemaUpdatePipelineCardDTO,
+  CreatePipelineStepDTO as SchemaCreatePipelineStepDTO,
+  UpdatePipelineStepDTO as SchemaUpdatePipelineStepDTO,
+  CreatePipelineRunDTO as SchemaCreatePipelineRunDTO,
+  UpdatePipelineRunDTO as SchemaUpdatePipelineRunDTO,
+  PipelineConfig
+} from '../schema/pipeline';
+
 export type Pipeline = RecordModel & {
   title: string;
   description?: string;
+  config?: PipelineConfig;
 };
 
-export interface CreatePipelineDTO {
-  title: string;
-  description?: string;
-}
-
-export interface UpdatePipelineDTO extends Partial<CreatePipelineDTO> {}
+export type CreatePipelineDTO = SchemaCreatePipelineDTO;
+export type UpdatePipelineDTO = SchemaUpdatePipelineDTO;
 
 export type PipelineStage = RecordModel & {
   pipeline_id: string; // relation
@@ -63,13 +74,8 @@ export type PipelineStage = RecordModel & {
   position: number;
 };
 
-export interface CreatePipelineStageDTO {
-  pipeline_id: string;
-  title: string;
-  position: number;
-}
-
-export interface UpdatePipelineStageDTO extends Partial<CreatePipelineStageDTO> {}
+export type CreatePipelineStageDTO = SchemaCreatePipelineStageDTO;
+export type UpdatePipelineStageDTO = SchemaUpdatePipelineStageDTO;
 
 export type PipelineCard = RecordModel & {
   stage_id: string; // relation
@@ -78,14 +84,8 @@ export type PipelineCard = RecordModel & {
   position: number;
 };
 
-export interface CreatePipelineCardDTO {
-  stage_id: string;
-  title: string;
-  content: string;
-  position: number;
-}
-
-export interface UpdatePipelineCardDTO extends Partial<CreatePipelineCardDTO> {}
+export type CreatePipelineCardDTO = SchemaCreatePipelineCardDTO;
+export type UpdatePipelineCardDTO = SchemaUpdatePipelineCardDTO;
 
 type PipelineStepBase = RecordModel & {
   card_id: string; // relation
@@ -101,15 +101,8 @@ export type PipelineStep = PipelineStepBase & (
   | { status: 'failed' }
 );
 
-export interface CreatePipelineStepDTO {
-  card_id: string;
-  title: string;
-  description?: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'failed';
-  position: number;
-}
-
-export interface UpdatePipelineStepDTO extends Partial<CreatePipelineStepDTO> {}
+export type CreatePipelineStepDTO = SchemaCreatePipelineStepDTO;
+export type UpdatePipelineStepDTO = SchemaUpdatePipelineStepDTO;
 
 type PipelineRunBase = RecordModel & {
   pipeline_id: string; // relation
@@ -122,12 +115,5 @@ export type PipelineRun = PipelineRunBase & (
   | { status: 'failed'; completed_at: string; log: string }
 );
 
-export interface CreatePipelineRunDTO {
-  pipeline_id: string;
-  status: 'running' | 'completed' | 'failed';
-  started_at: string;
-  completed_at?: string;
-  log?: string;
-}
-
-export interface UpdatePipelineRunDTO extends Partial<CreatePipelineRunDTO> {}
+export type CreatePipelineRunDTO = SchemaCreatePipelineRunDTO;
+export type UpdatePipelineRunDTO = SchemaUpdatePipelineRunDTO;
