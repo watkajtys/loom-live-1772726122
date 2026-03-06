@@ -1,5 +1,5 @@
 import { pb } from '../pocketbase';
-import { ContentPipeline } from '../../types/models';
+import { ContentPipeline, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
 
 export interface FetchContentOptions {
@@ -22,4 +22,16 @@ export const fetchContentPipeline = async (options: FetchContentOptions = {}): P
     items: result.items,
     totalItems: result.totalItems,
   };
+};
+
+export const createContentPipeline = async (data: CreateContentPipelineDTO): Promise<ContentPipeline> => {
+  return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).create<ContentPipeline>(data);
+};
+
+export const updateContentPipeline = async (id: string, data: UpdateContentPipelineDTO): Promise<ContentPipeline> => {
+  return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).update<ContentPipeline>(id, data);
+};
+
+export const deleteContentPipeline = async (id: string): Promise<boolean> => {
+  return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).delete(id);
 };

@@ -58,6 +58,50 @@ test('Queue Header/Controls component (search, filter, sort buttons)', async ({ 
   await page.screenshot({ path: 'evidence.png' });
 });
 
+test('Content Pipeline API and data models are defined correctly and fetch data', async ({ page }) => {
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'mock_content_1',
+            collectionId: 'content_pipeline_id',
+            collectionName: 'content_pipeline',
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            title: 'Test Content Title',
+            markdown_body: '# This is a test body',
+            status: 'drafting'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/content');
+
+  // Verify the page title is visible
+  await expect(page.locator('h1:has-text("Content Pipeline")')).toBeVisible();
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Ensure items loaded
+  await expect(page.locator('text=Test Content Title')).toBeVisible();
+
+  // Take the required screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});
+
 test('Theme logic is correctly abstracted for colors', async ({ page }) => {
   // Mock PocketBase API response to generate an item in drafting
   await page.route('**/api/collections/social_mentions/records*', async route => {

@@ -9,11 +9,19 @@ export type SocialMention = RecordModel & {
   priority: number;
 };
 
-export type ContentPipeline = RecordModel & {
+export interface ContentPipeline extends RecordModel {
   title: string;
   markdown_body: string;
   status: 'drafting' | 'review' | 'published';
-};
+}
+
+export interface CreateContentPipelineDTO {
+  title: string;
+  markdown_body: string;
+  status: 'drafting' | 'review' | 'published';
+}
+
+export interface UpdateContentPipelineDTO extends Partial<CreateContentPipelineDTO> {}
 
 export type AXReport = RecordModel & {
   error_log: string;
