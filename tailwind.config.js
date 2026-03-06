@@ -12,6 +12,8 @@ export default {
         "accent": "#00f2ff",
         "background-light": "#f5f6f8",
         "background-dark": "#0a0c10",
+        "obsidian": "#0a0c10",
+        "terminal-green": "#4ade80",
       },
       fontFamily: {
         "sans": ["Space Grotesk", "sans-serif"],

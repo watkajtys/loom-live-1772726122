@@ -8,6 +8,21 @@
     backdrop-filter: blur(8px);
     border: 1px solid rgba(0, 242, 255, 0.1);
   }
+  .queue-row {
+      @apply flex items-center gap-6 p-4 border border-accent/20 bg-obsidian/60 hover:bg-accent/5 transition-all duration-200 rounded-sm relative overflow-hidden;
+      box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.05);
+  }
+  .queue-row::before {
+      content: '';
+      @apply absolute left-0 top-0 w-[2px] h-full bg-accent opacity-50;
+  }
+  .micro-btn {
+      @apply px-3 py-1 text-[10px] font-mono border border-slate-700 hover:border-accent hover:text-accent transition-colors uppercase tracking-widest bg-black/40;
+  }
+  .status-pulse {
+      @apply size-2 rounded-full bg-terminal-green;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {
