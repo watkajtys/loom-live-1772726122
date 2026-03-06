@@ -1,5 +1,6 @@
 import React from 'react';
 import { useContentPipelineView } from '../hooks/useContentPipelineView';
+import { usePipelineStages } from '../hooks/usePipelineStages';
 import { ContentGrid } from '../components/content/ContentGrid';
 import { ContentBoard } from '../components/content/ContentBoard';
 import { ContentHeader } from '../components/content/ContentHeader';
@@ -12,12 +13,18 @@ export const ContentPipeline: React.FC = () => {
     collapsedStages,
     toggleCollapse,
     data,
-    draftingData,
-    reviewData,
-    liveData,
-    loading,
-    error,
+    loading: contentLoading,
+    error: contentError,
   } = useContentPipelineView();
+
+  const {
+    data: stages,
+    loading: stagesLoading,
+    error: stagesError
+  } = usePipelineStages({ pipeline_id: 'default_pipeline' }); 
+
+  const loading = contentLoading || stagesLoading;
+  const error = contentError || stagesError;
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#020305] text-slate-100 font-display selection:bg-accent/30 selection:text-accent relative overflow-hidden">
@@ -28,7 +35,7 @@ export const ContentPipeline: React.FC = () => {
         icon="file-text"
         loading={loading}
         error={error}
-        isEmpty={data.length === 0}
+        isEmpty={data.length === 0 && stages.length === 0}
         customHeader={<ContentHeader />}
         customFooter={<ContentFooter />}
         containerClassName="flex-1 flex flex-col mx-4 my-4 z-10"
@@ -36,11 +43,10 @@ export const ContentPipeline: React.FC = () => {
         contentClassName={`flex-1 overflow-hidden relative z-10 ${viewMode === 'compact' ? 'flex bg-black/20 overflow-x-auto custom-scrollbar' : 'overflow-y-auto custom-scrollbar p-6'}`}
       >
         {data.length > 0 && viewMode !== 'compact' && <ContentGrid data={data} />}
-        {data.length > 0 && viewMode === 'compact' && (
+        {stages.length > 0 && viewMode === 'compact' && (
           <ContentBoard
-            draftingData={draftingData}
-            reviewData={reviewData}
-            liveData={liveData}
+            data={data}
+            stages={stages}
             collapsedStages={collapsedStages}
             toggleCollapse={toggleCollapse}
           />

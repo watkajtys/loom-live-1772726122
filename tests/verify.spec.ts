@@ -818,6 +818,24 @@ test('Compact Pipeline Card view toggles correctly and renders design', async ({
   page.on('console', msg => console.log('PAGE LOG:', msg.text()));
   page.on('pageerror', err => console.log('PAGE ERROR:', err.message));
   // Setup mock data for reliable testing
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 3,
+        totalPages: 1,
+        items: [
+          { id: 'stage_draft', pipeline_id: 'default_pipeline', title: 'Drafting', position: 1 },
+          { id: 'stage_review', pipeline_id: 'default_pipeline', title: 'Review Pipeline', position: 2 },
+          { id: 'stage_live', pipeline_id: 'default_pipeline', title: 'Live Nodes', position: 3 }
+        ]
+      })
+    });
+  });
+
   await page.route('**/api/collections/content_pipeline/records*', async route => {
     await route.fulfill({
       status: 200,
@@ -894,6 +912,24 @@ test('Compact Pipeline Card view toggles correctly and renders design', async ({
 
 test('Implement the Pipeline Stage (Column) UI component', async ({ page }) => {
   // Mock data for the content pipeline
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 3,
+        totalPages: 1,
+        items: [
+          { id: 'stage_draft', pipeline_id: 'default_pipeline', title: 'Drafting', position: 1 },
+          { id: 'stage_review', pipeline_id: 'default_pipeline', title: 'Review Pipeline', position: 2 },
+          { id: 'stage_live', pipeline_id: 'default_pipeline', title: 'Live Nodes', position: 3 }
+        ]
+      })
+    });
+  });
+
   await page.route('**/api/collections/content_pipeline/records*', async route => {
     await route.fulfill({
       status: 200,
@@ -957,7 +993,7 @@ test('Implement the Pipeline Stage (Column) UI component', async ({ page }) => {
   await page.waitForTimeout(500);
 
   // Verify URL updated with deep linking state
-  await expect(page).toHaveURL(/collapsed=review/);
+  await expect(page).toHaveURL(/collapsed=stage_review/);
 
   // Take a screenshot as requested
   await page.screenshot({ path: 'evidence.png' });
@@ -968,6 +1004,20 @@ test('ContentPipeline refactored hooks and DataViewLayout integration', async ({
   // and the DataViewLayout component, and handles empty states and business logic correctly.
   
   // 1. Mock the API to return no records to test empty state
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+  
   await page.route('**/api/collections/content_pipeline/records*', async route => {
     await route.fulfill({
       status: 200,

@@ -9,9 +9,51 @@ const brandIconMap = {
   twitter: XIcon,
 } as const;
 
+// Provide an explicit mapping to prevent brittle string manipulation.
+// Maps our Semantic or legacy names directly to exact keys in dynamicIconImports.
+const semanticIconMap: Record<string, keyof typeof dynamicIconImports> = {
+  // Navigation / Shell
+  'home': 'house',
+  'settings': 'settings',
+  'terminal': 'terminal',
+  'line-chart': 'chart-line',
+  
+  // Content Pipeline / Queue
+  'file-edit': 'file-pen',
+  'file-text': 'file-text',
+  'message-square': 'message-square',
+  'radio': 'radio',
+  'layout-grid': 'layout-grid',
+  'trending-up': 'trending-up',
+  'bell': 'bell',
+  'code': 'code',
+  'share': 'share',
+  'check-square': 'square-check',
+  'alert-circle': 'circle-alert',
+  
+  // Knowledge Base / Reports
+  'database': 'database',
+  'refresh-cw': 'refresh-cw',
+  'search': 'search',
+  'filter': 'filter',
+  'arrow-up': 'arrow-up',
+  'arrow-down': 'arrow-down',
+  'clock': 'clock',
+  'check-circle': 'circle-check',
+  'x-circle': 'circle-x',
+  'more-vertical': 'more-vertical',
+  'more-horizontal': 'more-horizontal',
+  'plus': 'plus',
+  'minus': 'minus',
+  'trash-2': 'trash-2',
+  'edit-2': 'pen',
+  'edit-3': 'pen-line',
+  'circle-dashed': 'circle-dashed',
+};
+
 const iconCache = new Map<string, React.LazyExoticComponent<React.ComponentType<any>>>();
 
-export type SemanticIconName = keyof typeof brandIconMap | keyof typeof dynamicIconImports;
+export type SemanticIconName = keyof typeof brandIconMap | keyof typeof semanticIconMap | keyof typeof dynamicIconImports;
 export type IconName = SemanticIconName | string;
 
 type IconProps = {
@@ -28,19 +70,8 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
     return <span className={className}><BrandComponent /></span>;
   }
 
-  // Use normalized name directly to map to Lucide icons, translating TitleCase to kebab-case just in case
-  let lucideName = name.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-  
-  // Fallback map for legacy titles
-  const legacyMap: Record<string, string> = {
-    'home': 'home',
-    'line-chart': 'line-chart',
-    'file-edit': 'file-edit',
-    'alert-circle': 'alert-circle',
-    'check-square': 'check-square',
-    'file-text': 'file-text'
-  };
-  lucideName = legacyMap[lucideName] || lucideName;
+  // Resolve Lucide name either through our strict semantic map, or check if it matches exactly
+  const lucideName = semanticIconMap[normalizedName] || normalizedName;
 
   // Render Lucide dynamically
   if (lucideName in dynamicIconImports) {

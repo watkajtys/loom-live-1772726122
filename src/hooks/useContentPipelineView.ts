@@ -1,13 +1,17 @@
+import { useContentFilters } from './useContentFilters';
 import { useUrlState } from './useUrlState';
 import { useContentPipeline } from './useContentPipeline';
 import { pb } from '../lib/pocketbase';
 
 export const useContentPipelineView = () => {
   const { searchParams, setSearchParams } = useUrlState();
-  const search = searchParams.get('search') || '';
-  const statusFilter = searchParams.get('status') || '';
-  const agentFilter = searchParams.get('agent') || '';
-  const viewMode = searchParams.get('view') || 'standard';
+  const {
+    platformFilter,
+    agentFilter,
+    statusFilter,
+    searchQuery: search,
+    viewMode,
+  } = useContentFilters();
   
   let filterString = '';
   const filters: string[] = [];
@@ -16,12 +20,23 @@ export const useContentPipelineView = () => {
     filters.push(pb.filter('(title ~ {:search} || markdown_body ~ {:search})', { search }));
   }
 
-  if (statusFilter === 'live') {
+  const normalizedStatus = statusFilter.toLowerCase();
+  if (normalizedStatus === 'live') {
     filters.push(pb.filter('status="published"'));
-  } else if (statusFilter === 'progress') {
+  } else if (normalizedStatus === 'progress') {
     filters.push(pb.filter('(status="drafting" || status="review")'));
-  } else if (statusFilter === 'draft') {
+  } else if (normalizedStatus === 'draft') {
     filters.push(pb.filter('status="draft"'));
+  }
+
+  if (platformFilter !== 'all' && platformFilter) {
+    // The underlying ContentPipeline might not have a platform filter out of the box, 
+    // but typically we'd use 'platformIcon' or similar if they relate. 
+    // Omitted to prevent invalid schema requests if 'platform' doesn't exist, as per previous state.
+  }
+
+  if (agentFilter && agentFilter.toLowerCase() !== 'all') {
+    filters.push(pb.filter('agentId={:agent}', { agent: agentFilter }));
   }
 
   if (filters.length > 0) {
@@ -53,10 +68,6 @@ export const useContentPipelineView = () => {
     subscribe: true,
   });
 
-  const draftingData = data.filter((item) => item.status === 'drafting');
-  const reviewData = data.filter((item) => item.status === 'review');
-  const liveData = data.filter((item) => item.status === 'published');
-
   return {
     search,
     statusFilter,
@@ -65,9 +76,6 @@ export const useContentPipelineView = () => {
     collapsedStages,
     toggleCollapse,
     data,
-    draftingData,
-    reviewData,
-    liveData,
     loading,
     error,
   };
