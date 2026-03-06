@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Content Pipeline: Grid Deck</title>
+<title>Advoloom Content Pipeline: Compact System-Log</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -38,20 +38,8 @@
                 border: 1px solid rgba(0, 242, 255, 0.2);
                 box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.02);
             }
-            .content-card {
-                @apply glass-panel p-5 relative overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-white/[0.02] flex flex-col gap-4;
-            }
-            .status-tag {
-                @apply text-[9px] font-mono px-2 py-0.5 border uppercase tracking-widest;
-            }
-            .status-live {
-                @apply border-terminal-green/30 text-terminal-green bg-terminal-green/5;
-            }
-            .status-progress {
-                @apply border-accent/30 text-accent bg-accent/5;
-            }
-            .status-draft {
-                @apply border-white/10 text-slate-500 bg-white/5;
+            .compact-log-card {
+                @apply glass-panel py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12;
             }
             .filter-group {
                 @apply flex items-center gap-2 px-3 border-r border-white/10 last:border-r-0;
@@ -74,17 +62,14 @@
             .custom-scrollbar::-webkit-scrollbar-thumb {
                 background: rgba(0, 242, 255, 0.1);
             }
-            .platform-icon {
-                @apply size-8 flex items-center justify-center border border-white/10 bg-black/40 text-slate-400;
+            .mini-platform-icon {
+                @apply size-6 flex items-center justify-center bg-black/40 border border-white/5 text-slate-400 shrink-0;
             }
-            .pulse-cyan {
-                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4);
-                animation: pulse 2s infinite;
+            .sparkline-container {
+                @apply flex items-end gap-[1px] h-3 w-12 shrink-0;
             }
-            @keyframes pulse {
-                0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); }
-                70% { box-shadow: 0 0 0 6px rgba(0, 242, 255, 0); }
-                100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
+            .spark-bar {
+                @apply w-1 bg-accent/40 rounded-t-[0.5px];
             }
         }
     </style>
@@ -96,256 +81,212 @@
 <div class="flex items-center gap-8">
 <div class="space-y-0.5">
 <div class="flex items-center gap-2">
-<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">ROUTE::/CONTENT-PIPELINE</span>
+<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">LOG_MODE::DENSITY_HIGH</span>
 </div>
-<h2 class="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">Content Deck</h2>
+<h2 class="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">System Logs</h2>
 </div>
 <div class="h-10 w-px bg-white/10"></div>
 <div class="flex items-center">
 <div class="filter-group">
-<span class="command-label">PLATFORM</span>
+<span class="command-label">VIEW</span>
 <div class="flex gap-1">
-<button class="command-btn active">All</button>
-<button class="command-btn">Github</button>
-<button class="command-btn">X/Twitter</button>
-<button class="command-btn">Discord</button>
+<button class="command-btn">Standard</button>
+<button class="command-btn active">Compact</button>
 </div>
 </div>
 <div class="filter-group">
-<span class="command-label">AGENT</span>
+<span class="command-label">SORT</span>
 <div class="flex gap-1">
-<button class="command-btn">Nexus_01</button>
-<button class="command-btn">Echo_04</button>
-</div>
-</div>
-<div class="filter-group">
-<span class="command-label">STATUS</span>
-<div class="flex gap-1">
-<button class="command-btn">Live</button>
-<button class="command-btn active">Progress</button>
+<button class="command-btn active">Latest</button>
+<button class="command-btn">ID</button>
+<button class="command-btn">Status</button>
 </div>
 </div>
 </div>
 </div>
 <div class="flex items-center gap-6 font-mono text-[10px]">
 <div class="flex items-center gap-4">
-<div class="text-right">
-<span class="text-slate-500 text-[8px] uppercase tracking-widest block leading-none">QUEUE_LOAD</span>
-<span class="text-accent font-bold">0xAF24</span>
-</div>
-<div class="h-6 w-px bg-white/5"></div>
 <div class="relative flex items-center">
 <span class="material-symbols-outlined absolute left-2 text-[14px] text-slate-500 pointer-events-none">search</span>
-<input class="bg-white/5 border border-white/10 focus:border-accent/50 focus:ring-0 text-[10px] font-mono text-accent placeholder:text-slate-600 w-48 h-8 pl-7 transition-all" placeholder="FILTER_CARDS..." type="text"/>
+<input class="bg-white/5 border border-white/10 focus:border-accent/50 focus:ring-0 text-[10px] font-mono text-accent placeholder:text-slate-600 w-64 h-8 pl-7 transition-all uppercase" placeholder="QUICK_SEARCH..." type="text"/>
 </div>
 </div>
 </div>
 </header>
-<main class="flex-1 overflow-y-auto custom-scrollbar p-6 relative z-10">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-<div class="content-card border-l-2 border-l-terminal-green">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">terminal</span>
+<main class="flex-1 overflow-y-auto custom-scrollbar p-4 relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+<div class="compact-log-card border-l-terminal-green">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
 </div>
-<span class="status-tag status-live">Live</span>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#PR_9022</span>
-<span>â¢</span>
-<span>AGNT: NEXUS_01</span>
-</div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">Streamlining Webhooks: V2 Schema Migration Documentation</h4>
-<p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">Automated PR for the core SDK repository updating all webhook examples to follow the new 2024 security standards.</p>
-</div>
-<div class="pt-4 border-t border-white/5 flex items-center justify-between">
-<div class="flex -space-x-2">
-<div class="size-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-[8px] font-mono">JS</div>
-<div class="size-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-[8px] font-mono">TS</div>
-</div>
-<span class="text-[9px] font-mono text-slate-500">2h ago</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-accent font-bold shrink-0">#PR_9022</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">V2 Schema Migration Docs</h4>
 </div>
 </div>
-<div class="content-card border-l-2 border-l-accent">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">alternate_email</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="size-1.5 rounded-full bg-accent pulse-cyan"></div>
-<span class="status-tag status-progress">In Progress</span>
+<div class="sparkline-container">
+<div class="spark-bar h-1"></div>
+<div class="spark-bar h-2"></div>
+<div class="spark-bar h-3 bg-terminal-green"></div>
+<div class="spark-bar h-1.5"></div>
+<div class="spark-bar h-2.5"></div>
 </div>
 </div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#THREAD_A4</span>
-<span>â¢</span>
-<span>AGNT: ECHO_04</span>
+<div class="compact-log-card border-l-accent">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">alternate_email</span>
 </div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">Developer Experience: Why Latency Matters in 2024</h4>
-<div class="w-full h-24 bg-white/5 border border-white/5 relative overflow-hidden group">
-<div class="absolute inset-0 flex items-center justify-center">
-<span class="material-symbols-outlined text-slate-700">image</span>
-</div>
-<div class="absolute bottom-0 left-0 w-2/3 h-1 bg-accent"></div>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-accent font-bold shrink-0">#TH_A4</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">Latency Matters 2024</h4>
 </div>
 </div>
-<div class="pt-2 flex items-center justify-between">
-<span class="text-[9px] font-mono text-accent">REFINING_HOOKS...</span>
-<span class="text-[9px] font-mono text-slate-500">Draft 03</span>
+<div class="w-16 h-1 bg-white/5 shrink-0 relative overflow-hidden">
+<div class="absolute inset-0 bg-accent w-[75%]"></div>
 </div>
 </div>
-<div class="content-card border-l-2 border-l-accent">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">forum</span>
+<div class="compact-log-card border-l-slate-700">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">forum</span>
 </div>
-<span class="status-tag status-progress">Draft</span>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#ANN_66</span>
-<span>â¢</span>
-<span>AGNT: NEXUS_01</span>
-</div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">New Community Bounty Program Announcement</h4>
-<p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">Drafting the announcement for the $50k Developer Bounty program across all official channels.</p>
-</div>
-<div class="flex gap-2">
-<span class="px-2 py-0.5 border border-white/10 text-[8px] font-mono text-slate-400">PRIORITY_HIGH</span>
-<span class="px-2 py-0.5 border border-white/10 text-[8px] font-mono text-slate-400">BOUNTY</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-slate-500 font-bold shrink-0">#ANN_66</span>
+<h4 class="text-[11px] font-bold text-slate-300 uppercase truncate tracking-tight">Community Bounty Program</h4>
 </div>
 </div>
-<div class="content-card border-l-2 border-l-terminal-green">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">article</span>
+<div class="text-[9px] font-mono text-slate-500 shrink-0 uppercase tracking-tighter">DRAFT</div>
 </div>
-<span class="status-tag status-live">Live</span>
+<div class="compact-log-card border-l-terminal-green">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">article</span>
 </div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#POST_128</span>
-<span>â¢</span>
-<span>AGNT: ECHO_04</span>
-</div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">Case Study: 0xScale Infrastructure Migration</h4>
-<p class="text-xs text-slate-400 line-clamp-4 leading-relaxed">A deep dive into how our agents managed the infrastructure migration for 0xScale without a single second of downtime. Includes architectural diagrams and cost analysis.</p>
-</div>
-<div class="pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[9px]">
-<span class="text-terminal-green uppercase">9.2k Views</span>
-<span class="text-slate-500">Published 5h ago</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-accent font-bold shrink-0">#P_128</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">0xScale Infra Migration</h4>
 </div>
 </div>
-<div class="content-card border-l-2 border-l-accent">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">terminal</span>
-</div>
-<span class="status-tag status-progress">Building</span>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#ISSUE_442</span>
-<span>â¢</span>
-<span>AGNT: NEXUS_01</span>
-</div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">Bug: Memory Leak in React-Native Adapter</h4>
-<div class="flex flex-col gap-1">
-<div class="w-full h-1 bg-white/5">
-<div class="h-full bg-accent" style="width: 65%"></div>
-</div>
-<div class="flex justify-between text-[8px] font-mono text-slate-500">
-<span>ANALYZING_TRACE</span>
-<span>65%</span>
+<div class="sparkline-container">
+<div class="spark-bar h-3 bg-terminal-green"></div>
+<div class="spark-bar h-2.5 bg-terminal-green"></div>
+<div class="spark-bar h-3 bg-terminal-green"></div>
+<div class="spark-bar h-3.5 bg-terminal-green"></div>
+<div class="spark-bar h-3 bg-terminal-green"></div>
 </div>
 </div>
+<div class="compact-log-card border-l-accent">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-accent font-bold shrink-0">#IS_442</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">React-Native Leak Fix</h4>
 </div>
 </div>
-<div class="content-card border-l-2 border-l-terminal-green">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">alternate_email</span>
-</div>
-<span class="status-tag status-live">Live</span>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#TWEET_X1</span>
-<span>â¢</span>
-<span>AGNT: ECHO_04</span>
-</div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">Weekly Alpha: Top 5 DevRel Tools</h4>
-<p class="text-xs text-slate-400 line-clamp-2">The ultimate list of tools to scale your developer advocacy team in Q3.</p>
-</div>
-<div class="pt-4 flex items-center gap-4 border-t border-white/5">
-<div class="flex items-center gap-1 text-[9px] font-mono text-slate-500">
-<span class="material-symbols-outlined text-[12px]">favorite</span>
-<span>1.4k</span>
-</div>
-<div class="flex items-center gap-1 text-[9px] font-mono text-slate-500">
-<span class="material-symbols-outlined text-[12px]">cached</span>
-<span>422</span>
+<div class="w-16 h-1 bg-white/5 shrink-0 relative">
+<div class="absolute inset-0 bg-accent w-[42%]"></div>
 </div>
 </div>
+<div class="compact-log-card border-l-terminal-green">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">alternate_email</span>
 </div>
-<div class="content-card border-l-2 border-l-accent">
-<div class="flex justify-between items-start">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">forum</span>
-</div>
-<span class="status-tag status-progress">Review</span>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-accent">#MSG_892</span>
-<span>â¢</span>
-<span>AGNT: NEXUS_01</span>
-</div>
-<h4 class="text-sm font-bold text-white uppercase tracking-tight">AMA: Future of Autonomous DevRel</h4>
-<p class="text-xs text-slate-400">Organizing the upcoming AMA session with our engineering lead.</p>
-</div>
-<div class="flex -space-x-1.5 pt-2">
-<div class="size-5 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-[7px] font-mono">AD</div>
-<div class="size-5 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-[7px] font-mono">RL</div>
-<div class="size-5 rounded-full bg-terminal-green/20 border border-terminal-green/40 flex items-center justify-center text-[7px] font-mono">MK</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-accent font-bold shrink-0">#TW_X1</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">Weekly Alpha: Top 5 Tools</h4>
 </div>
 </div>
-<div class="content-card border-l-2 border-l-slate-800">
-<div class="flex justify-between items-start opacity-50">
-<div class="platform-icon">
-<span class="material-symbols-outlined text-[18px]">article</span>
-</div>
-<span class="status-tag status-draft">Archived</span>
-</div>
-<div class="space-y-2 opacity-50">
-<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-<span class="text-slate-600">#POST_110</span>
-<span>â¢</span>
-<span>AGNT: ECHO_04</span>
-</div>
-<h4 class="text-sm font-bold text-slate-400 uppercase tracking-tight">Deprecation: Legacy Auth Methods</h4>
-<p class="text-xs text-slate-500 line-clamp-2">Postponed until V3 release cycle is finalized.</p>
+<div class="sparkline-container">
+<div class="spark-bar h-1"></div>
+<div class="spark-bar h-2"></div>
+<div class="spark-bar h-1"></div>
+<div class="spark-bar h-2"></div>
+<div class="spark-bar h-3 bg-terminal-green"></div>
 </div>
 </div>
+<div class="compact-log-card border-l-accent">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">forum</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-accent font-bold shrink-0">#MSG_82</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">AMA: Future of DevRel</h4>
+</div>
+</div>
+<div class="w-16 h-1 bg-white/5 shrink-0 relative">
+<div class="absolute inset-0 bg-accent w-[90%]"></div>
+</div>
+</div>
+<div class="compact-log-card border-l-primary">
+<div class="mini-platform-icon">
+<span class="material-symbols-outlined text-[14px]">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-baseline gap-2">
+<span class="text-[10px] font-mono text-primary font-bold shrink-0">#DOC_11</span>
+<h4 class="text-[11px] font-bold text-white uppercase truncate tracking-tight">Internal Workflow Guide</h4>
+</div>
+</div>
+<div class="text-[9px] font-mono text-primary shrink-0 uppercase">REVIEW</div>
+</div>
+<script>
+                // Simulating a bulk list
+                const main = document.querySelector('main div');
+                const platforms = ['terminal', 'alternate_email', 'forum', 'article'];
+                const statuses = ['terminal-green', 'accent', 'slate-700', 'primary'];
+                const statusLabels = ['LIVE', 'PROGRESS', 'DRAFT', 'REVIEW'];
+                for(let i=0; i<32; i++) {
+                    const statusIdx = Math.floor(Math.random() * 4);
+                    const platIdx = Math.floor(Math.random() * 4);
+                    const html = `
+                        <div class="compact-log-card border-l-${statuses[statusIdx]}">
+                            <div class="mini-platform-icon">
+                                <span class="material-symbols-outlined text-[14px]">${platforms[platIdx]}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-[10px] font-mono text-slate-500 font-bold shrink-0">#LOG_${1000 + i}</span>
+                                    <h4 class="text-[11px] font-bold text-white/80 uppercase truncate tracking-tight">Bulk Processed Content Node Unit ${i}</h4>
+                                </div>
+                            </div>
+                            ${statusIdx === 1 ? 
+                                `<div class="w-16 h-1 bg-white/5 shrink-0 relative"><div class="absolute inset-0 bg-accent w-[${Math.random()*100}%]"></div></div>` :
+                                `<div class="sparkline-container">
+                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
+                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
+                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
+                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)}"></div>
+                                    <div class="spark-bar h-${Math.ceil(Math.random()*3)} bg-${statuses[statusIdx]}"></div>
+                                </div>`
+                            }
+                        </div>
+                    `;
+                    main.insertAdjacentHTML('beforeend', html);
+                }
+            </script>
 </div>
 </main>
 <footer class="relative z-20 px-6 py-3 border-t border-white/10 bg-black/95 flex justify-between items-center text-[10px] font-mono">
 <div class="flex gap-8">
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">PIPELINE_THROUGHPUT:</span>
-<span class="text-accent font-bold">124 UNITS/HR</span>
+<span class="uppercase text-slate-500 tracking-wider">VISIBLE_RECORDS:</span>
+<span class="text-accent font-bold">512 UNITS</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">CONTENT_HEALTH:</span>
-<span class="text-terminal-green font-bold">OPTIMAL</span>
+<span class="uppercase text-slate-500 tracking-wider">AVG_DENSITY:</span>
+<span class="text-terminal-green font-bold">HIGH</span>
 </div>
 </div>
 <div class="flex items-center gap-3 text-slate-400">
-<span class="material-symbols-outlined text-[14px]">sensors</span>
-<span class="uppercase tracking-wider">LAST_SYNC:</span>
-<span class="text-accent font-bold uppercase">14:55:02 UTC</span>
+<span class="material-symbols-outlined text-[14px]">memory</span>
+<span class="uppercase tracking-wider">BUFFER_SYNC:</span>
+<span class="text-accent font-bold uppercase">STABLE</span>
 </div>
 </footer>
 </div>
