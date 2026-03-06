@@ -6,19 +6,22 @@ import { ContentPipeline } from './pages/ContentPipeline';
 import { AXReports } from './pages/AXReports';
 import { KnowledgeBase } from './pages/KnowledgeBase';
 import { ExecutionProvider } from './providers/ExecutionProvider';
+import { TelemetryProvider } from './providers/TelemetryProvider';
 
 export default function App() {
   return (
-    <ExecutionProvider>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/queue" element={<CommunityQueue />} />
-          <Route path="/content" element={<ContentPipeline />} />
-          <Route path="/reports" element={<AXReports />} />
-          <Route path="/knowledge" element={<KnowledgeBase />} />
-        </Route>
-      </Routes>
-    </ExecutionProvider>
+    <TelemetryProvider>
+      <ExecutionProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/queue" element={<CommunityQueue />} />
+            <Route path="/content" element={<ContentPipeline />} />
+            <Route path="/reports" element={<AXReports />} />
+            <Route path="/knowledge" element={<KnowledgeBase />} />
+          </Route>
+        </Routes>
+      </ExecutionProvider>
+    </TelemetryProvider>
   );
 }

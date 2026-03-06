@@ -23,13 +23,13 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
-test('Execution provider maintains centralized shell state across navigations', async ({ page }) => {
+test('Execution and Telemetry providers maintain centralized shell state across navigations', async ({ page }) => {
   await page.goto('/');
 
-  // Assert Top Bar system status logic derived from ExecutionProvider
+  // Assert Top Bar system status logic derived from TelemetryProvider
   await expect(page.locator('text=SYSTEM_NOMINAL')).toBeVisible();
 
-  // Store the time, wait, and check it changes to confirm provider side-effect runs
+  // Store the time, wait, and check it changes to confirm hook side-effect runs
   const initialTime = await page.locator('text=UTC').textContent();
   await page.waitForTimeout(1100);
   const newTime = await page.locator('text=UTC').textContent();

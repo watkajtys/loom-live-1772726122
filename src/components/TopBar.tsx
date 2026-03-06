@@ -1,9 +1,13 @@
 import React from 'react';
 import { Icon } from './Icon';
 import { useExecution } from '../providers/ExecutionProvider';
+import { useTelemetry } from '../providers/TelemetryProvider';
+import { useClock } from '../hooks/useClock';
 
 export const TopBar: React.FC = () => {
-  const { currentRouteName, systemStatus, uptime, currentTime } = useExecution();
+  const { currentRouteName } = useExecution();
+  const { systemStatus, uptime } = useTelemetry();
+  const currentTime = useClock();
 
   const getSystemStatusColor = () => {
     switch (systemStatus) {

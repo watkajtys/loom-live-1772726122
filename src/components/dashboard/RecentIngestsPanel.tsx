@@ -1,12 +1,11 @@
 import React from 'react';
+import type { Ingest } from '../../hooks/useDashboardData';
 
-export const RecentIngestsPanel = () => {
-  const ingests = [
-    { type: 'GITHUB_COMMIT', time: '2m ago', title: 'Refactor: Auth middleware logic updates', tag: 'Tutorial_Update' },
-    { type: 'DISCORD_MSG', time: '5m ago', title: 'User: "How do I setup multi-tenancy?"', tag: 'Q&A_Trigger', style: 'bg-background-dark/50' },
-    { type: 'X_MENTION', time: '14m ago', title: '@dev_guru: Loving the new @advoloom CLI!', tag: 'Sentiment_Pos', style: 'bg-background-dark/50' },
-    { type: 'DOCS_PARSE', time: '1h ago', title: "Updated 'Advanced Routing' technical doc", tag: 'Vector_Sync', style: 'bg-background-dark/50' },
-  ];
+interface RecentIngestsPanelProps {
+  ingests: Ingest[];
+}
+
+export const RecentIngestsPanel: React.FC<RecentIngestsPanelProps> = ({ ingests }) => {
   return (
     <section className="col-span-12 lg:col-span-3 row-span-5 glass-panel rounded-lg flex flex-col overflow-hidden">
       <div className="p-4 border-b border-primary/20 bg-primary/5">

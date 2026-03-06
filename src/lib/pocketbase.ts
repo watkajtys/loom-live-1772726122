@@ -1,4 +1,11 @@
 import PocketBase from 'pocketbase';
 
-export const pb = new PocketBase(`http://${window.location.hostname}:8090`);
+const getPocketBaseUrl = () => {
+  if (import.meta.env.VITE_POCKETBASE_URL) {
+    return import.meta.env.VITE_POCKETBASE_URL;
+  }
+  return `http://${window.location.hostname}:8090`;
+};
+
+export const pb = new PocketBase(getPocketBaseUrl());
 pb.autoCancellation(false);
