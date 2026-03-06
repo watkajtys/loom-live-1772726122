@@ -5,14 +5,14 @@
 @layer components {
   .grid-bg {
     background-image: 
-        linear-gradient(to right, rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+        linear-gradient(to right, theme('colors.accent / 5%') 1px, transparent 1px),
+        linear-gradient(to bottom, theme('colors.accent / 5%') 1px, transparent 1px);
     background-size: 32px 32px;
   }
   .glass-panel {
-    background: rgba(10, 12, 16, 0.95);
+    background: theme('colors.background-dark / 95%');
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 242, 255, 0.15);
+    border: 1px solid theme('colors.accent / 15%');
   }
   .queue-row {
       @apply flex items-center gap-6 p-4 border border-accent/10 bg-black/40 hover:bg-accent/5 transition-all duration-200 rounded-sm relative overflow-hidden;
@@ -26,7 +26,7 @@
   }
   .status-pulse {
       @apply size-2 rounded-full bg-terminal-green;
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      box-shadow: 0 0 8px theme('colors.terminal-green / 60%');
   }
   .custom-scrollbar::-webkit-scrollbar {
       width: 4px;
@@ -35,10 +35,10 @@
       background: rgba(0, 0, 0, 0.3);
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(0, 242, 255, 0.2);
+      background: theme('colors.accent / 20%');
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 242, 255, 0.4);
+      background: theme('colors.accent / 40%');
   }
   .hud-bar {
       @apply flex items-center gap-4 bg-black/40 border border-accent/20 rounded-sm px-4 py-2;
@@ -53,7 +53,7 @@
       @apply bg-transparent border-none focus:ring-0 text-[11px] font-mono text-accent placeholder:text-slate-600 w-48 px-2;
   }
   .neon-cursor {
-      caret-color: #00f2ff;
+      caret-color: theme('colors.accent');
   }
 }
 
@@ -64,5 +64,5 @@
   background: transparent;
 }
 .terminal-scroll::-webkit-scrollbar-thumb {
-  background: #256af444;
+  background: theme('colors.primary / 27%');
 }

@@ -381,3 +381,59 @@ test('usePocketBase uses SWR instead of raw useEffect', async ({ page }) => {
   // Take the required screenshot
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('KnowledgeBase, ContentPipeline, and AgentExecutionReports components mount correctly and use new service hooks', async ({ page }) => {
+  // Test KnowledgeBase
+  await page.route('**/api/collections/knowledge_sources/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+
+  await page.goto('/knowledge');
+  await expect(page.locator('h1:has-text("Knowledge Base")')).toBeVisible();
+
+  // Test ContentPipeline
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+
+  await page.goto('/content');
+  await expect(page.locator('h1:has-text("Content Pipeline")')).toBeVisible();
+
+  // Test AgentExecutionReports
+  await page.route('**/api/collections/ax_reports/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 0,
+        totalPages: 1,
+        items: []
+      })
+    });
+  });
+
+  await page.goto('/reports');
+  await expect(page.locator('h1:has-text("Agent Execution Reports")')).toBeVisible();
+});

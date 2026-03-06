@@ -66,93 +66,52 @@ type IconProps = {
   className?: string;
 };
 
-export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
-  let renderedIcon = null;
+// Normalize names internally to avoid redundant casing map entries
+const iconMap: Record<string, React.ReactNode> = {
+  discord: <DiscordIcon />,
+  github: <GitHubIcon />,
+  x: <XIcon />,
+  twitter: <XIcon />,
+  home: <Home size="1em" />,
+  smart_toy: <Bot size="1em" />,
+  bot: <Bot size="1em" />,
+  article: <FileText size="1em" />,
+  filetext: <FileText size="1em" />,
+  analytics: <LineChart size="1em" />,
+  linechart: <LineChart size="1em" />,
+  settings_input_component: <Database size="1em" />,
+  database: <Database size="1em" />,
+  terminal: <Terminal size="1em" />,
+  schedule: <Clock size="1em" />,
+  clock: <Clock size="1em" />,
+  notifications: <Bell size="1em" />,
+  bell: <Bell size="1em" />,
+  hub: <Network size="1em" />,
+  code: <Code size="1em" />,
+  alternate_email: <AtSign size="1em" />,
+  error: <AlertCircle size="1em" />,
+  alertcircle: <AlertCircle size="1em" />,
+  settings: <Settings size="1em" />,
+  search: <Search size="1em" />,
+  sort: <ListFilter size="1em" />,
+  apps: <LayoutGrid size="1em" />,
+  refresh: <RefreshCw size="1em" />,
+  refreshcw: <RefreshCw size="1em" />,
+  forum: <MessageSquare size="1em" />
+};
 
-  switch (name) {
-    case 'discord':
-      renderedIcon = <DiscordIcon className={className} />;
-      break;
-    case 'github':
-      renderedIcon = <GitHubIcon className={className} />;
-      break;
-    case 'x':
-    case 'twitter':
-      renderedIcon = <XIcon className={className} />;
-      break;
-    case 'home':
-    case 'Home':
-      renderedIcon = <Home size="1em" />;
-      break;
-    case 'smart_toy':
-    case 'Bot':
-      renderedIcon = <Bot size="1em" />;
-      break;
-    case 'article':
-    case 'FileText':
-      renderedIcon = <FileText size="1em" />;
-      break;
-    case 'analytics':
-    case 'LineChart':
-      renderedIcon = <LineChart size="1em" />;
-      break;
-    case 'settings_input_component':
-    case 'database':
-    case 'Database':
-      renderedIcon = <Database size="1em" />;
-      break;
-    case 'terminal':
-    case 'Terminal':
-      renderedIcon = <Terminal size="1em" />;
-      break;
-    case 'schedule':
-    case 'Clock':
-      renderedIcon = <Clock size="1em" />;
-      break;
-    case 'notifications':
-    case 'Bell':
-      renderedIcon = <Bell size="1em" />;
-      break;
-    case 'hub':
-      renderedIcon = <Network size="1em" />;
-      break;
-    case 'code':
-      renderedIcon = <Code size="1em" />;
-      break;
-    case 'alternate_email':
-      renderedIcon = <AtSign size="1em" />;
-      break;
-    case 'error':
-    case 'AlertCircle':
-      renderedIcon = <AlertCircle size="1em" />;
-      break;
-    case 'settings':
-      renderedIcon = <Settings size="1em" />;
-      break;
-    case 'search':
-      renderedIcon = <Search size="1em" />;
-      break;
-    case 'sort':
-      renderedIcon = <ListFilter size="1em" />;
-      break;
-    case 'apps':
-      renderedIcon = <LayoutGrid size="1em" />;
-      break;
-    case 'refresh':
-    case 'RefreshCw':
-      renderedIcon = <RefreshCw size="1em" />;
-      break;
-    case 'forum':
-      renderedIcon = <MessageSquare size="1em" />;
-      break;
-    default:
-      console.warn(`Icon '${name}' not found.`);
-      return null;
+export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
+  const normalizedName = name.toLowerCase();
+  const renderedIcon = iconMap[normalizedName];
+
+  if (!renderedIcon) {
+    console.warn(`Icon '${name}' not found.`);
+    return null;
   }
 
   // Brand icons have their own wrappers, others need the inline-flex wrapper
-  if (['discord', 'github', 'x', 'twitter'].includes(name)) {
-    return renderedIcon;
+  if (['discord', 'github', 'x', 'twitter'].includes(normalizedName)) {
+    return <span className={className}>{renderedIcon}</span>;
   }
 
   return (

@@ -56,7 +56,7 @@ export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono text-accent">{mention.priority}</span>
             <div className="w-12 h-1 bg-slate-900 rounded-full overflow-hidden">
-              <div className="h-full bg-accent shadow-[0_0_8px_rgba(0,242,255,0.5)]" style={{ width: `${mention.priority}%` }}></div>
+            <div className="h-full bg-accent shadow-[0_0_8px_theme(colors.accent/50%)]" style={{ width: `${mention.priority}%` }}></div>
             </div>
           </div>
         </div>
