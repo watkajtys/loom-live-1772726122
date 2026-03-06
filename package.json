@@ -15,7 +15,8 @@
     "pocketbase": "^0.21.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.0.0"
+    "react-router-dom": "^7.0.0",
+    "swr": "^2.4.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.0",
