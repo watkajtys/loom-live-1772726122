@@ -1,6 +1,8 @@
+import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineStage, CreatePipelineStageDTO, UpdatePipelineStageDTO } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
+import { CreatePipelineStageSchema, UpdatePipelineStageSchema } from '../../../schema/pipeline';
 
 export interface FetchPipelineStagesOptions {
   pipeline_id: string;
@@ -25,11 +27,33 @@ export const fetchPipelineStages = async (options: FetchPipelineStagesOptions): 
 };
 
 export const createPipelineStage = async (data: CreatePipelineStageDTO): Promise<PipelineStage> => {
-  return await pb.collection(COLLECTIONS.PIPELINE_STAGES).create<PipelineStage>(data);
+  try {
+    const validatedData = CreatePipelineStageSchema.parse(data);
+    return await pb.collection(COLLECTIONS.PIPELINE_STAGES).create<PipelineStage>(validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error('Bad Request: Invalid pipeline stage payload');
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
+    throw error;
+  }
 };
 
 export const updatePipelineStage = async (id: string, data: UpdatePipelineStageDTO): Promise<PipelineStage> => {
-  return await pb.collection(COLLECTIONS.PIPELINE_STAGES).update<PipelineStage>(id, data);
+  try {
+    const validatedData = UpdatePipelineStageSchema.parse(data);
+    return await pb.collection(COLLECTIONS.PIPELINE_STAGES).update<PipelineStage>(id, validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error('Bad Request: Invalid pipeline stage payload');
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
+    throw error;
+  }
 };
 
 export const deletePipelineStage = async (id: string): Promise<boolean> => {

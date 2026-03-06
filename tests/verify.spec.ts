@@ -1573,14 +1573,23 @@ test('Create validation schemas and apply them to the Pipeline creation (POST) A
   await page.waitForLoadState('networkidle');
 
   const result = await page.evaluate(async () => {
-    const apiModule = await import('/src/lib/api/pipeline/pipelines.ts');
+    const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+    const stagesApi = await import('/src/lib/api/pipeline/stages.ts');
+    const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+    const stepsApi = await import('/src/lib/api/pipeline/steps.ts');
+    const runsApi = await import('/src/lib/api/pipeline/runs.ts');
     
     let validSuccess = false;
-    let invalidFailed = false;
+    let pipelineInvalidFailed = false;
+    let stageInvalidFailed = false;
+    let cardInvalidFailed = false;
+    let stepInvalidFailed = false;
+    let runInvalidFailed = false;
+
     let errorStatus = null;
 
     try {
-      await apiModule.createPipeline({
+      await pipelinesApi.createPipeline({
         title: 'Valid Pipeline',
         description: 'It passed validation'
       });
@@ -1590,20 +1599,74 @@ test('Create validation schemas and apply them to the Pipeline creation (POST) A
     }
 
     try {
-      await apiModule.createPipeline({
+      await pipelinesApi.createPipeline({
         title: '', // Invalid, min length 1
       });
     } catch (e: any) {
-      invalidFailed = true;
+      pipelineInvalidFailed = true;
       errorStatus = e.status;
     }
 
-    return { validSuccess, invalidFailed, errorStatus };
+    try {
+      await stagesApi.createPipelineStage({
+        pipeline_id: '', // Invalid
+        title: '', 
+        position: -1 // Invalid
+      });
+    } catch (e: any) {
+      stageInvalidFailed = e.status === 400;
+    }
+
+    try {
+      await cardsApi.createPipelineCard({
+        stage_id: '', // Invalid
+        title: '',
+        content: '',
+        position: -1 // Invalid
+      });
+    } catch (e: any) {
+      cardInvalidFailed = e.status === 400;
+    }
+
+    try {
+      await stepsApi.createPipelineStep({
+        card_id: '', // Invalid
+        title: '',
+        status: 'pending' as any,
+        position: -1 // Invalid
+      });
+    } catch (e: any) {
+      stepInvalidFailed = e.status === 400;
+    }
+
+    try {
+      await runsApi.createPipelineRun({
+        pipeline_id: '', // Invalid
+        started_at: 'invalid-date' as any,
+        status: 'running' as any
+      });
+    } catch (e: any) {
+      runInvalidFailed = e.status === 400;
+    }
+
+    return { 
+      validSuccess, 
+      pipelineInvalidFailed, 
+      errorStatus,
+      stageInvalidFailed,
+      cardInvalidFailed,
+      stepInvalidFailed,
+      runInvalidFailed
+    };
   });
 
   expect(result.validSuccess).toBe(true);
-  expect(result.invalidFailed).toBe(true);
+  expect(result.pipelineInvalidFailed).toBe(true);
   expect(result.errorStatus).toBe(400);
+  expect(result.stageInvalidFailed).toBe(true);
+  expect(result.cardInvalidFailed).toBe(true);
+  expect(result.stepInvalidFailed).toBe(true);
+  expect(result.runInvalidFailed).toBe(true);
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });

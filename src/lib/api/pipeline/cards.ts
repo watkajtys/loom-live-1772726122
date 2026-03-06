@@ -1,6 +1,8 @@
+import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineCard, CreatePipelineCardDTO, UpdatePipelineCardDTO } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
+import { CreatePipelineCardSchema, UpdatePipelineCardSchema } from '../../../schema/pipeline';
 
 export interface FetchPipelineCardsOptions {
   stage_id: string;
@@ -25,11 +27,33 @@ export const fetchPipelineCards = async (options: FetchPipelineCardsOptions): Pr
 };
 
 export const createPipelineCard = async (data: CreatePipelineCardDTO): Promise<PipelineCard> => {
-  return await pb.collection(COLLECTIONS.PIPELINE_CARDS).create<PipelineCard>(data);
+  try {
+    const validatedData = CreatePipelineCardSchema.parse(data);
+    return await pb.collection(COLLECTIONS.PIPELINE_CARDS).create<PipelineCard>(validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error('Bad Request: Invalid pipeline card payload');
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
+    throw error;
+  }
 };
 
 export const updatePipelineCard = async (id: string, data: UpdatePipelineCardDTO): Promise<PipelineCard> => {
-  return await pb.collection(COLLECTIONS.PIPELINE_CARDS).update<PipelineCard>(id, data);
+  try {
+    const validatedData = UpdatePipelineCardSchema.parse(data);
+    return await pb.collection(COLLECTIONS.PIPELINE_CARDS).update<PipelineCard>(id, validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error('Bad Request: Invalid pipeline card payload');
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
+    throw error;
+  }
 };
 
 export const deletePipelineCard = async (id: string): Promise<boolean> => {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { Pipeline, CreatePipelineDTO, UpdatePipelineDTO } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
-import { CreatePipelineSchema } from '../../../schema/pipeline';
+import { CreatePipelineSchema, UpdatePipelineSchema } from '../../../schema/pipeline';
 
 export interface FetchPipelinesOptions {
   page?: number;
@@ -42,7 +42,18 @@ export const createPipeline = async (data: CreatePipelineDTO): Promise<Pipeline>
 };
 
 export const updatePipeline = async (id: string, data: UpdatePipelineDTO): Promise<Pipeline> => {
-  return await pb.collection(COLLECTIONS.PIPELINES).update<Pipeline>(id, data);
+  try {
+    const validatedData = UpdatePipelineSchema.parse(data);
+    return await pb.collection(COLLECTIONS.PIPELINES).update<Pipeline>(id, validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const validationError = new Error('Bad Request: Invalid pipeline payload');
+      (validationError as any).status = 400;
+      (validationError as any).errors = error.errors;
+      throw validationError;
+    }
+    throw error;
+  }
 };
 
 export const deletePipeline = async (id: string): Promise<boolean> => {
