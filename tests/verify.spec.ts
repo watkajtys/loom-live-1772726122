@@ -907,3 +907,116 @@ test('ContentPipeline refactored hooks and DataViewLayout integration', async ({
   // the hook logic should assign it 'ECHO_04'
   await expect(page.locator('text=AGNT: ECHO_04')).toBeVisible();
 });
+
+test('Define backend database schema models for the Pipeline Board (Pipeline, Stage, and Card)', async ({ page }) => {
+  // Test case for verifying the API utilities can parse standard PocketBase JSON response for Pipeline structures.
+  // Using page.evaluate since we are testing API logic defined in models/api without a dedicated UI present yet.
+  
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'pipeline_123',
+            collectionId: 'pipelines_col',
+            collectionName: 'pipelines',
+            created: '2023-01-01T00:00:00.000Z',
+            updated: '2023-01-01T00:00:00.000Z',
+            title: 'Test Pipeline',
+            description: 'A mock pipeline board'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'stage_1',
+            collectionId: 'pipeline_stages_col',
+            collectionName: 'pipeline_stages',
+            created: '2023-01-01T00:00:00.000Z',
+            updated: '2023-01-01T00:00:00.000Z',
+            pipeline_id: 'pipeline_123',
+            title: 'To Do',
+            position: 0
+          }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/pipeline_cards/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'card_1',
+            collectionId: 'pipeline_cards_col',
+            collectionName: 'pipeline_cards',
+            created: '2023-01-01T00:00:00.000Z',
+            updated: '2023-01-01T00:00:00.000Z',
+            stage_id: 'stage_1',
+            title: 'Write Docs',
+            content: 'Write the new schema documentation.',
+            position: 0
+          }
+        ]
+      })
+    });
+  });
+
+  // Navigate to root as target route is '/'
+  await page.goto('/');
+
+  // We expose a temporary function to the browser window to invoke the fetches just to verify they parse correctly
+  // In a real app the components would call this, but here we just want to execute the code we added
+  const fetchResults = await page.evaluate(async () => {
+    // Dynamic import inside browser
+    const apiModule = await import('/src/lib/api/pipelineBoard.ts');
+    
+    const pipelines = await apiModule.fetchPipelines();
+    const stages = await apiModule.fetchPipelineStages({ pipeline_id: pipelines.items[0].id });
+    const cards = await apiModule.fetchPipelineCards({ stage_id: stages.items[0].id });
+
+    return {
+      pipelineTitle: pipelines.items[0].title,
+      stageTitle: stages.items[0].title,
+      stagePos: stages.items[0].position,
+      cardTitle: cards.items[0].title,
+      cardContent: cards.items[0].content,
+      cardPos: cards.items[0].position
+    };
+  });
+
+  expect(fetchResults.pipelineTitle).toBe('Test Pipeline');
+  expect(fetchResults.stageTitle).toBe('To Do');
+  expect(fetchResults.stagePos).toBe(0);
+  expect(fetchResults.cardTitle).toBe('Write Docs');
+  expect(fetchResults.cardContent).toBe('Write the new schema documentation.');
+  expect(fetchResults.cardPos).toBe(0);
+
+  // Take the final screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

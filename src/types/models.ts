@@ -40,3 +40,45 @@ export type KnowledgeSource = RecordModel & {
   vectorization_status: 'pending' | 'processing' | 'vectorized' | 'failed';
   last_synced: string;
 };
+
+export type Pipeline = RecordModel & {
+  title: string;
+  description?: string;
+};
+
+export interface CreatePipelineDTO {
+  title: string;
+  description?: string;
+}
+
+export interface UpdatePipelineDTO extends Partial<CreatePipelineDTO> {}
+
+export type PipelineStage = RecordModel & {
+  pipeline_id: string; // relation
+  title: string;
+  position: number;
+};
+
+export interface CreatePipelineStageDTO {
+  pipeline_id: string;
+  title: string;
+  position: number;
+}
+
+export interface UpdatePipelineStageDTO extends Partial<CreatePipelineStageDTO> {}
+
+export type PipelineCard = RecordModel & {
+  stage_id: string; // relation
+  title: string;
+  content: string;
+  position: number;
+};
+
+export interface CreatePipelineCardDTO {
+  stage_id: string;
+  title: string;
+  content: string;
+  position: number;
+}
+
+export interface UpdatePipelineCardDTO extends Partial<CreatePipelineCardDTO> {}
