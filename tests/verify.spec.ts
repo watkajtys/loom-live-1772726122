@@ -485,3 +485,58 @@ test('Community Queue handles empty states gracefully based on SWR and PocketBas
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test("Community Queue View integrates data fetching hook with skeletons and error boundaries", async ({ page }) => {
+  // Mock API response to simulate a slow network to verify skeletons
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    // Delay response by 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 50,
+        totalItems: 1,
+        totalPages: 1,
+        items: [
+          {
+            id: 'test_skeleton_id',
+            platform: 'DISCORD',
+            user: 'test_skeleton_user',
+            query: 'Test skeleton query',
+            status: 'queued',
+            priority: 80,
+            channel: 'general',
+            created: new Date().toISOString(),
+            updated: new Date().toISOString(),
+            collectionId: 'social_mentions_id',
+            collectionName: 'social_mentions'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/');
+
+  // Verify skeletons are visible during load
+  const skeletonCount = await page.locator('.queue-row.animate-pulse').count();
+  expect(skeletonCount).toBeGreaterThan(0);
+
+  // Wait for loading to finish and verify data renders
+  await page.waitForTimeout(2500); // Wait for the mocked slow network
+  await expect(page.locator('.queue-row:not(.animate-pulse)').first()).toBeVisible();
+  await expect(page.locator('text=test_skeleton_user')).toBeVisible();
+
+  // Test error boundary fallback by triggering an error route
+  await page.unroute('**/api/collections/social_mentions/records*');
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.abort('failed');
+  });
+
+  await page.goto('/');
+  await expect(page.locator('text=Error Loading Data')).toBeVisible();
+
+  await page.screenshot({ path: 'evidence.png' });
+});

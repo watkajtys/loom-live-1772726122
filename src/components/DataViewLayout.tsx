@@ -1,5 +1,8 @@
 import React from 'react';
 import { Icon, type IconName } from './Icon';
+import { LoadingState } from './states/LoadingState';
+import { ErrorState } from './states/ErrorState';
+import { EmptyState } from './states/EmptyState';
 
 type DataViewLayoutProps = {
   title: string;
@@ -38,28 +41,9 @@ export const DataViewLayout: React.FC<DataViewLayoutProps> = ({
       )}
 
       <div className="flex-1 glass-panel rounded-lg overflow-hidden flex flex-col relative">
-        {loading && (
-          <div className="absolute inset-0 bg-background-dark/50 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-accent font-mono text-sm uppercase tracking-widest animate-pulse">Loading Data...</p>
-          </div>
-        )}
-
-        {error && !loading && (
-          <div className="absolute inset-0 bg-background-dark z-10 flex flex-col items-center justify-center text-center p-6">
-            <Icon name="AlertCircle" className="text-red-500 text-5xl mb-4" />
-            <h2 className="text-xl font-bold text-slate-100 mb-2">Error Loading Data</h2>
-            <p className="text-slate-400 font-mono text-sm max-w-md">{error.message || 'An unknown error occurred while fetching data.'}</p>
-          </div>
-        )}
-
-        {!loading && !error && isEmpty && (
-          <div className="absolute inset-0 bg-background-dark/30 z-10 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-primary/20 m-4 rounded-lg">
-            <Icon name="Database" className="text-slate-600 text-5xl mb-4" />
-            <h2 className="text-lg font-bold text-slate-300 mb-2">No Records Found</h2>
-            <p className="text-slate-500 font-mono text-xs">The current data view returned 0 results.</p>
-          </div>
-        )}
+        {loading && <LoadingState />}
+        {error && !loading && <ErrorState error={error} />}
+        {!loading && !error && isEmpty && <EmptyState />}
 
         <div className="flex-1 overflow-y-auto terminal-scroll p-4">
           {children}
