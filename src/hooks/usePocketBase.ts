@@ -43,6 +43,8 @@ export function usePocketBase<T extends RecordModel = RecordModel>(
 
     fetchData();
 
+    let unsubscribeFunc: (() => void) | undefined;
+
     if (subscribe) {
       // Avoid global '*' subscription. Instead subscribe with the filter config from the hook arguments.
       // This solves the performance landmine mentioned in the architectural review.
@@ -54,13 +56,19 @@ export function usePocketBase<T extends RecordModel = RecordModel>(
         } else if (e.action === 'delete') {
           setData((prev) => prev.filter((item: T) => item.id !== e.record.id));
         }
-      }, { filter });
+      }, { filter }).then((unsub) => {
+        if (!isMounted) {
+          unsub();
+        } else {
+          unsubscribeFunc = unsub;
+        }
+      }).catch(console.error);
     }
 
     return () => {
       isMounted = false;
-      if (subscribe) {
-        pb.collection(collectionName).unsubscribe('*');
+      if (unsubscribeFunc) {
+        unsubscribeFunc();
       }
     };
   }, [collectionName, page, perPage, filter, sort, subscribe]);
