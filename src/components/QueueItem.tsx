@@ -1,6 +1,7 @@
 import React from 'react';
 import { SocialMention } from '../types/models';
 import { Icon, type IconName } from './Icon';
+import { useQueueMutations } from '../hooks/useQueueMutations';
 
 interface QueueItemProps {
   mention: SocialMention;
@@ -24,11 +25,21 @@ const getStatusColor = (status: string) => {
 };
 
 export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
+  const { updateStatus } = useQueueMutations();
+  
   const iconName = getPlatformIcon(mention.platform);
   const statusColor = getStatusColor(mention.status);
   
   const isPulseActive = mention.status === 'drafting' || mention.status === 'queued';
   const isIdle = mention.status === 'approved' || mention.status === 'rejected';
+
+  const handleApprove = async () => {
+    try {
+      await updateStatus(mention.id, 'approved');
+    } catch (error) {
+      console.error('Failed to approve mention:', error);
+    }
+  };
 
   return (
     <div className={`queue-row group ${isIdle ? 'opacity-60' : ''}`}>
@@ -71,7 +82,13 @@ export const QueueItem: React.FC<QueueItemProps> = ({ mention }) => {
       </div>
       
       <div className="flex gap-2 ml-4">
-        <button className="micro-btn text-terminal-green/80 hover:text-terminal-green">Approve</button>
+        <button 
+          className="micro-btn text-terminal-green/80 hover:text-terminal-green"
+          onClick={handleApprove}
+          disabled={isIdle}
+        >
+          Approve
+        </button>
         <button className="micro-btn">Edit</button>
       </div>
     </div>

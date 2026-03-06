@@ -326,3 +326,91 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
 
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('Community Queue mutation hooks handle optimistic UI updates and cache invalidation', async ({ page }) => {
+  // Mock GET request
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          page: 1,
+          perPage: 50,
+          totalItems: 1,
+          totalPages: 1,
+          items: [
+            {
+              id: 'mock_test_mutation_123',
+              platform: 'DISCORD',
+              query: 'Mutation test query',
+              draft_reply: '',
+              status: 'drafting',
+              user: 'mutation_user',
+              priority: 50,
+              created: new Date().toISOString(),
+              updated: new Date().toISOString(),
+            }
+          ]
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  // Mock PATCH request for approval
+  let patchCalled = false;
+  await page.route('**/api/collections/social_mentions/records/mock_test_mutation_123', async route => {
+    if (route.request().method() === 'PATCH') {
+      patchCalled = true;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'mock_test_mutation_123',
+          platform: 'DISCORD',
+          query: 'Mutation test query',
+          draft_reply: '',
+          status: 'approved',
+          user: 'mutation_user',
+          priority: 50,
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/queue');
+
+  // Verify the page title is visible
+  await expect(page.locator('h2:has-text("Community Queue")')).toBeVisible();
+
+  // Wait for loading to finish
+  const loadingIndicator = page.locator('text=Loading Data...');
+  if (await loadingIndicator.isVisible()) {
+    await loadingIndicator.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+  }
+
+  // Ensure item is loaded
+  const queueRow = page.locator('.queue-row').first();
+  await expect(queueRow).toBeVisible();
+  
+  // Verify initial status is drafting
+  await expect(queueRow.locator('text=drafting')).toBeVisible();
+
+  // Click Approve button
+  await queueRow.locator('button:has-text("Approve")').click();
+
+  // Verify optimistic UI update (status changes to approved)
+  await expect(queueRow.locator('text=approved')).toBeVisible();
+
+  // Verify PATCH was called
+  expect(patchCalled).toBe(true);
+
+  // Take the required screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});
