@@ -59,7 +59,9 @@ import {
   PipelineConfig,
   PipelineExecutionArguments as SchemaPipelineExecutionArguments,
   TriggerPipelineRunPayload as SchemaTriggerPipelineRunPayload,
-  UpdatePipelineRunStatusPayload as SchemaUpdatePipelineRunStatusPayload
+  UpdatePipelineRunStatusPayload as SchemaUpdatePipelineRunStatusPayload,
+  CreatePipelineRequestDTO as SchemaCreatePipelineRequestDTO,
+  UpdatePipelineRequestDTO as SchemaUpdatePipelineRequestDTO
 } from '../schema/pipeline';
 
 export type Pipeline = RecordModel & {
@@ -124,3 +126,18 @@ export type UpdatePipelineRunDTO = SchemaUpdatePipelineRunDTO;
 export type PipelineExecutionArguments = SchemaPipelineExecutionArguments;
 export type TriggerPipelineRunPayload = SchemaTriggerPipelineRunPayload;
 export type UpdatePipelineRunStatusPayload = SchemaUpdatePipelineRunStatusPayload;
+
+type PipelineRequestBase = RecordModel & {
+  pipeline_id: string; // relation
+  requester_id: string;
+  reason: string;
+};
+
+export type PipelineRequest = PipelineRequestBase & (
+  | { status: 'pending' }
+  | { status: 'approved'; approved_by: string; approved_at: string }
+  | { status: 'rejected'; rejected_by: string; rejected_at: string; rejection_reason: string }
+);
+
+export type CreatePipelineRequestDTO = SchemaCreatePipelineRequestDTO;
+export type UpdatePipelineRequestDTO = SchemaUpdatePipelineRequestDTO;
