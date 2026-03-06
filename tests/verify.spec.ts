@@ -1387,3 +1387,105 @@ test('Define validation schemas for Pipeline Execution payloads', async ({ page 
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Define validation schemas for Pipeline requests', async ({ page }) => {
+  // Navigate to app so we can evaluate in browser
+  await page.goto('http://localhost:5173/');
+  
+  // Expose test validation results to Playwright by running the Zod parser directly on mocked objects
+  const validationResults = await page.evaluate(async () => {
+    const schemaModule = await import('/src/schema/pipeline.ts');
+
+    // MOCK DATA for CreatePipelineRequestSchema
+    const validPending: any = {
+      pipeline_id: 'pl_123',
+      requester_id: 'user_123',
+      reason: 'Need feature xyz',
+      status: 'pending'
+    };
+    
+    const validApproved: any = {
+      pipeline_id: 'pl_123',
+      requester_id: 'user_123',
+      reason: 'Need feature xyz',
+      status: 'approved',
+      approved_by: 'admin_123',
+      approved_at: new Date().toISOString()
+    };
+    
+    const validRejected: any = {
+      pipeline_id: 'pl_123',
+      requester_id: 'user_123',
+      reason: 'Need feature xyz',
+      status: 'rejected',
+      rejected_by: 'admin_123',
+      rejected_at: new Date().toISOString(),
+      rejection_reason: 'Not a priority'
+    };
+
+    const invalidPendingWithApproval: any = {
+      ...validPending,
+      approved_by: 'admin_123'
+    };
+
+    const invalidApprovedMissingFields: any = {
+      pipeline_id: 'pl_123',
+      requester_id: 'user_123',
+      reason: 'Need feature xyz',
+      status: 'approved',
+      // Missing approved_by and approved_at
+    };
+
+    const invalidRejectedMissingReason: any = {
+      pipeline_id: 'pl_123',
+      requester_id: 'user_123',
+      reason: 'Need feature xyz',
+      status: 'rejected',
+      rejected_by: 'admin_123',
+      rejected_at: new Date().toISOString(),
+      // Missing rejection_reason
+    };
+
+    // MOCK DATA for UpdatePipelineRequestSchema
+    const invalidUpdatePendingWithRejection: any = {
+      status: 'pending',
+      rejection_reason: 'Oops'
+    };
+    
+    const validUpdateRejected: any = {
+      status: 'rejected',
+      rejected_by: 'admin_123',
+      rejected_at: new Date().toISOString(),
+      rejection_reason: 'Duplicated request'
+    };
+
+    let p1 = false, p2 = false, p3 = false, p4 = false, p5 = false, p6 = false, p7 = false, p8 = false;
+
+    // Create Validation
+    try { schemaModule.CreatePipelineRequestSchema.parse(validPending); p1 = true; } catch (e) {}
+    try { schemaModule.CreatePipelineRequestSchema.parse(validApproved); p2 = true; } catch (e) {}
+    try { schemaModule.CreatePipelineRequestSchema.parse(validRejected); p3 = true; } catch (e) {}
+    
+    try { schemaModule.CreatePipelineRequestSchema.parse(invalidPendingWithApproval); } catch (e) { p4 = true; }
+    try { schemaModule.CreatePipelineRequestSchema.parse(invalidApprovedMissingFields); } catch (e) { p5 = true; }
+    try { schemaModule.CreatePipelineRequestSchema.parse(invalidRejectedMissingReason); } catch (e) { p6 = true; }
+
+    // Update Validation
+    try { schemaModule.UpdatePipelineRequestSchema.parse(invalidUpdatePendingWithRejection); } catch (e) { p7 = true; }
+    try { schemaModule.UpdatePipelineRequestSchema.parse(validUpdateRejected); p8 = true; } catch (e) {}
+
+    return { p1, p2, p3, p4, p5, p6, p7, p8 };
+  });
+
+  expect(validationResults.p1).toBe(true);
+  expect(validationResults.p2).toBe(true);
+  expect(validationResults.p3).toBe(true);
+  expect(validationResults.p4).toBe(true);
+  expect(validationResults.p5).toBe(true);
+  expect(validationResults.p6).toBe(true);
+  expect(validationResults.p7).toBe(true);
+  expect(validationResults.p8).toBe(true);
+
+  // Take screenshot as required
+  await page.screenshot({ path: 'evidence.png' });
+});
