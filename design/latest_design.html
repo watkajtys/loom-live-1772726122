@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Queue Controls: Inline Header</title>
+<title>Advoloom Content Pipeline: Grid Deck</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -38,27 +38,35 @@
                 border: 1px solid rgba(0, 242, 255, 0.2);
                 box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.02);
             }
-            .sidebar-card {
-                @apply p-4 border-b border-white/5 bg-black/20 hover:bg-accent/[0.05] transition-all cursor-pointer relative overflow-hidden;
+            .content-card {
+                @apply glass-panel p-5 relative overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-white/[0.02] flex flex-col gap-4;
             }
-            .sidebar-card.active {
-                @apply bg-accent/[0.08] border-r-2 border-r-accent;
+            .status-tag {
+                @apply text-[9px] font-mono px-2 py-0.5 border uppercase tracking-widest;
             }
-            .micro-btn {
-                @apply px-4 py-1.5 text-[10px] font-mono border border-white/10 hover:border-accent hover:text-accent transition-all uppercase tracking-widest bg-white/5 hover:bg-accent/10;
+            .status-live {
+                @apply border-terminal-green/30 text-terminal-green bg-terminal-green/5;
             }
-            .status-dot {
-                @apply size-1 rounded-full bg-terminal-green;
-                box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
+            .status-progress {
+                @apply border-accent/30 text-accent bg-accent/5;
             }
-            .filter-chip {
-                @apply flex items-center gap-1.5 px-2 py-1 text-[9px] font-mono border border-white/10 hover:border-accent/50 text-slate-400 hover:text-accent transition-all uppercase tracking-tighter bg-white/5 cursor-pointer;
+            .status-draft {
+                @apply border-white/10 text-slate-500 bg-white/5;
             }
-            .filter-chip.active {
+            .filter-group {
+                @apply flex items-center gap-2 px-3 border-r border-white/10 last:border-r-0;
+            }
+            .command-label {
+                @apply text-[9px] font-mono text-slate-500 uppercase tracking-tighter;
+            }
+            .command-btn {
+                @apply px-2 py-1 text-[10px] font-mono border border-white/10 hover:border-accent/50 text-slate-400 hover:text-accent transition-all uppercase tracking-tighter bg-white/5 cursor-pointer;
+            }
+            .command-btn.active {
                 @apply border-accent text-accent bg-accent/10;
             }
             .custom-scrollbar::-webkit-scrollbar {
-                width: 3px;
+                width: 4px;
             }
             .custom-scrollbar::-webkit-scrollbar-track {
                 background: transparent;
@@ -66,242 +74,278 @@
             .custom-scrollbar::-webkit-scrollbar-thumb {
                 background: rgba(0, 242, 255, 0.1);
             }
-            .workspace-panel {
-                @apply flex-1 bg-[#08090d] border-l border-white/10 relative overflow-hidden flex flex-col;
+            .platform-icon {
+                @apply size-8 flex items-center justify-center border border-white/10 bg-black/40 text-slate-400;
             }
-            .neon-cursor {
-                caret-color: #00f2ff;
+            .pulse-cyan {
+                box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4);
+                animation: pulse 2s infinite;
             }
-            .inline-search {
-                @apply bg-white/5 border border-white/10 focus:border-accent/50 focus:ring-0 text-[10px] font-mono text-accent placeholder:text-slate-600 w-48 h-8 px-3 transition-all duration-300;
-            }
-            .neon-cursor {
-                caret-color: #00f2ff;
-            }
-            .filter-btn {
-                @apply px-3 py-1 text-[9px] font-mono border border-white/5 hover:border-accent/40 text-slate-500 hover:text-accent transition-all uppercase tracking-wider bg-white/2;
-            }
-            .filter-btn.active {
-                @apply border-accent text-accent bg-accent/5;
-            }
-            .workspace-panel {
-                @apply flex-1 bg-black/40 border-l border-white/10 relative overflow-hidden flex flex-col;
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); }
+                70% { box-shadow: 0 0 0 6px rgba(0, 242, 255, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
             }
         }
     </style>
 </head>
 <body class="bg-[#020305] text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen flex items-center justify-center p-4">
-<div class="w-full max-w-7xl glass-panel relative overflow-hidden flex flex-col h-[850px]">
+<div class="w-full max-w-[1600px] glass-panel relative overflow-hidden flex flex-col h-[900px]">
 <div class="absolute inset-0 grid-bg pointer-events-none"></div>
-<header class="relative z-30 flex items-center justify-between px-6 py-3 border-b border-white/10 bg-black/90 backdrop-blur-md">
-<div class="flex items-center gap-6">
-<div class="space-y-0">
+<header class="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">
+<div class="flex items-center gap-8">
+<div class="space-y-0.5">
 <div class="flex items-center gap-2">
-<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">CORE_03</span>
+<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">ROUTE::/CONTENT-PIPELINE</span>
 </div>
-<h2 class="text-lg font-bold tracking-tight text-white font-display uppercase leading-none">Community Queue</h2>
+<h2 class="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">Content Deck</h2>
 </div>
-<div class="h-8 w-px bg-white/10"></div>
-<div class="flex items-center gap-2">
-<div class="relative flex items-center">
-<span class="material-symbols-outlined absolute left-2 text-[14px] text-slate-500 pointer-events-none">search</span>
-<input class="inline-search pl-7" placeholder="SEARCH_ID..." type="text"/>
+<div class="h-10 w-px bg-white/10"></div>
+<div class="flex items-center">
+<div class="filter-group">
+<span class="command-label">PLATFORM</span>
+<div class="flex gap-1">
+<button class="command-btn active">All</button>
+<button class="command-btn">Github</button>
+<button class="command-btn">X/Twitter</button>
+<button class="command-btn">Discord</button>
 </div>
-<div class="flex items-center gap-1">
-<div class="filter-chip active">
-<span class="material-symbols-outlined text-[12px]">apps</span>
-<span>ALL</span>
 </div>
-<div class="filter-chip">
-<span class="material-symbols-outlined text-[12px]">forum</span>
-<span>DISC</span>
+<div class="filter-group">
+<span class="command-label">AGENT</span>
+<div class="flex gap-1">
+<button class="command-btn">Nexus_01</button>
+<button class="command-btn">Echo_04</button>
 </div>
-<div class="filter-chip">
-<span class="material-symbols-outlined text-[12px]">terminal</span>
-<span>GTHB</span>
 </div>
-<div class="filter-chip">
-<span class="material-symbols-outlined text-[12px]">alternate_email</span>
-<span>SOCL</span>
+<div class="filter-group">
+<span class="command-label">STATUS</span>
+<div class="flex gap-1">
+<button class="command-btn">Live</button>
+<button class="command-btn active">Progress</button>
 </div>
 </div>
 </div>
 </div>
 <div class="flex items-center gap-6 font-mono text-[10px]">
-<div class="flex items-center gap-3">
+<div class="flex items-center gap-4">
 <div class="text-right">
 <span class="text-slate-500 text-[8px] uppercase tracking-widest block leading-none">QUEUE_LOAD</span>
 <span class="text-accent font-bold">0xAF24</span>
 </div>
 <div class="h-6 w-px bg-white/5"></div>
-<div class="text-right">
-<span class="text-slate-500 text-[8px] uppercase tracking-widest block leading-none">LATENCY</span>
-<span class="text-white font-bold">42ms</span>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-2 text-[14px] text-slate-500 pointer-events-none">search</span>
+<input class="bg-white/5 border border-white/10 focus:border-accent/50 focus:ring-0 text-[10px] font-mono text-accent placeholder:text-slate-600 w-48 h-8 pl-7 transition-all" placeholder="FILTER_CARDS..." type="text"/>
 </div>
-</div>
-<div class="h-8 w-px bg-white/10"></div>
-<div class="flex flex-col items-end">
-<span class="text-slate-500 text-[8px] uppercase tracking-widest mb-0.5">NODE_STATUS</span>
-<span class="text-terminal-green flex items-center gap-2 font-bold uppercase text-[9px]">
-<span class="status-dot"></span>
-                    SYNCHRONIZED
-                </span>
 </div>
 </div>
 </header>
-<div class="flex flex-1 overflow-hidden relative z-10">
-<aside class="w-80 relative flex flex-col border-r border-white/5 bg-black/20">
-<div class="flex-1 overflow-y-auto custom-scrollbar">
-<div class="sidebar-card active">
-<div class="flex items-start justify-between mb-3">
+<main class="flex-1 overflow-y-auto custom-scrollbar p-6 relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="content-card border-l-2 border-l-terminal-green">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</div>
+<span class="status-tag status-live">Live</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#PR_9022</span>
+<span>â¢</span>
+<span>AGNT: NEXUS_01</span>
+</div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">Streamlining Webhooks: V2 Schema Migration Documentation</h4>
+<p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">Automated PR for the core SDK repository updating all webhook examples to follow the new 2024 security standards.</p>
+</div>
+<div class="pt-4 border-t border-white/5 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-[8px] font-mono">JS</div>
+<div class="size-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-[8px] font-mono">TS</div>
+</div>
+<span class="text-[9px] font-mono text-slate-500">2h ago</span>
+</div>
+</div>
+<div class="content-card border-l-2 border-l-accent">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">alternate_email</span>
+</div>
 <div class="flex items-center gap-2">
-<div class="size-8 bg-white/5 flex items-center justify-center border border-accent/30">
-<span class="material-symbols-outlined text-[18px] text-accent">forum</span>
-</div>
-<div class="font-mono text-[10px]">
-<div class="text-accent font-bold">#0x421</div>
-<div class="text-slate-500 uppercase">@dev_guru</div>
+<div class="size-1.5 rounded-full bg-accent pulse-cyan"></div>
+<span class="status-tag status-progress">In Progress</span>
 </div>
 </div>
-<span class="text-[8px] font-mono text-terminal-green border border-terminal-green/30 px-1.5 py-0.5 rounded-sm">CRITICAL</span>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#THREAD_A4</span>
+<span>â¢</span>
+<span>AGNT: ECHO_04</span>
 </div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">Developer Experience: Why Latency Matters in 2024</h4>
+<div class="w-full h-24 bg-white/5 border border-white/5 relative overflow-hidden group">
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-700">image</span>
+</div>
+<div class="absolute bottom-0 left-0 w-2/3 h-1 bg-accent"></div>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="text-[9px] font-mono text-accent">REFINING_HOOKS...</span>
+<span class="text-[9px] font-mono text-slate-500">Draft 03</span>
+</div>
+</div>
+<div class="content-card border-l-2 border-l-accent">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">forum</span>
+</div>
+<span class="status-tag status-progress">Draft</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#ANN_66</span>
+<span>â¢</span>
+<span>AGNT: NEXUS_01</span>
+</div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">New Community Bounty Program Announcement</h4>
+<p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">Drafting the announcement for the $50k Developer Bounty program across all official channels.</p>
+</div>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 border border-white/10 text-[8px] font-mono text-slate-400">PRIORITY_HIGH</span>
+<span class="px-2 py-0.5 border border-white/10 text-[8px] font-mono text-slate-400">BOUNTY</span>
+</div>
+</div>
+<div class="content-card border-l-2 border-l-terminal-green">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">article</span>
+</div>
+<span class="status-tag status-live">Live</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#POST_128</span>
+<span>â¢</span>
+<span>AGNT: ECHO_04</span>
+</div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">Case Study: 0xScale Infrastructure Migration</h4>
+<p class="text-xs text-slate-400 line-clamp-4 leading-relaxed">A deep dive into how our agents managed the infrastructure migration for 0xScale without a single second of downtime. Includes architectural diagrams and cost analysis.</p>
+</div>
+<div class="pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[9px]">
+<span class="text-terminal-green uppercase">9.2k Views</span>
+<span class="text-slate-500">Published 5h ago</span>
+</div>
+</div>
+<div class="content-card border-l-2 border-l-accent">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</div>
+<span class="status-tag status-progress">Building</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#ISSUE_442</span>
+<span>â¢</span>
+<span>AGNT: NEXUS_01</span>
+</div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">Bug: Memory Leak in React-Native Adapter</h4>
+<div class="flex flex-col gap-1">
 <div class="w-full h-1 bg-white/5">
-<div class="h-full bg-accent shadow-[0_0_8px_rgba(0,242,255,0.4)]" style="width: 88%"></div>
+<div class="h-full bg-accent" style="width: 65%"></div>
 </div>
-</div>
-<div class="sidebar-card">
-<div class="flex items-start justify-between mb-3">
-<div class="flex items-center gap-2">
-<div class="size-8 bg-white/5 flex items-center justify-center border border-white/10">
-<span class="material-symbols-outlined text-[18px] text-slate-400">terminal</span>
-</div>
-<div class="font-mono text-[10px]">
-<div class="text-slate-300">#0x422</div>
-<div class="text-slate-500 uppercase">octocat_42</div>
-</div>
-</div>
-<span class="text-[8px] font-mono text-primary border border-primary/30 px-1.5 py-0.5 rounded-sm">PENDING</span>
-</div>
-<div class="w-full h-1 bg-white/5">
-<div class="h-full bg-accent/40" style="width: 45%"></div>
-</div>
-</div>
-<div class="sidebar-card">
-<div class="flex items-start justify-between mb-3">
-<div class="flex items-center gap-2">
-<div class="size-8 bg-white/5 flex items-center justify-center border border-white/10">
-<span class="material-symbols-outlined text-[18px] text-slate-400">alternate_email</span>
-</div>
-<div class="font-mono text-[10px]">
-<div class="text-slate-300">#0x425</div>
-<div class="text-slate-500 uppercase">@tech_lead_x</div>
-</div>
-</div>
-<span class="text-[8px] font-mono text-amber-500 border border-amber-500/30 px-1.5 py-0.5 rounded-sm">QUEUED</span>
-</div>
-<div class="w-full h-1 bg-white/5">
-<div class="h-full bg-accent shadow-[0_0_8px_rgba(0,242,255,0.4)]" style="width: 92%"></div>
-</div>
-</div>
-<div class="sidebar-card opacity-60">
-<div class="flex items-start justify-between mb-3">
-<div class="flex items-center gap-2">
-<div class="size-8 bg-white/5 flex items-center justify-center border border-white/10">
-<span class="material-symbols-outlined text-[18px] text-slate-400">smart_toy</span>
-</div>
-<div class="font-mono text-[10px]">
-<div class="text-slate-500">#0x426</div>
-<div class="text-slate-500 uppercase">dev_ops_22</div>
-</div>
-</div>
-<span class="text-[8px] font-mono text-slate-600 border border-slate-600/30 px-1.5 py-0.5 rounded-sm">IDLE</span>
-</div>
-<div class="w-full h-1 bg-white/5">
-<div class="h-full bg-slate-700" style="width: 12%"></div>
-</div>
-</div>
-</div>
-</aside>
-<main class="workspace-panel">
-<div class="px-8 py-6 border-b border-white/5 flex justify-between items-start bg-black/40">
-<div class="space-y-4">
-<div class="flex items-center gap-4">
-<div class="size-12 bg-white/5 flex items-center justify-center border border-accent/20">
-<span class="material-symbols-outlined text-[28px] text-accent">forum</span>
-</div>
-<div>
-<div class="flex items-center gap-3 font-mono text-xs mb-1">
-<span class="text-accent font-bold">TASK_ID: 0x421</span>
-<span class="text-white/10">|</span>
-<span class="text-slate-300">USER: @dev_guru</span>
-</div>
-<h3 class="text-lg font-bold text-white uppercase tracking-wide">Active Workspace</h3>
-</div>
-</div>
-</div>
-<div class="flex items-center gap-10">
-<div class="text-right">
-<p class="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-1">AGENT_STATE</p>
-<p class="text-sm font-mono text-terminal-green font-bold">DRAFTING_RESPONSE</p>
-</div>
-<div class="text-right min-w-[120px]">
-<p class="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">PRIORITY_SCORE</p>
-<div class="flex items-center justify-end gap-3">
-<span class="text-xs font-mono text-accent">88%</span>
-<div class="w-24 h-1.5 bg-white/5 rounded-none overflow-hidden">
-<div class="h-full bg-accent shadow-[0_0_15px_rgba(0,242,255,0.8)]" style="width: 88%"></div>
+<div class="flex justify-between text-[8px] font-mono text-slate-500">
+<span>ANALYZING_TRACE</span>
+<span>65%</span>
 </div>
 </div>
 </div>
 </div>
+<div class="content-card border-l-2 border-l-terminal-green">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">alternate_email</span>
 </div>
-<div class="flex-1 p-8 overflow-y-auto custom-scrollbar space-y-8">
-<section class="space-y-3">
-<div class="flex items-center gap-2 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-<span class="material-symbols-outlined text-[14px]">input</span>
-                        Raw Message Payload
-                    </div>
-<div class="p-6 border border-white/5 bg-white/[0.02] font-mono text-[13px] text-slate-300 leading-relaxed border-l-2 border-l-slate-700">
-                        "How do I implement the new Webhooks API for real-time ingestions? I'm getting a 403 error on the handshake even though my secret matches. Is there a specific IP range I need to whitelist for the production environment?"
-                    </div>
-</section>
-<section class="space-y-3">
-<div class="flex items-center gap-2 text-[10px] font-mono text-terminal-green uppercase tracking-widest">
-<span class="material-symbols-outlined text-[14px]">smart_toy</span>
-                        Autonomous Response Draft
-                    </div>
-<div class="relative group">
-<textarea class="w-full h-56 bg-black/60 border border-accent/10 focus:border-accent/40 focus:ring-0 text-[13px] font-mono p-5 text-accent/90 leading-relaxed neon-cursor resize-none transition-all" spellcheck="false">Hello @dev_guru! Regarding the Webhooks API 403 error:
-1. Handshake Secret: Ensure you're using the Raw Body for HMAC calculation.
-2. Whitelisting: Yes, production outbound IPs are static. Check our docs at /v2/security/ips.
-3. Versioning: Ensure your header 'X-Advoloom-Version' is set to '2024-05-01'.
-I've prepared a code snippet for the validation logic if you'd like to see it.</textarea>
-<div class="absolute bottom-4 right-4 font-mono text-[9px] text-accent/30 bg-black/40 px-2 py-1">CHARS: 412 | TOKENS: 94</div>
+<span class="status-tag status-live">Live</span>
 </div>
-</section>
-<div class="flex justify-end gap-4 pt-6 border-t border-white/5">
-<button class="micro-btn h-10 px-6">Bypass</button>
-<button class="micro-btn h-10 px-6 text-white border-white/20">Edit Schema</button>
-<button class="micro-btn h-10 px-10 text-terminal-green border-terminal-green/30 bg-terminal-green/5 hover:bg-terminal-green/20">Authorize &amp; Send</button>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#TWEET_X1</span>
+<span>â¢</span>
+<span>AGNT: ECHO_04</span>
+</div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">Weekly Alpha: Top 5 DevRel Tools</h4>
+<p class="text-xs text-slate-400 line-clamp-2">The ultimate list of tools to scale your developer advocacy team in Q3.</p>
+</div>
+<div class="pt-4 flex items-center gap-4 border-t border-white/5">
+<div class="flex items-center gap-1 text-[9px] font-mono text-slate-500">
+<span class="material-symbols-outlined text-[12px]">favorite</span>
+<span>1.4k</span>
+</div>
+<div class="flex items-center gap-1 text-[9px] font-mono text-slate-500">
+<span class="material-symbols-outlined text-[12px]">cached</span>
+<span>422</span>
+</div>
+</div>
+</div>
+<div class="content-card border-l-2 border-l-accent">
+<div class="flex justify-between items-start">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">forum</span>
+</div>
+<span class="status-tag status-progress">Review</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-accent">#MSG_892</span>
+<span>â¢</span>
+<span>AGNT: NEXUS_01</span>
+</div>
+<h4 class="text-sm font-bold text-white uppercase tracking-tight">AMA: Future of Autonomous DevRel</h4>
+<p class="text-xs text-slate-400">Organizing the upcoming AMA session with our engineering lead.</p>
+</div>
+<div class="flex -space-x-1.5 pt-2">
+<div class="size-5 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-[7px] font-mono">AD</div>
+<div class="size-5 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-[7px] font-mono">RL</div>
+<div class="size-5 rounded-full bg-terminal-green/20 border border-terminal-green/40 flex items-center justify-center text-[7px] font-mono">MK</div>
+</div>
+</div>
+<div class="content-card border-l-2 border-l-slate-800">
+<div class="flex justify-between items-start opacity-50">
+<div class="platform-icon">
+<span class="material-symbols-outlined text-[18px]">article</span>
+</div>
+<span class="status-tag status-draft">Archived</span>
+</div>
+<div class="space-y-2 opacity-50">
+<div class="flex items-center gap-2 text-[9px] font-mono text-slate-500">
+<span class="text-slate-600">#POST_110</span>
+<span>â¢</span>
+<span>AGNT: ECHO_04</span>
+</div>
+<h4 class="text-sm font-bold text-slate-400 uppercase tracking-tight">Deprecation: Legacy Auth Methods</h4>
+<p class="text-xs text-slate-500 line-clamp-2">Postponed until V3 release cycle is finalized.</p>
+</div>
 </div>
 </div>
 </main>
-</div>
 <footer class="relative z-20 px-6 py-3 border-t border-white/10 bg-black/95 flex justify-between items-center text-[10px] font-mono">
 <div class="flex gap-8">
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">NETWORK_LOAD:</span>
-<span class="text-accent font-bold">14.2%</span>
+<span class="uppercase text-slate-500 tracking-wider">PIPELINE_THROUGHPUT:</span>
+<span class="text-accent font-bold">124 UNITS/HR</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">SYSTEM_MEMORY:</span>
-<span class="text-accent font-bold">3.8GB</span>
+<span class="uppercase text-slate-500 tracking-wider">CONTENT_HEALTH:</span>
+<span class="text-terminal-green font-bold">OPTIMAL</span>
 </div>
 </div>
 <div class="flex items-center gap-3 text-slate-400">
-<span class="material-symbols-outlined text-[14px]">update</span>
-<span class="uppercase tracking-wider">LAST_HEARTBEAT:</span>
-<span class="text-accent font-bold uppercase">14:22:18 UTC</span>
+<span class="material-symbols-outlined text-[14px]">sensors</span>
+<span class="uppercase tracking-wider">LAST_SYNC:</span>
+<span class="text-accent font-bold uppercase">14:55:02 UTC</span>
 </div>
 </footer>
 </div>
