@@ -1310,3 +1310,80 @@ test('PipelineStep and PipelineRun CRUD APIs format correctly', async ({ page })
 
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('Define validation schemas for Pipeline Execution payloads', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const validationResults = await page.evaluate(async () => {
+    // Dynamic import to fetch the new Zod schemas directly inside the browser
+    const schemaModule = await import('/src/schema/pipeline.ts');
+
+    // 1. Valid Trigger Payload
+    const validTrigger = {
+      pipeline_id: 'pipe_123',
+      arguments: { key: 'value', limit: 10 },
+      trigger_source: 'manual'
+    };
+
+    // 2. Invalid Trigger Payload (missing pipeline_id)
+    const invalidTrigger = {
+      arguments: { key: 'value' }
+    };
+
+    // 3. Valid Update Run Status (Running)
+    const validUpdateRunning = {
+      status: 'running'
+    };
+
+    // 4. Valid Update Run Status (Completed)
+    const validUpdateCompleted = {
+      status: 'completed',
+      completed_at: '2023-01-01T00:00:00.000Z',
+      metrics: { rows: 100 }
+    };
+
+    // 5. Valid Update Run Status (Failed)
+    const validUpdateFailed = {
+      status: 'failed',
+      completed_at: '2023-01-01T00:00:00.000Z',
+      error_message: 'Out of memory'
+    };
+
+    // 6. Invalid Update Run Status (Completed without completed_at)
+    const invalidUpdateCompleted = {
+      status: 'completed',
+      metrics: { rows: 100 }
+    };
+
+    // 7. Invalid Update Run Status (Failed without error_message)
+    const invalidUpdateFailed = {
+      status: 'failed',
+      completed_at: '2023-01-01T00:00:00.000Z'
+    };
+
+    let p1 = false, p2 = false, p3 = false, p4 = false, p5 = false, p6 = false, p7 = false;
+
+    try { schemaModule.TriggerPipelineRunPayloadSchema.parse(validTrigger); p1 = true; } catch (e) {}
+    try { schemaModule.TriggerPipelineRunPayloadSchema.parse(invalidTrigger); } catch (e) { p2 = true; }
+    
+    try { schemaModule.UpdatePipelineRunStatusPayloadSchema.parse(validUpdateRunning); p3 = true; } catch (e) {}
+    try { schemaModule.UpdatePipelineRunStatusPayloadSchema.parse(validUpdateCompleted); p4 = true; } catch (e) {}
+    try { schemaModule.UpdatePipelineRunStatusPayloadSchema.parse(validUpdateFailed); p5 = true; } catch (e) {}
+    
+    try { schemaModule.UpdatePipelineRunStatusPayloadSchema.parse(invalidUpdateCompleted); } catch (e) { p6 = true; }
+    try { schemaModule.UpdatePipelineRunStatusPayloadSchema.parse(invalidUpdateFailed); } catch (e) { p7 = true; }
+
+    return { p1, p2, p3, p4, p5, p6, p7 };
+  });
+
+  expect(validationResults.p1).toBe(true);
+  expect(validationResults.p2).toBe(true);
+  expect(validationResults.p3).toBe(true);
+  expect(validationResults.p4).toBe(true);
+  expect(validationResults.p5).toBe(true);
+  expect(validationResults.p6).toBe(true);
+  expect(validationResults.p7).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

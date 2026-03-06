@@ -128,3 +128,33 @@ export type CreatePipelineRunDTO = z.infer<typeof CreatePipelineRunSchema>;
 export type UpdatePipelineRunDTO = z.infer<typeof UpdatePipelineRunSchema>;
 
 export type PipelineConfig = z.infer<typeof CreatePipelineConfigSchema>;
+
+// Pipeline Execution Payloads
+
+export const PipelineExecutionArgumentsSchema = z.record(z.string(), z.any()).optional();
+
+export const TriggerPipelineRunPayloadSchema = z.object({
+  pipeline_id: z.string().min(1, 'Pipeline ID is required'),
+  arguments: PipelineExecutionArgumentsSchema,
+  trigger_source: z.string().optional(),
+});
+
+export const UpdatePipelineRunStatusPayloadSchema = z.discriminatedUnion('status', [
+  z.object({
+    status: z.literal('running'),
+  }),
+  z.object({
+    status: z.literal('completed'),
+    completed_at: z.string().datetime(),
+    metrics: z.record(z.string(), z.any()).optional(),
+  }),
+  z.object({
+    status: z.literal('failed'),
+    completed_at: z.string().datetime(),
+    error_message: z.string().min(1, 'Error message is required for failed runs'),
+  }),
+]);
+
+export type PipelineExecutionArguments = z.infer<typeof PipelineExecutionArgumentsSchema>;
+export type TriggerPipelineRunPayload = z.infer<typeof TriggerPipelineRunPayloadSchema>;
+export type UpdatePipelineRunStatusPayload = z.infer<typeof UpdatePipelineRunStatusPayloadSchema>;

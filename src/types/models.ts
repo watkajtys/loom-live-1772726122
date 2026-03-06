@@ -56,7 +56,10 @@ import {
   UpdatePipelineStepDTO as SchemaUpdatePipelineStepDTO,
   CreatePipelineRunDTO as SchemaCreatePipelineRunDTO,
   UpdatePipelineRunDTO as SchemaUpdatePipelineRunDTO,
-  PipelineConfig
+  PipelineConfig,
+  PipelineExecutionArguments as SchemaPipelineExecutionArguments,
+  TriggerPipelineRunPayload as SchemaTriggerPipelineRunPayload,
+  UpdatePipelineRunStatusPayload as SchemaUpdatePipelineRunStatusPayload
 } from '../schema/pipeline';
 
 export type Pipeline = RecordModel & {
@@ -117,3 +120,7 @@ export type PipelineRun = PipelineRunBase & (
 
 export type CreatePipelineRunDTO = SchemaCreatePipelineRunDTO;
 export type UpdatePipelineRunDTO = SchemaUpdatePipelineRunDTO;
+
+export type PipelineExecutionArguments = SchemaPipelineExecutionArguments;
+export type TriggerPipelineRunPayload = SchemaTriggerPipelineRunPayload;
+export type UpdatePipelineRunStatusPayload = SchemaUpdatePipelineRunStatusPayload;
