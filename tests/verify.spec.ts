@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { generateMockQueueData } from '../src/lib/queueSimulation';
 
 test('App initializes correctly', async ({ page }) => {
   await page.goto('/');
@@ -68,17 +69,12 @@ test('Build the Community Queue List container component.', async ({ page }) => 
         totalItems: 1,
         totalPages: 1,
         items: [
-          {
+          generateMockQueueData({
             id: 'mock_test_123',
             platform: 'DISCORD',
             query: 'Test query',
-            draft_reply: '',
-            status: 'drafting',
             user: 'test_user',
-            priority: 50,
-            created: new Date().toISOString(),
-            updated: new Date().toISOString(),
-          }
+          }, 1)
         ]
       })
     });
@@ -187,17 +183,12 @@ test('Queue Item component correctly displays entry details matching the design'
         totalItems: 1,
         totalPages: 1,
         items: [
-          {
+          generateMockQueueData({
             id: 'mock_test_123',
             platform: 'DISCORD',
             query: 'Test query',
-            draft_reply: '',
-            status: 'drafting',
             user: 'test_user',
-            priority: 50,
-            created: new Date().toISOString(),
-            updated: new Date().toISOString(),
-          }
+          }, 1)
         ]
       })
     });
@@ -248,17 +239,12 @@ test('Queue API utilities map correctly to the SocialMention data model and Pock
         totalItems: 1,
         totalPages: 1,
         items: [
-          {
+          generateMockQueueData({
             id: 'mock_test_123',
             platform: 'DISCORD',
             query: 'Test query',
-            draft_reply: '',
-            status: 'drafting',
             user: 'test_user',
-            priority: 50,
-            created: new Date().toISOString(),
-            updated: new Date().toISOString(),
-          }
+          }, 1)
         ]
       })
     });
@@ -286,17 +272,12 @@ test('Community Queue caching and refetching logic validates', async ({ page }) 
         totalItems: 1,
         totalPages: 1,
         items: [
-          {
+          generateMockQueueData({
             id: `mock_test_${callCount}`,
             platform: 'DISCORD',
             query: `Test query ${callCount}`,
-            draft_reply: '',
-            status: 'drafting',
             user: 'test_user',
-            priority: 50,
-            created: new Date().toISOString(),
-            updated: new Date().toISOString(),
-          }
+          }, callCount)
         ]
       })
     });
