@@ -8,21 +8,22 @@ import {
 } from '../../../types/models';
 import { 
   CreatePipelineRequestSchema, 
-  UpdatePipelineRequestSchema 
+  UpdatePipelineRequestSchema,
+  FetchPipelineRequestsOptionsSchema,
+  DeletePipelineRequestIdSchema,
+  FetchPipelineRequestsOptionsDTO
 } from '../../../schema/pipeline';
 
 const COLLECTION = 'pipeline_requests';
 
-export async function fetchPipelineRequests(options?: {
-  pipeline_id?: string;
-  requester_id?: string;
-  status?: string;
-}): Promise<{ items: PipelineRequest[] }> {
+export async function fetchPipelineRequests(options?: FetchPipelineRequestsOptionsDTO): Promise<{ items: PipelineRequest[] }> {
   try {
+    const validatedOptions = FetchPipelineRequestsOptionsSchema.parse(options || {});
+    
     const filters: string[] = [];
-    if (options?.pipeline_id) filters.push(pb.filter('pipeline_id = {:pipeline_id}', { pipeline_id: options.pipeline_id }));
-    if (options?.requester_id) filters.push(pb.filter('requester_id = {:requester_id}', { requester_id: options.requester_id }));
-    if (options?.status) filters.push(pb.filter('status = {:status}', { status: options.status }));
+    if (validatedOptions.pipeline_id) filters.push(pb.filter('pipeline_id = {:pipeline_id}', { pipeline_id: validatedOptions.pipeline_id }));
+    if (validatedOptions.requester_id) filters.push(pb.filter('requester_id = {:requester_id}', { requester_id: validatedOptions.requester_id }));
+    if (validatedOptions.status) filters.push(pb.filter('status = {:status}', { status: validatedOptions.status }));
 
     const filterString = filters.length > 0 ? filters.join(' && ') : '';
 
@@ -33,6 +34,9 @@ export async function fetchPipelineRequests(options?: {
     });
     return { items: records };
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+    }
     throw error;
   }
 }
@@ -73,8 +77,12 @@ export async function updatePipelineRequest(id: string, data: UpdatePipelineRequ
 
 export async function deletePipelineRequest(id: string): Promise<void> {
   try {
-    await pb.collection(COLLECTION).delete(id);
+    const validatedId = DeletePipelineRequestIdSchema.parse(id);
+    await pb.collection(COLLECTION).delete(validatedId);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid pipeline request ID', error.errors);
+    }
     throw error;
   }
 }

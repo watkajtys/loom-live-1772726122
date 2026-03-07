@@ -7,29 +7,35 @@ import {
   CreatePipelineRunSchema, 
   UpdatePipelineRunSchema,
   UpdatePipelineRunStatusPayloadSchema,
-  UpdatePipelineRunStatusPayload
+  UpdatePipelineRunStatusPayload,
+  FetchPipelineRunsOptionsSchema,
+  DeletePipelineRunIdSchema,
+  FetchPipelineRunsOptionsDTO
 } from '../../../schema/pipeline';
 
-export interface FetchPipelineRunsOptions {
-  pipeline_id: string;
-  page?: number;
-  perPage?: number;
-  sort?: string;
-}
+export interface FetchPipelineRunsOptions extends FetchPipelineRunsOptionsDTO {}
 
 export const fetchPipelineRuns = async (options: FetchPipelineRunsOptions): Promise<{ items: PipelineRun[]; totalItems: number }> => {
-  const { pipeline_id, page = 1, perPage = 50, sort = '-started_at' } = options;
-  
-  const result = await pb.collection(COLLECTIONS.PIPELINE_RUNS).getList<PipelineRun>(page, perPage, {
-    filter: `pipeline_id="${pipeline_id}"`,
-    sort,
-    requestKey: null,
-  });
+  try {
+    const validatedOptions = FetchPipelineRunsOptionsSchema.parse(options);
+    const { pipeline_id, page = 1, perPage = 50, sort = '-started_at' } = validatedOptions;
+    
+    const result = await pb.collection(COLLECTIONS.PIPELINE_RUNS).getList<PipelineRun>(page, perPage, {
+      filter: pb.filter('pipeline_id={:pipeline_id}', { pipeline_id }),
+      sort,
+      requestKey: null,
+    });
 
-  return {
-    items: result.items,
-    totalItems: result.totalItems,
-  };
+    return {
+      items: result.items,
+      totalItems: result.totalItems,
+    };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+    }
+    throw error;
+  }
 };
 
 export const createPipelineRun = async (data: CreatePipelineRunDTO): Promise<PipelineRun> => {
@@ -69,5 +75,13 @@ export const updatePipelineRunStatus = async (id: string, data: UpdatePipelineRu
 };
 
 export const deletePipelineRun = async (id: string): Promise<boolean> => {
-  return await pb.collection(COLLECTIONS.PIPELINE_RUNS).delete(id);
+  try {
+    const validatedId = DeletePipelineRunIdSchema.parse(id);
+    return await pb.collection(COLLECTIONS.PIPELINE_RUNS).delete(validatedId);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid pipeline run ID', error.errors);
+    }
+    throw error;
+  }
 };

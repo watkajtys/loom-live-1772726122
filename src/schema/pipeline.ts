@@ -237,3 +237,57 @@ export const FetchPipelinesOptionsSchema = z.object({
 export const DeletePipelineIdSchema = z.string().min(1, 'Pipeline ID is required');
 
 export type FetchPipelinesOptionsDTO = z.infer<typeof FetchPipelinesOptionsSchema>;
+
+export const FetchPipelineStagesOptionsSchema = z.object({
+  pipeline_id: z.string().min(1, 'Pipeline ID is required'),
+  page: z.number().int().min(1).optional(),
+  perPage: z.number().int().min(1).max(500).optional(),
+  sort: z.string().optional(),
+});
+
+export const DeletePipelineStageIdSchema = z.string().min(1, 'Pipeline Stage ID is required');
+
+export type FetchPipelineStagesOptionsDTO = z.infer<typeof FetchPipelineStagesOptionsSchema>;
+
+export const FetchPipelineCardsOptionsSchema = z.object({
+  stage_id: z.string().min(1, 'Stage ID is required'),
+  page: z.number().int().min(1).optional(),
+  perPage: z.number().int().min(1).max(500).optional(),
+  sort: z.string().optional(),
+});
+
+export const DeletePipelineCardIdSchema = z.string().min(1, 'Pipeline Card ID is required');
+
+export type FetchPipelineCardsOptionsDTO = z.infer<typeof FetchPipelineCardsOptionsSchema>;
+
+export const FetchPipelineStepsOptionsSchema = z.object({
+  card_id: z.string().min(1, 'Card ID is required'),
+  page: z.number().int().min(1).optional(),
+  perPage: z.number().int().min(1).max(500).optional(),
+  sort: z.string().optional(),
+});
+
+export const DeletePipelineStepIdSchema = z.string().min(1, 'Pipeline Step ID is required');
+
+export type FetchPipelineStepsOptionsDTO = z.infer<typeof FetchPipelineStepsOptionsSchema>;
+
+export const FetchPipelineRunsOptionsSchema = z.object({
+  pipeline_id: z.string().min(1, 'Pipeline ID is required'),
+  page: z.number().int().min(1).optional(),
+  perPage: z.number().int().min(1).max(500).optional(),
+  sort: z.string().optional(),
+});
+
+export const DeletePipelineRunIdSchema = z.string().min(1, 'Pipeline Run ID is required');
+
+export type FetchPipelineRunsOptionsDTO = z.infer<typeof FetchPipelineRunsOptionsSchema>;
+
+export const FetchPipelineRequestsOptionsSchema = z.object({
+  pipeline_id: z.string().optional(),
+  requester_id: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export const DeletePipelineRequestIdSchema = z.string().min(1, 'Pipeline Request ID is required');
+
+export type FetchPipelineRequestsOptionsDTO = z.infer<typeof FetchPipelineRequestsOptionsSchema>;

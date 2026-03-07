@@ -3,28 +3,37 @@ import { z } from 'zod';
 import { pb } from '../../pocketbase';
 import { PipelineStep, CreatePipelineStepDTO, UpdatePipelineStepDTO } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
-import { CreatePipelineStepSchema, UpdatePipelineStepSchema } from '../../../schema/pipeline';
+import { 
+  CreatePipelineStepSchema, 
+  UpdatePipelineStepSchema,
+  FetchPipelineStepsOptionsSchema,
+  DeletePipelineStepIdSchema,
+  FetchPipelineStepsOptionsDTO
+} from '../../../schema/pipeline';
 
-export interface FetchPipelineStepsOptions {
-  card_id: string;
-  page?: number;
-  perPage?: number;
-  sort?: string;
-}
+export interface FetchPipelineStepsOptions extends FetchPipelineStepsOptionsDTO {}
 
 export const fetchPipelineSteps = async (options: FetchPipelineStepsOptions): Promise<{ items: PipelineStep[]; totalItems: number }> => {
-  const { card_id, page = 1, perPage = 50, sort = 'position' } = options;
-  
-  const result = await pb.collection(COLLECTIONS.PIPELINE_STEPS).getList<PipelineStep>(page, perPage, {
-    filter: `card_id="${card_id}"`,
-    sort,
-    requestKey: null,
-  });
+  try {
+    const validatedOptions = FetchPipelineStepsOptionsSchema.parse(options);
+    const { card_id, page = 1, perPage = 50, sort = 'position' } = validatedOptions;
+    
+    const result = await pb.collection(COLLECTIONS.PIPELINE_STEPS).getList<PipelineStep>(page, perPage, {
+      filter: pb.filter('card_id={:card_id}', { card_id }),
+      sort,
+      requestKey: null,
+    });
 
-  return {
-    items: result.items,
-    totalItems: result.totalItems,
-  };
+    return {
+      items: result.items,
+      totalItems: result.totalItems,
+    };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+    }
+    throw error;
+  }
 };
 
 export const createPipelineStep = async (data: CreatePipelineStepDTO): Promise<PipelineStep> => {
@@ -52,5 +61,13 @@ export const updatePipelineStep = async (id: string, data: UpdatePipelineStepDTO
 };
 
 export const deletePipelineStep = async (id: string): Promise<boolean> => {
-  return await pb.collection(COLLECTIONS.PIPELINE_STEPS).delete(id);
+  try {
+    const validatedId = DeletePipelineStepIdSchema.parse(id);
+    return await pb.collection(COLLECTIONS.PIPELINE_STEPS).delete(validatedId);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid pipeline step ID', error.errors);
+    }
+    throw error;
+  }
 };

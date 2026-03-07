@@ -33,6 +33,69 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Enforce Total Parameter Governance on GET and DELETE Pipeline secondary routes', async ({ page }) => {
+  await page.route('**/api/collections/*/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ items: [], totalItems: 0 })
+      });
+    } else if (route.request().method() === 'DELETE') {
+      await route.fulfill({ status: 204, body: '' });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const stagesApi = await import('/src/lib/api/pipeline/stages.ts');
+    const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+    const stepsApi = await import('/src/lib/api/pipeline/steps.ts');
+    const runsApi = await import('/src/lib/api/pipeline/runs.ts');
+    const requestsApi = await import('/src/lib/api/pipeline/requests.ts');
+
+    const results = {
+      stagesGet: false, stagesDelete: false,
+      cardsGet: false, cardsDelete: false,
+      stepsGet: false, stepsDelete: false,
+      runsGet: false, runsDelete: false,
+      requestsGet: false, requestsDelete: false,
+    };
+
+    try { await stagesApi.fetchPipelineStages({ pipeline_id: '' }); } catch (e: any) { results.stagesGet = e.status === 400; }
+    try { await stagesApi.deletePipelineStage(''); } catch (e: any) { results.stagesDelete = e.status === 400; }
+
+    try { await cardsApi.fetchPipelineCards({ stage_id: '' }); } catch (e: any) { results.cardsGet = e.status === 400; }
+    try { await cardsApi.deletePipelineCard(''); } catch (e: any) { results.cardsDelete = e.status === 400; }
+
+    try { await stepsApi.fetchPipelineSteps({ card_id: '' }); } catch (e: any) { results.stepsGet = e.status === 400; }
+    try { await stepsApi.deletePipelineStep(''); } catch (e: any) { results.stepsDelete = e.status === 400; }
+
+    try { await runsApi.fetchPipelineRuns({ pipeline_id: '' }); } catch (e: any) { results.runsGet = e.status === 400; }
+    try { await runsApi.deletePipelineRun(''); } catch (e: any) { results.runsDelete = e.status === 400; }
+
+    try { await requestsApi.deletePipelineRequest(''); } catch (e: any) { results.requestsDelete = e.status === 400; }
+
+    return results;
+  });
+
+  expect(result.stagesGet).toBe(true);
+  expect(result.stagesDelete).toBe(true);
+  expect(result.cardsGet).toBe(true);
+  expect(result.cardsDelete).toBe(true);
+  expect(result.stepsGet).toBe(true);
+  expect(result.stepsDelete).toBe(true);
+  expect(result.runsGet).toBe(true);
+  expect(result.runsDelete).toBe(true);
+  expect(result.requestsDelete).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Queue Header/Controls component (search, filter, sort buttons)', async ({ page }) => {
   await page.goto('/queue');
 
