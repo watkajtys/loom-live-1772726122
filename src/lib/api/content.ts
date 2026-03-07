@@ -1,7 +1,10 @@
+import { z } from 'zod';
 import { pb } from '../pocketbase';
 import { ContentPipeline, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
 import { SemanticIconName } from '../../components/Icon';
+import { ValidationError } from './errors';
+import { CreateContentPipelineSchema, UpdateContentPipelineSchema } from '../../schema/content';
 
 export interface FetchContentOptions {
   page?: number;
@@ -41,11 +44,27 @@ export const fetchContentPipeline = async (options: FetchContentOptions = {}): P
 };
 
 export const createContentPipeline = async (data: CreateContentPipelineDTO): Promise<ContentPipeline> => {
-  return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).create<ContentPipeline>(data);
+  try {
+    const validatedData = CreateContentPipelineSchema.parse(data);
+    return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).create<ContentPipeline>(validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid content pipeline payload', error.errors);
+    }
+    throw error;
+  }
 };
 
 export const updateContentPipeline = async (id: string, data: UpdateContentPipelineDTO): Promise<ContentPipeline> => {
-  return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).update<ContentPipeline>(id, data);
+  try {
+    const validatedData = UpdateContentPipelineSchema.parse(data);
+    return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).update<ContentPipeline>(id, validatedData);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new ValidationError('Bad Request: Invalid content pipeline payload', error.errors);
+    }
+    throw error;
+  }
 };
 
 export const deleteContentPipeline = async (id: string): Promise<boolean> => {

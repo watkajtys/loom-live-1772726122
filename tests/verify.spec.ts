@@ -33,6 +33,118 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Create validation schemas for Pipeline mutations', async ({ page }) => {
+  // Mock PocketBase
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    if (route.request().method() === 'POST' || route.request().method() === 'PUT' || route.request().method() === 'PATCH') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'test_123',
+          title: 'Valid Pipeline',
+          markdown_body: 'Some content',
+          status: 'drafting'
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const contentApi = await import('/src/lib/api/content.ts');
+    
+    let validPostSuccess = false;
+    let postInvalidFailed = false;
+    let postErrorStatus = null;
+
+    let validUpdateSuccess = false;
+    let updateInvalidFailed = false;
+    let updateErrorStatus = null;
+
+    // Test POST Valid
+    try {
+      await contentApi.createContentPipeline({
+        title: 'Valid Pipeline',
+        markdown_body: 'Valid Content',
+        status: 'drafting',
+      });
+      validPostSuccess = true;
+    } catch (e: any) {
+      validPostSuccess = false;
+    }
+
+    // Test POST Invalid
+    try {
+      await contentApi.createContentPipeline({
+        title: '', // Invalid min length
+        markdown_body: 'Content',
+        status: 'drafting'
+      });
+    } catch (e: any) {
+      postInvalidFailed = true;
+      postErrorStatus = e.status;
+    }
+
+    // Test UPDATE Valid
+    let errorObj: any = null;
+    try {
+      // Mock pb response correctly to prevent ClientResponseError 0
+      const pbModule = await import('/src/lib/pocketbase.ts');
+      const originalUpdate = pbModule.pb.collection('content_pipeline').update;
+      pbModule.pb.collection('content_pipeline').update = async () => ({
+        id: 'test_123',
+        title: 'Updated Title',
+        markdown_body: 'Some content',
+        status: 'drafting'
+      });
+      await contentApi.updateContentPipeline('test_123', {
+        title: 'Updated Title'
+      });
+      validUpdateSuccess = true;
+      pbModule.pb.collection('content_pipeline').update = originalUpdate;
+    } catch (e: any) {
+      errorObj = { message: e?.message, status: e?.status };
+      validUpdateSuccess = false;
+    }
+
+    // Test UPDATE Invalid
+    try {
+      await contentApi.updateContentPipeline('test_123', {
+        status: 'invalid-status' as any
+      });
+    } catch (e: any) {
+      updateInvalidFailed = true;
+      updateErrorStatus = e.status;
+    }
+
+    return { 
+      validPostSuccess,
+      postInvalidFailed,
+      postErrorStatus,
+      validUpdateSuccess,
+      updateInvalidFailed,
+      updateErrorStatus,
+      errorObj
+    };
+  });
+
+  expect(result.validPostSuccess).toBe(true);
+  expect(result.postInvalidFailed).toBe(true);
+  expect(result.postErrorStatus).toBe(400);
+
+  expect(result.errorObj).toBe(null);
+  expect(result.validUpdateSuccess).toBe(true);
+  expect(result.updateInvalidFailed).toBe(true);
+  expect(result.updateErrorStatus).toBe(400);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Enforce Total Parameter Governance on GET and DELETE Pipeline secondary routes', async ({ page }) => {
   await page.route('**/api/collections/*/records*', async route => {
     if (route.request().method() === 'GET') {

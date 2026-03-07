@@ -22,15 +22,13 @@ export type ContentPipeline = ContentPipelineBase & (
   | { status: 'published' }
 );
 
-export interface CreateContentPipelineDTO {
-  title: string;
-  markdown_body: string;
-  status: 'drafting' | 'review' | 'published';
-  agentId?: string;
-  platformIcon?: string;
-}
+import {
+  CreateContentPipelineDTO as SchemaCreateContentPipelineDTO,
+  UpdateContentPipelineDTO as SchemaUpdateContentPipelineDTO
+} from '../schema/content';
 
-export interface UpdateContentPipelineDTO extends Partial<CreateContentPipelineDTO> {}
+export type CreateContentPipelineDTO = SchemaCreateContentPipelineDTO;
+export type UpdateContentPipelineDTO = SchemaUpdateContentPipelineDTO;
 
 export type AXReport = RecordModel & {
   error_log: string;
