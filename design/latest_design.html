@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Orchestrator: Categorized Split Feed</title>
+<title>Advoloom Orchestrator: Cluster Node Monitor</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -48,9 +48,13 @@
                 @apply size-1.5 bg-terminal-cyan shadow-[0_0_8px_rgba(0,242,255,0.8)];
                 animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
+            .heartbeat-indicator {
+                @apply size-1.5 bg-terminal-green shadow-[0_0_8px_rgba(0,255,65,0.8)];
+                animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
             @keyframes pulse-ring {
                 0%, 100% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.4; transform: scale(1.2); }
+                50% { opacity: 0.4; transform: scale(1.3); }
             }
             .metadata-pill {
                 @apply px-1 py-0.5 border border-terminal-cyan/20 bg-terminal-cyan/5 text-[8px] font-mono text-terminal-cyan uppercase;
@@ -67,6 +71,12 @@
             .terminal-header {
                 @apply h-8 border-b border-terminal-cyan/20 bg-terminal-cyan/5 flex items-center px-3 shrink-0;
             }
+            .node-row {
+                @apply border-b border-white/5 py-2 cursor-pointer hover:bg-terminal-cyan/5 transition-colors;
+            }
+            .pid-row {
+                @apply flex items-center justify-between py-1 px-4 text-[9px] font-mono border-l border-terminal-cyan/20 ml-2 mt-1;
+            }
         }
     </style>
 </head>
@@ -80,14 +90,14 @@
 </div>
 <div class="leading-none">
 <h1 class="text-sm font-bold text-white tracking-widest uppercase">ORCHESTRATOR</h1>
-<span class="text-[8px] font-mono text-accent/60 tracking-[0.4em]">VARIANT_02_SPLIT_FEED</span>
+<span class="text-[8px] font-mono text-accent/60 tracking-[0.4em]">VARIANT_02_CLUSTER_MONITOR</span>
 </div>
 </div>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-4 text-[10px] font-mono">
-<span class="text-slate-500">ENCRYPTION:</span>
-<span class="text-terminal-green">ACTIVE_RSA_4096</span>
+<span class="text-slate-500">CLUSTER_STATUS:</span>
+<span class="text-terminal-green">NODES_BALANCED</span>
 <span class="text-slate-500 ml-2">UPTIME:</span>
 <span class="text-terminal-cyan">082:44:12</span>
 </div>
@@ -117,7 +127,7 @@
 </nav>
 <div class="p-3 border-t border-terminal-cyan/20 text-[9px] font-mono">
 <div class="text-slate-500 uppercase">Input_Mode:</div>
-<div class="text-terminal-cyan">SPLIT_SYNC_ENABLED</div>
+<div class="text-terminal-cyan">CLUSTER_SYNC_ENABLED</div>
 </div>
 </aside>
 <main class="flex-1 flex flex-col overflow-hidden gap-2">
@@ -126,11 +136,11 @@
 <span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">02_LIVE_STREAM_MATRIX</span>
 <div class="flex items-center gap-2">
 <span class="pulse-indicator"></span>
-<span class="text-[9px] font-mono text-terminal-cyan animate-pulse">STREAMING</span>
+<span class="text-[9px] font-mono text-terminal-cyan">STREAMING</span>
 </div>
 </div>
 <div class="flex items-center gap-3">
-<button class="flex items-center gap-2 px-3 py-1 border border-red-500/40 bg-red-500/10 text-red-500 text-[9px] font-mono hover:bg-red-500/20 transition-colors uppercase">
+<button class="flex items-center gap-2 px-3 py-1 border border-terminal-cyan/40 bg-terminal-cyan/10 text-terminal-cyan text-[9px] font-mono hover:bg-terminal-cyan/20 transition-colors uppercase">
 <span class="material-symbols-outlined text-[12px]">pause_circle</span>
                         PAUSE_STREAM
                     </button>
@@ -162,13 +172,6 @@
 </div>
 <p class="text-[10px] font-mono text-slate-400 leading-tight">Incoming connection from proxy node 04. SSL Handshake succeeded.</p>
 </div>
-<div class="compact-card border-red-500/20">
-<div class="flex justify-between items-start mb-1">
-<span class="text-[9px] font-mono text-red-500 font-bold uppercase">Disk_Warning</span>
-<span class="text-[8px] font-mono text-slate-600">14:52:12</span>
-</div>
-<p class="text-[10px] font-mono text-slate-400 leading-tight">Cache partition exceeding 85% capacity. Automated purge scheduled.</p>
-</div>
 </div>
 </section>
 <section class="flex-1 neon-frame bg-black/40 flex flex-col overflow-hidden">
@@ -189,20 +192,6 @@
 <p class="text-[10px] font-mono text-slate-300 italic">"Redirecting workflow to node_B based on current latency spike (45ms &gt; 20ms threshold)."</p>
 </div>
 </div>
-<div class="compact-card">
-<div class="flex justify-between items-start mb-1">
-<span class="text-[9px] font-mono text-slate-400 font-bold uppercase">Repo_Observer</span>
-<span class="text-[8px] font-mono text-slate-600">14:54:55</span>
-</div>
-<p class="text-[10px] font-mono text-slate-400 leading-tight">Identified code pattern: 'async_leak' in module auth.py. Suggesting fix...</p>
-</div>
-<div class="compact-card">
-<div class="flex justify-between items-start mb-1">
-<span class="text-[9px] font-mono text-terminal-cyan font-bold uppercase">Context_Refiner</span>
-<span class="text-[8px] font-mono text-slate-600">14:54:20</span>
-</div>
-<p class="text-[10px] font-mono text-slate-400 leading-tight">Refining vector search space. Pruned 452 irrelevant nodes from current context.</p>
-</div>
 </div>
 </section>
 </div>
@@ -210,71 +199,95 @@
 <div class="flex items-center gap-3 bg-terminal-cyan/5 border border-terminal-cyan/20 px-3 py-1.5">
 <span class="text-terminal-green font-mono text-xs font-bold">$</span>
 <input autofocus="" class="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-slate-700" placeholder="SEND_COMMAND_TO_ACTIVE_FEED..." type="text"/>
-<div class="w-1.5 h-3.5 bg-terminal-green animate-[pulse_1s_infinite]"></div>
+<div class="w-1.5 h-3.5 bg-terminal-green animate-pulse"></div>
 </div>
 </div>
 </main>
-<aside class="w-72 neon-frame bg-black/60 backdrop-blur-md flex flex-col shrink-0">
-<div class="p-3 border-b border-terminal-cyan/20 bg-terminal-cyan/5">
-<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">03_ENGINE_STATS</span>
+<aside class="w-80 neon-frame bg-black/60 backdrop-blur-md flex flex-col shrink-0">
+<div class="p-3 border-b border-terminal-cyan/20 bg-terminal-cyan/5 flex justify-between items-center">
+<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">03_CLUSTER_MONITOR</span>
+<span class="text-[8px] font-mono text-slate-500">NODES_ACTIVE: 04</span>
 </div>
-<div class="p-4 overflow-y-auto custom-scrollbar space-y-4">
-<div class="border border-terminal-cyan/20 bg-black/40 p-3">
+<div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
+<div class="node-row px-1">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-mono text-white flex items-center gap-2">
+<span class="heartbeat-indicator"></span>
+                            WORKER_US_WEST
+                        </span>
+<div class="flex items-center gap-2">
+<span class="text-[8px] font-mono text-slate-500">LAT:</span>
+<span class="text-[9px] font-mono text-terminal-green">8ms</span>
+<span class="material-symbols-outlined text-[14px] text-slate-500">expand_less</span>
+</div>
+</div>
+<div class="space-y-0.5">
+<div class="pid-row bg-terminal-cyan/5">
+<span class="text-terminal-cyan">PID: 8821</span>
+<span class="text-slate-500 italic">MODEL: GPT-4-T</span>
+</div>
+<div class="pid-row bg-terminal-cyan/5">
+<span class="text-terminal-cyan">PID: 9012</span>
+<span class="text-slate-500 italic">MODEL: LLAMA3_70B</span>
+</div>
+</div>
+</div>
+<div class="node-row px-1">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-mono text-white flex items-center gap-2">
+<span class="heartbeat-indicator"></span>
+                            WORKER_EU_CENT
+                        </span>
+<div class="flex items-center gap-2">
+<span class="text-[8px] font-mono text-slate-500">LAT:</span>
+<span class="text-[9px] font-mono text-terminal-green">42ms</span>
+<span class="material-symbols-outlined text-[14px] text-slate-500">expand_more</span>
+</div>
+</div>
+</div>
+<div class="node-row px-1">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-mono text-white flex items-center gap-2">
+<span class="heartbeat-indicator"></span>
+                            WORKER_ASIA_S
+                        </span>
+<div class="flex items-center gap-2">
+<span class="text-[8px] font-mono text-slate-500">LAT:</span>
+<span class="text-[9px] font-mono text-terminal-green">105ms</span>
+<span class="material-symbols-outlined text-[14px] text-slate-500">expand_more</span>
+</div>
+</div>
+</div>
+<div class="node-row px-1 opacity-50 grayscale">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-mono text-slate-400 flex items-center gap-2">
+<span class="size-1.5 bg-slate-700"></span>
+                            WORKER_BR_NORTH
+                        </span>
+<div class="flex items-center gap-2">
+<span class="text-[9px] font-mono text-slate-600">IDLE</span>
+<span class="material-symbols-outlined text-[14px] text-slate-700">expand_more</span>
+</div>
+</div>
+</div>
+<div class="mt-6 border border-terminal-cyan/10 p-3 bg-black/40">
 <div class="flex justify-between items-center mb-2">
-<span class="text-[9px] font-mono text-slate-500 uppercase">Sync_Status</span>
-<span class="text-[9px] font-mono text-terminal-green">98.2%_SYNC</span>
+<span class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Cluster_Load</span>
+<span class="text-[9px] font-mono text-terminal-cyan">68.4%</span>
 </div>
 <div class="h-1 bg-white/5 overflow-hidden">
-<div class="h-full bg-terminal-cyan w-[98%] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
-</div>
-</div>
-<div class="border border-terminal-cyan/20 bg-black/40 p-3">
-<span class="text-[9px] font-mono text-slate-500 block mb-2 uppercase">Thread_Distribution</span>
-<div class="grid grid-cols-4 gap-1">
-<div class="h-8 bg-terminal-cyan/40 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-white">42</div>
-<div class="h-8 bg-terminal-cyan/20 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-slate-400">12</div>
-<div class="h-8 bg-terminal-cyan/10 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-slate-500">04</div>
-<div class="h-8 bg-terminal-cyan/5 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-slate-600">--</div>
-</div>
-<div class="flex justify-between mt-2 text-[8px] font-mono text-slate-500">
-<span>L1</span><span>L2</span><span>L3</span><span>WAIT</span>
-</div>
-</div>
-<div class="border border-terminal-cyan/20 bg-black/40 p-3">
-<span class="text-[9px] font-mono text-slate-500 block mb-3 uppercase">Active_Worker_Nodes</span>
-<div class="space-y-2">
-<div class="flex items-center justify-between border-b border-white/5 pb-1">
-<span class="text-[10px] font-mono text-white flex items-center gap-2">
-<span class="size-1 rounded-full bg-terminal-green"></span>
-                                WORKER_US_WEST
-                            </span>
-<span class="text-[9px] font-mono text-terminal-green">8ms</span>
-</div>
-<div class="flex items-center justify-between border-b border-white/5 pb-1">
-<span class="text-[10px] font-mono text-white flex items-center gap-2">
-<span class="size-1 rounded-full bg-terminal-green"></span>
-                                WORKER_EU_CENT
-                            </span>
-<span class="text-[9px] font-mono text-terminal-green">42ms</span>
-</div>
-<div class="flex items-center justify-between opacity-40">
-<span class="text-[10px] font-mono text-white flex items-center gap-2">
-<span class="size-1 rounded-full bg-red-500"></span>
-                                WORKER_ASIA_S
-                            </span>
-<span class="text-[9px] font-mono text-red-500">OFFLINE</span>
+<div class="h-full bg-terminal-cyan w-[68%] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
 </div>
 </div>
 </div>
-<div class="pt-2 border-t border-white/5 space-y-3">
-<div class="flex flex-col gap-1">
-<span class="text-[8px] font-mono text-slate-600 uppercase">Remote_Engine_ID</span>
-<span class="text-[9px] font-mono text-slate-400 truncate">RE-771-KILO-ORCH-9</span>
-</div>
-<div class="flex items-center gap-2">
-<span class="size-1.5 rounded-full bg-terminal-green animate-pulse"></span>
-<span class="text-[9px] font-mono text-terminal-green uppercase tracking-tighter">DATA_STREAM_ACTIVE</span>
-</div>
+<div class="p-3 border-t border-terminal-cyan/20 bg-terminal-cyan/5 space-y-2">
+<button class="w-full py-2 border border-terminal-cyan/30 bg-black hover:bg-terminal-cyan/10 transition-colors flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-[16px] text-terminal-cyan group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
+<span class="text-[10px] font-mono text-terminal-cyan font-bold tracking-widest uppercase">REBOOT_IDLE_NODES</span>
+</button>
+<div class="flex justify-between items-center px-1">
+<span class="text-[8px] font-mono text-slate-600 uppercase">Engine_ID:</span>
+<span class="text-[8px] font-mono text-slate-400 tracking-tighter">RE-771-KILO-ORCH-9</span>
 </div>
 </div>
 </aside>
