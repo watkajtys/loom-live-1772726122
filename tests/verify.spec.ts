@@ -3402,3 +3402,16 @@ test('Refactor ContentPipeline to use View Registry and KnowledgeBase to use uni
   expect(knowledgeResult).not.toHaveProperty('error');
   expect(knowledgeResult.hasLayout).toBe(true);
 });
+
+test('Create the CriticAgent class in src/agents/critic.py', async ({ page }) => {
+  // Verify the file exists and contains the required content
+  const filePath = path.join(process.cwd(), 'src/agents/critic.py');
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  expect(fileContent).toContain('class CriticAgent:');
+  expect(fileContent).toContain('analyzer'); // Analyzer wrapper or logic
+  expect(fileContent).toContain('8090'); // PocketBase port
+
+  await page.goto('/');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
