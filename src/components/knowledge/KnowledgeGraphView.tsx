@@ -1,46 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { KnowledgeLayout } from './KnowledgeLayout';
 
 export const KnowledgeGraphView: React.FC = () => {
   return (
-    <div className="flex-1 flex flex-col relative bg-obsidian text-slate-300 font-display selection:bg-accent/30 selection:text-accent overflow-hidden">
-      <div className="absolute inset-0 grid-bg pointer-events-none z-0"></div>
-      
-      {/* Custom Header replacing TopBar just for this view */}
-      <header className="relative z-30 h-14 border-b border-white/10 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-accent/10 border border-accent/40 flex items-center justify-center">
-              <span className="material-symbols-outlined text-accent text-lg">hub</span>
-            </div>
-            <div className="leading-none">
-              <h1 className="text-lg font-bold text-white tracking-tight uppercase">KB_GRAPH</h1>
-              <span className="text-[9px] font-mono text-accent/60 tracking-[0.3em]">MATRIX_LAYOUT_V2</span>
-            </div>
-          </div>
-          <div className="h-6 w-[1px] bg-white/10 hidden md:block"></div>
-          <div className="hidden md:flex items-center gap-6">
-            <div className="flex flex-col">
-              <span className="text-[8px] font-mono text-slate-500 uppercase">Knowledge Density</span>
-              <span className="text-xs font-mono text-accent">1.4 TB / 4,291 Nodes</span>
-            </div>
-            <div className="flex flex-col border-l border-white/10 pl-6">
-              <span className="text-[8px] font-mono text-slate-500 uppercase">Sync Status</span>
-              <span className="text-xs font-mono text-terminal-green">REAL-TIME_ACTIVE</span>
-            </div>
-          </div>
+    <KnowledgeLayout
+      title="KB_GRAPH"
+      subtitle="MATRIX_LAYOUT_V2"
+      icon="hub"
+      headerStats={
+        <div className="flex flex-col">
+          <span className="text-[8px] font-mono text-slate-500 uppercase">Knowledge Density</span>
+          <span className="text-xs font-mono text-accent">1.4 TB / 4,291 Nodes</span>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 px-4 py-1.5 border border-white/10 bg-white/5 text-[10px] font-mono uppercase tracking-widest text-slate-400">
-            <span className="text-terminal-green animate-pulse">●</span>
-            Embedding Engine: ON
-          </div>
-          <Link to="/?view=feed" className="w-9 h-9 flex items-center justify-center border border-white/10 hover:bg-white/5 text-slate-400 hover:text-white transition-all" title="Feed View">
-            <span className="material-symbols-outlined text-xl">list</span>
-          </Link>
-        </div>
-      </header>
-
+      }
+      headerStatus="REAL-TIME_ACTIVE"
+      footerStats={
+        <>
+          <div className="text-[9px] font-mono text-slate-600 uppercase">Latency: 4ms</div>
+          <div className="text-[9px] font-mono text-slate-600 uppercase">Vector Ops: 12.4k/s</div>
+        </>
+      }
+      footerStatus="Knowledge Core: Optimized"
+      footerVersion="v4.2.0-KB_ENGINE"
+      viewLink="/?view=feed"
+      viewIcon="list"
+      viewTitle="Feed View"
+    >
       <main className="relative z-10 flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
         <aside className="w-64 border-r border-white/10 bg-black/40 flex flex-col shrink-0">
@@ -217,27 +202,6 @@ export const KnowledgeGraphView: React.FC = () => {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="h-8 border-t border-white/10 bg-black/90 px-6 flex items-center justify-between relative z-30 shrink-0">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-terminal-green animate-pulse shadow-[0_0_6px_#00ff41]"></span>
-            <span className="text-[9px] font-mono text-terminal-green uppercase tracking-tighter">Knowledge Core: Optimized</span>
-          </div>
-          <div className="text-[9px] font-mono text-slate-600 uppercase">Latency: 4ms</div>
-          <div className="text-[9px] font-mono text-slate-600 uppercase">Vector Ops: 12.4k/s</div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2">
-            <div className="w-2 h-2 border border-white/20"></div>
-            <div className="w-2 h-2 border border-accent/60 bg-accent/20"></div>
-            <div className="w-2 h-2 border border-white/20"></div>
-          </div>
-          <span className="text-[9px] font-mono text-slate-600">v4.2.0-KB_ENGINE</span>
-          <span className="text-[9px] font-mono text-slate-600">© ADVOLOOM_SYSTEMS_2024</span>
-        </div>
-      </footer>
-    </div>
+    </KnowledgeLayout>
   );
 };

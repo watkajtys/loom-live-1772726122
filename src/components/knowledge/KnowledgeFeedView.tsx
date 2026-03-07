@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { KnowledgeLayout } from './KnowledgeLayout';
 
 const mockFeedData = [
   {
@@ -78,39 +78,26 @@ export const KnowledgeFeedView: React.FC = () => {
   );
 
   return (
-    <div className="flex-1 flex flex-col relative bg-obsidian text-slate-300 font-sans selection:bg-accent/30 selection:text-accent overflow-hidden h-full">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PHBhdGggZD0iTTYwIDBMMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLCAyNDIsIDI1NSwgMC4wMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')] pointer-events-none z-0"></div>
-      
-      <header className="relative z-30 h-14 border-b border-white/10 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-accent/10 border border-accent/40 flex items-center justify-center">
-              <span className="material-symbols-outlined text-accent text-lg">terminal</span>
-            </div>
-            <div className="leading-none">
-              <h1 className="text-lg font-bold text-white tracking-tight uppercase">KB_FEED</h1>
-              <span className="text-[9px] font-mono text-accent/60 tracking-[0.3em]">COMMAND_INTERFACE_V3</span>
-            </div>
-          </div>
-          <div className="h-6 w-[1px] bg-white/10 hidden md:block"></div>
-          <div className="hidden md:flex items-center gap-6">
-            <div className="flex flex-col">
-              <span className="text-[8px] font-mono text-slate-500 uppercase">Ingestion Stream</span>
-              <span className="text-xs font-mono text-accent">ACTIVE_LISTENER</span>
-            </div>
-          </div>
+    <KnowledgeLayout
+      title="KB_FEED"
+      subtitle="COMMAND_INTERFACE_V3"
+      icon="terminal"
+      headerStats={
+        <div className="flex flex-col">
+          <span className="text-[8px] font-mono text-slate-500 uppercase">Ingestion Stream</span>
+          <span className="text-xs font-mono text-accent">ACTIVE_LISTENER</span>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 px-4 py-1.5 border border-white/10 bg-white/5 text-[10px] font-mono uppercase tracking-widest text-slate-400">
-            <span className="text-terminal-green">●</span>
-            SYS_HEALTH: OPTIMAL
-          </div>
-          <Link to="/?view=graph" className="w-9 h-9 flex items-center justify-center border border-white/10 hover:bg-white/5 text-slate-400 hover:text-white transition-all" title="Graph View">
-            <span className="material-symbols-outlined text-xl">hub</span>
-          </Link>
-        </div>
-      </header>
-
+      }
+      headerStatus={null}
+      footerStats={
+        <div className="text-[9px] font-mono text-slate-600 uppercase">Stream: 1,240 Events/hr</div>
+      }
+      footerStatus="Indexers: Operational"
+      footerVersion="v4.2.0-KB_FEED"
+      viewLink="/?view=graph"
+      viewIcon="hub"
+      viewTitle="Graph View"
+    >
       <main className="relative z-10 flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full">
         <div className="px-6 pt-12 pb-8 shrink-0">
           <div className="bg-black/80 border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.8)] focus-within:border-accent/50 transition-all duration-500 flex items-center p-4 gap-4">
@@ -196,25 +183,6 @@ export const KnowledgeFeedView: React.FC = () => {
           </div>
         </section>
       </main>
-
-      <footer className="h-8 border-t border-white/10 bg-black/90 px-6 flex items-center justify-between relative z-30 shrink-0">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-terminal-green shadow-[0_0_6px_#00ff41]"></span>
-            <span className="text-[9px] font-mono text-terminal-green uppercase tracking-tighter">Indexers: Operational</span>
-          </div>
-          <div className="text-[9px] font-mono text-slate-600 uppercase">Stream: 1,240 Events/hr</div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2">
-            <div className="w-2 h-2 border border-white/20"></div>
-            <div className="w-2 h-2 border border-accent/60 bg-accent/20"></div>
-            <div className="w-2 h-2 border border-white/20"></div>
-          </div>
-          <span className="text-[9px] font-mono text-slate-600">v4.2.0-KB_FEED</span>
-          <span className="text-[9px] font-mono text-slate-600">© ADVOLOOM_SYSTEMS_2024</span>
-        </div>
-      </footer>
-    </div>
+    </KnowledgeLayout>
   );
 };

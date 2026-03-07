@@ -3362,3 +3362,43 @@ test('Create the ScribeAgent class in src/agents/scribe.py', async ({ page }) =>
   await page.goto('/');
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Refactor ContentPipeline to use View Registry and KnowledgeBase to use unified KnowledgeLayout', async ({ page }) => {
+  // Check ContentPipeline refactoring explicitly
+  await page.goto('/');
+  const pipelineResult = await page.evaluate(async () => {
+    try {
+      // Import the dynamic layouts
+      const streamModule = await import('/src/components/content/stream/StreamViewLayout.tsx');
+      const splitModule = await import('/src/components/content/split/SplitViewLayout.tsx');
+      const boardModule = await import('/src/components/content/board/BoardViewLayout.tsx');
+      return {
+        hasStream: !!streamModule.StreamViewLayout,
+        hasSplit: !!splitModule.SplitViewLayout,
+        hasBoard: !!boardModule.BoardViewLayout,
+      };
+    } catch (e) {
+      return { error: true };
+    }
+  });
+
+  expect(pipelineResult).not.toHaveProperty('error');
+  expect(pipelineResult.hasStream).toBe(true);
+  expect(pipelineResult.hasSplit).toBe(true);
+  expect(pipelineResult.hasBoard).toBe(true);
+
+  // Check KnowledgeLayout explicitly
+  const knowledgeResult = await page.evaluate(async () => {
+    try {
+      const layoutModule = await import('/src/components/knowledge/KnowledgeLayout.tsx');
+      return {
+        hasLayout: !!layoutModule.KnowledgeLayout,
+      };
+    } catch (e) {
+      return { error: true };
+    }
+  });
+
+  expect(knowledgeResult).not.toHaveProperty('error');
+  expect(knowledgeResult.hasLayout).toBe(true);
+});
