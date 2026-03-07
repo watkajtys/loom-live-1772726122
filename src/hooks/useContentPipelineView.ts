@@ -43,6 +43,18 @@ export const useContentPipelineView = () => {
     filterString = filters.join(' && ');
   }
 
+  const activeStageId = searchParams.get('stage') || '';
+
+  const setActiveStageId = (stage: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (stage) {
+      newParams.set('stage', stage);
+    } else {
+      newParams.delete('stage');
+    }
+    setSearchParams(newParams);
+  };
+
   const collapsedStages = searchParams.get('collapsed')?.split(',') || [];
 
   const toggleCollapse = (stage: string) => {
@@ -73,6 +85,8 @@ export const useContentPipelineView = () => {
     statusFilter,
     agentFilter,
     viewMode,
+    activeStageId,
+    setActiveStageId,
     collapsedStages,
     toggleCollapse,
     data,
