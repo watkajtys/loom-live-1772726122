@@ -17,11 +17,30 @@ export const ExecutionLogs: React.FC = () => {
   ]);
   
   const [input, setInput] = useState('');
+  const [isRebooting, setIsRebooting] = useState(false);
 
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && input.trim()) {
-      setLogs([{ id: Date.now(), type: 'info', title: 'User_Command', time: new Date().toLocaleTimeString('en-US', {hour12:false}), msg: input, color: 'terminal-green' }, ...logs]);
+      setLogs(prev => [{ id: Date.now(), type: 'info', title: 'User_Command', time: new Date().toLocaleTimeString('en-US', {hour12:false}), msg: input, color: 'terminal-green' }, ...prev]);
       setInput('');
+    }
+  };
+
+  const handleRebootNodes = () => {
+    if (isRebooting) return;
+    setIsRebooting(true);
+    setLogs(prev => [{ id: Date.now(), type: 'info', title: 'Macro_Execution', time: new Date().toLocaleTimeString('en-US', {hour12:false}), msg: 'Initiating graceful reboot for idle nodes.', color: 'terminal-green' }, ...prev]);
+    
+    setTimeout(() => {
+      setIsRebooting(false);
+      setLogs(prev => [{ id: Date.now(), type: 'success', title: 'System_Event', time: new Date().toLocaleTimeString('en-US', {hour12:false}), msg: 'Reboot sequence complete. All idle nodes back online.', color: 'terminal-green' }, ...prev]);
+    }, 2000);
+  };
+
+  const handleRebootKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRebootNodes();
     }
   };
 
@@ -116,9 +135,25 @@ export const ExecutionLogs: React.FC = () => {
             </div>
           </div>
           <div className="p-3 border-t border-accent/20 bg-black space-y-2 relative z-10 mt-6">
-            <button className="w-full py-2 border-2 border-terminal-green/30 bg-terminal-green/5 animate-neon-glow hover:bg-terminal-green/20 transition-all flex items-center justify-center gap-2 group">
-              <Icon name="rotate-cw" className="text-[16px] text-terminal-green group-hover:rotate-180 transition-transform duration-500" />
-              <span className="text-[10px] font-mono text-terminal-green font-bold tracking-widest uppercase">REBOOT_IDLE_NODES</span>
+            <button 
+              onClick={handleRebootNodes}
+              onKeyDown={handleRebootKeyDown}
+              tabIndex={0}
+              aria-busy={isRebooting}
+              disabled={isRebooting}
+              className={`w-full py-2 border-2 transition-all flex items-center justify-center gap-2 group focus:outline-none focus:ring-2 focus:ring-terminal-green focus:ring-offset-1 focus:ring-offset-black ${
+                isRebooting 
+                  ? 'border-terminal-green/50 bg-terminal-green/20 cursor-wait' 
+                  : 'border-terminal-green bg-terminal-green hover:bg-terminal-green/90 animate-neon-glow'
+              }`}
+            >
+              <Icon 
+                name="rotate-cw" 
+                className={`text-[16px] ${isRebooting ? 'text-terminal-green animate-spin' : 'text-obsidian group-hover:rotate-180 transition-transform duration-500'}`} 
+              />
+              <span className={`text-[10px] font-mono font-bold tracking-widest uppercase ${isRebooting ? 'text-terminal-green' : 'text-obsidian'}`}>
+                {isRebooting ? '[ REBOOTING_NODES... ]' : '[ REBOOT_IDLE_NODES ]'}
+              </span>
             </button>
             <div className="flex justify-between items-center px-1">
               <span className="text-[8px] font-mono text-muted uppercase">Engine_ID:</span>

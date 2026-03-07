@@ -3932,7 +3932,7 @@ test('Focus-within border classes are applied correctly on orchestrator input', 
   await page.screenshot({ path: 'evidence.png' });
 });
 
-test('', async ({ page }) => {
+test('Verify Orchestrator visual metadata presence', async ({ page }) => {
   await page.goto('/orchestrator');
   
   // Wait for the elements to be present
@@ -3946,4 +3946,43 @@ test('', async ({ page }) => {
   await expect(metadataLocator).toBeVisible();
   
   await page.screenshot({ path: 'evidence.png' });
+});
+
+test('', async ({ page }) => {
+  await page.goto('/dashboard/logs');
+  
+  // Verify the REBOOT button is visible and initially says [ REBOOT_IDLE_NODES ]
+  const rebootButton = page.locator('button', { hasText: '[ REBOOT_IDLE_NODES ]' });
+  await expect(rebootButton).toBeVisible();
+  
+  // Verify initial styling has text-obsidian
+  await expect(rebootButton.locator('span.text-obsidian')).toBeVisible();
+
+  // Press Enter while focused on it to trigger the keyboard event
+  await rebootButton.focus();
+  await rebootButton.press('Enter');
+
+  // Verify the button text changes to [ REBOOTING_NODES... ]
+  const rebootingButton = page.locator('button', { hasText: '[ REBOOTING_NODES... ]' });
+  await expect(rebootingButton).toBeVisible();
+
+  // Verify the `aria-busy` attribute is correctly applied
+  await expect(rebootingButton).toHaveAttribute('aria-busy', 'true');
+
+  // Verify the Macro_Execution log is appended
+  const macroExecutionLog = page.locator('text=Initiating graceful reboot for idle nodes.');
+  await expect(macroExecutionLog).toBeVisible();
+
+  // Wait for the timeout to finish
+  await page.waitForTimeout(2500);
+
+  // Verify button text reverts back
+  await expect(rebootButton).toBeVisible();
+  await expect(rebootButton).toHaveAttribute('aria-busy', 'false');
+
+  // Verify the success log is appended
+  const successLog = page.locator('text=Reboot sequence complete. All idle nodes back online.');
+  await expect(successLog).toBeVisible();
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
