@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
+import { ExecutionLogs } from './pages/ExecutionLogs';
 import { CommunityQueue } from './pages/CommunityQueue';
 import { ContentPipeline } from './pages/ContentPipeline';
 import { AgentExecutionReports } from './pages/AgentExecutionReports';
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/healthz" element={<Healthz />} />
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/logs" element={<ExecutionLogs />} />
             <Route path="/queue" element={<CommunityQueue />} />
             {/* Task: Integrate Knowledge Base into application routing and navigation */}
             <Route path="/" element={<KnowledgeBase />} />

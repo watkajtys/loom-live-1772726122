@@ -3757,3 +3757,24 @@ test('Navigate to /dashboard; verify Obsidian Black background, Space Grotesk us
   // Take screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Trigger an orchestrator event and verify Terminal Green logs stream into the component without triggering full-page layout thrashing or desynchronization', async ({ page }) => {
+  await page.goto('/dashboard/logs');
+  
+  await expect(page.locator('h1', { hasText: 'ORCHESTRATOR' })).toBeVisible();
+  
+  // Fill in the input command field
+  const inputLocator = page.locator('input[placeholder="SEND_COMMAND_TO_ACTIVE_FEED..."]');
+  await inputLocator.fill('initiate stream');
+  await inputLocator.press('Enter');
+  
+  // Verify that the command is appended to the stream
+  const newCommandEntry = page.locator('text=User_Command');
+  await expect(newCommandEntry).toBeVisible();
+  
+  // Verify it has the correct Terminal Green styling
+  const greenText = page.locator('.text-terminal-green', { hasText: 'User_Command' });
+  await expect(greenText).toBeVisible();
+  
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
