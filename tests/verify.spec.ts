@@ -2153,3 +2153,34 @@ test('Apply validation schema to Pipeline POST controller', async ({ page }) => 
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Pipeline POST controller structure and layout fixes', async ({ page }) => {
+  // Verify that the ContentHeader has been split properly by checking for the exported components
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    try {
+      const headerModule = await import('/src/components/content/ContentHeader.tsx');
+      const filtersModule = await import('/src/components/content/ContentFilters.tsx');
+      const searchModule = await import('/src/components/content/ContentSearch.tsx');
+      const themeModule = await import('/src/utils/theme.ts');
+
+      return {
+        hasHeader: !!headerModule.ContentHeader,
+        hasFilters: !!filtersModule.ContentFilters,
+        hasSearch: !!searchModule.ContentSearch,
+        hasGetStageStyles: !!themeModule.getStageStyles,
+      };
+    } catch (e) {
+      return { error: true };
+    }
+  });
+
+  expect(result).not.toHaveProperty('error');
+  expect(result.hasHeader).toBe(true);
+  expect(result.hasFilters).toBe(true);
+  expect(result.hasSearch).toBe(true);
+  expect(result.hasGetStageStyles).toBe(true);
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

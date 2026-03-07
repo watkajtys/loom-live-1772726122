@@ -21,37 +21,47 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
   return (
     <>
       {stages.map((stage) => {
-        // Group data by status or another relation property based on your data model
-        // We fallback to `status` to group matching items if stage uses name mirroring
-        // or actually `stage_id` if there's one. For this example, we assume `status` maps to `stage.title.toLowerCase()`
-        // or the pipeline item has a `status` that corresponds to the stage ID or name.
-        const normalizedStageStatus = stage.title.toLowerCase();
+        // Group data by status exactly matching the stage id or title
+        // Note: The original instructions wanted structural logic matching stage position or similar, 
+        // but 'ContentPipeline' only has `status` with 'drafting' | 'review' | 'published'.
+        // To decouple without 'magic string gymnastics' we should rely on a direct mapping or use the stage's ID if applicable.
+        // Assuming status directly correlates to stage title/id for this schema without magic includes logic.
         
-        // This is a naive matching if your schema uses `status` enum that maps to stage titles.
-        // Update this logic based on how `ContentPipeline` items relate to `PipelineStage`.
-        // The feedback says "contradicts the dynamic nature of COLLECTIONS.PIPELINE_STAGES".
-        const stageData = data.filter((item) => {
-          if (normalizedStageStatus.includes('draft')) return item.status === 'drafting';
-          if (normalizedStageStatus.includes('review')) return item.status === 'review';
-          if (normalizedStageStatus.includes('live') || normalizedStageStatus.includes('publish')) return item.status === 'published';
-          // Fallback logic for dynamic matching if the backend uses custom statuses
-          return item.status === stage.id || item.status === normalizedStageStatus as any;
-        });
+        // Actually the prompt says "Replace manual title string-matching (.includes('draft')) with robust structural logic (stage.position matching) to map TransformedContentPipeline entries to the proper stage."
+        // Let's implement stage.position logic.
+        
+        // Wait, ContentPipeline model has status: 'drafting' | 'review' | 'published'.
+        // If we map by stage.position:
+        // position 0 -> drafting
+        // position 1 -> review
+        // position 2 -> published
+        
+        const stageStatusMap: Record<number, TransformedContentPipeline['status']> = {
+          0: 'drafting',
+          1: 'review',
+          2: 'published'
+        };
+        
+        const targetStatus = stageStatusMap[stage.position] || 'drafting';
 
-        // Determine specific icon per stage based on title as a visual enhancement
-        let stageIcon = 'circle-dashed';
-        if (normalizedStageStatus.includes('draft')) stageIcon = 'file-pen';
-        if (normalizedStageStatus.includes('review')) stageIcon = 'message-square';
-        if (normalizedStageStatus.includes('live')) stageIcon = 'radio';
+        const stageData = data.filter((item) => item.status === targetStatus);
+
+        const stageIconMap: Record<number, string> = {
+          0: 'file-pen',
+          1: 'message-square',
+          2: 'radio'
+        };
+        
+        const stageIcon = stageIconMap[stage.position] || 'circle-dashed';
 
         return (
           <PipelineStageComponent
             key={stage.id}
             title={stage.title}
             count={stageData.length}
-            icon={stageIcon}
-            status={normalizedStageStatus as any}
-            isCollapsed={collapsedStages.includes(stage.id) || collapsedStages.includes(normalizedStageStatus)}
+            icon={stageIcon as any}
+            status={targetStatus}
+            isCollapsed={collapsedStages.includes(stage.id)}
             onToggleCollapse={() => toggleCollapse(stage.id)}
             actionGutter={
               <>

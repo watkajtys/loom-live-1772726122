@@ -23,7 +23,7 @@ export const ExecutionReportCard: React.FC<ExecutionReportCardProps> = ({ report
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-2">
           <p className="text-xs font-mono text-red-400 uppercase flex items-center gap-2">
-            <Icon name="alert-circle" className="text-sm" />
+            <Icon name="circle-alert" className="text-sm" />
             Error Log
           </p>
           <div className="p-4 bg-black/60 rounded border border-red-500/20 font-mono text-xs text-red-300 overflow-x-auto whitespace-pre">

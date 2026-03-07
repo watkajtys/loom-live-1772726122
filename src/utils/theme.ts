@@ -53,3 +53,20 @@ export const getCompactPipelineStatusDisplay = (status: string): CompactPipeline
       return { status, borderClass: 'border-l-slate-700', textColor: 'text-slate-500', showSparkline: false, showProgress: false, label: 'DRAFT' };
   }
 };
+
+export type StageStyleState = 
+  | { status: 'published'; iconColor: 'text-terminal-green'; headerBg: 'bg-terminal-green/5'; collapsedBg: 'bg-terminal-green/5 hover:bg-terminal-green/10'; collapsedBorder: 'border-r-terminal-green/20'; countColor: 'text-terminal-green' }
+  | { status: 'review'; iconColor: 'text-accent'; headerBg: 'bg-accent/5'; collapsedBg: 'bg-accent/5 hover:bg-accent/10'; collapsedBorder: 'border-r-accent/20'; countColor: 'text-accent' }
+  | { status: 'drafting'; iconColor: 'text-accent'; headerBg: 'bg-white/[0.02]'; collapsedBg: 'bg-white/5 hover:bg-white/10'; collapsedBorder: 'border-r-white/20'; countColor: 'text-slate-500' };
+
+export const getStageStyles = (status: 'drafting' | 'review' | 'published'): StageStyleState => {
+  switch (status) {
+    case 'published':
+      return { status: 'published', iconColor: 'text-terminal-green', headerBg: 'bg-terminal-green/5', collapsedBg: 'bg-terminal-green/5 hover:bg-terminal-green/10', collapsedBorder: 'border-r-terminal-green/20', countColor: 'text-terminal-green' };
+    case 'review':
+      return { status: 'review', iconColor: 'text-accent', headerBg: 'bg-accent/5', collapsedBg: 'bg-accent/5 hover:bg-accent/10', collapsedBorder: 'border-r-accent/20', countColor: 'text-accent' };
+    case 'drafting':
+    default:
+      return { status: 'drafting', iconColor: 'text-accent', headerBg: 'bg-white/[0.02]', collapsedBg: 'bg-white/5 hover:bg-white/10', collapsedBorder: 'border-r-white/20', countColor: 'text-slate-500' };
+  }
+};

@@ -1,0 +1,9 @@
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="home"/<Icon name="house"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="line-chart"/<Icon name="chart-line"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="file-edit"/<Icon name="file-pen"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="check-square"/<Icon name="square-check"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="alert-circle"/<Icon name="circle-alert"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="check-circle"/<Icon name="circle-check"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="x-circle"/<Icon name="circle-x"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="edit-2"/<Icon name="pen"/g' {} +
+find src/ -type f -name "*.tsx" -exec sed -i 's/<Icon name="edit-3"/<Icon name="pen-line"/g' {} +
