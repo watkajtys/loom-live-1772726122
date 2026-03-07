@@ -53,6 +53,7 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
 
   const handleDragEnd = (event: DragEndEvent) => {
     // Implement drag-and-drop or state transition logic for Pipeline Cards
+    // State transitions handles changes in drag states
     setActiveId(null);
     const { active, over } = event;
 
