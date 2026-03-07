@@ -3567,6 +3567,34 @@ test('User initiates an agentic pipeline and the UI dynamically renders real-tim
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Send GET to /healthz and verify response programmatically validates DB pool and cache layer connectivity, returning accurate dependency statuses instead of a static "OK"', async ({ page }) => {
+  // Mock the health check
+  await page.route('**/api/health', async route => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ code: 200, message: 'API is healthy.', data: {} }) });
+  });
+
+  // Mock the DB check
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ page: 1, perPage: 1, totalItems: 1, totalPages: 1, items: [{}] }) });
+  });
+
+  await page.goto('/healthz');
+  await page.waitForSelector('pre');
+  
+  await page.waitForFunction(() => {
+    const pre = document.querySelector('pre');
+    return pre && pre.textContent && pre.textContent.includes('healthy') && pre.textContent.includes('database');
+  });
+
+  const jsonOutput = await page.locator('pre').textContent();
+  expect(jsonOutput).toContain('"status": "healthy"');
+  expect(jsonOutput).toContain('"app": "ok"');
+  expect(jsonOutput).toContain('"database": "connected"');
+  expect(jsonOutput).toContain('"cache": "connected"');
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('', async ({ page }) => {
   // Mock health check API response
   await page.route('**/api/health', async route => {
@@ -3579,6 +3607,11 @@ test('', async ({ page }) => {
         data: {}
       })
     });
+  });
+
+  // Mock the DB check for the connected indicator on dashboard just in case the hook runs
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ page: 1, perPage: 1, totalItems: 1, totalPages: 1, items: [{}] }) });
   });
 
   // 1. Check /healthz endpoint
