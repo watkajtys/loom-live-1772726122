@@ -35,6 +35,28 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Implement the Knowledge Base main layout and sidebar navigation', async ({ page }) => {
+  await page.goto('/?view=knowledge');
+
+  // Verify headers and custom layout
+  await expect(page.locator('h1', { hasText: 'KB_GRAPH' })).toBeVisible();
+  await expect(page.locator('span', { hasText: 'MATRIX_LAYOUT_V2' })).toBeVisible();
+
+  // Verify Left Sidebar domains and clusters
+  await expect(page.locator('div', { hasText: 'Knowledge Domains' }).first()).toBeVisible();
+  await expect(page.locator('a', { hasText: 'API_DOCUMENTATION' })).toBeVisible();
+  
+  // Verify main nodes exist
+  await expect(page.locator('div', { hasText: 'CORE_ENGINE_ROOT' }).first()).toBeVisible();
+
+  // Verify Right Sidebar source details
+  await expect(page.locator('span', { hasText: 'Source Details' }).first()).toBeVisible();
+  await expect(page.locator('h3', { hasText: 'auth_workflow.md' })).toBeVisible();
+
+  // Save screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Integrate data fetching and interactive state management', async ({ page }) => {
   // Mock API responses to render initial board
   await page.route('**/api/collections/pipeline_stages/records*', async route => {

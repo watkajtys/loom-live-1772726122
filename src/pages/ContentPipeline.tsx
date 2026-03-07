@@ -17,6 +17,7 @@ import { LoadingState } from '../components/states/LoadingState';
 import { ErrorState } from '../components/states/ErrorState';
 import { EmptyState } from '../components/states/EmptyState';
 import { AXReportsV2 } from '../components/reports/AXReportsV2';
+import { KnowledgeGraphView } from '../components/knowledge/KnowledgeGraphView';
 
 export const ContentPipeline: React.FC = () => {
   const {
@@ -43,6 +44,11 @@ export const ContentPipeline: React.FC = () => {
   const isSplitMode = viewMode.toLowerCase() === 'split';
   const isStreamMode = viewMode.toLowerCase() === 'stream';
   const isReportsMode = viewMode.toLowerCase() === 'reports';
+  const isKnowledgeMode = viewMode.toLowerCase() === 'knowledge';
+
+  if (isKnowledgeMode) {
+    return <KnowledgeGraphView />;
+  }
 
   if (isReportsMode) {
     return <AXReportsV2 />;
