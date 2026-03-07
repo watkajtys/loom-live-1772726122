@@ -98,6 +98,26 @@
       writing-mode: vertical-rl;
       text-orientation: mixed;
   }
+  .stream-column {
+      @apply w-80 shrink-0 flex flex-col border-r border-white/10 bg-black/40 h-full;
+  }
+  .log-entry {
+      @apply bg-black/60 border border-white/5 p-3 hover:border-accent/40 transition-all cursor-pointer relative overflow-hidden;
+      min-height: 180px;
+  }
+  .log-entry::before {
+      content: '';
+      @apply absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/20 to-transparent opacity-0;
+  }
+  .log-entry:hover::before {
+      @apply opacity-100;
+  }
+  .terminal-text {
+      @apply font-mono text-[10px] leading-relaxed tracking-tight;
+  }
+  .cyan-glow {
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {

@@ -2776,3 +2776,56 @@ test('Implement frontend data fetching logic for the Pipeline Board', async ({ p
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('User can access Stream view and view stream cards', async ({ page }) => {
+  await page.goto('/?view=stream');
+  await page.waitForLoadState('networkidle');
+
+  // Verify stream layout elements
+  await expect(page.locator('header h1', { hasText: 'Advoloom' })).toBeVisible();
+  await expect(page.locator('text=HORIZONTAL_STREAM_V3')).toBeVisible();
+
+  // Verify stream board is rendered
+  // Setup route interception to provide mock data before navigating
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        items: [
+          { id: '1', title: 'Intake', position: 1 },
+          { id: '2', title: 'Analyze', position: 2 },
+          { id: '3', title: 'Generate', position: 3 },
+          { id: '4', title: 'Review', position: 4 }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        items: [
+          { id: '111', title: 'Test Card 1', status: 'drafting', created: new Date().toISOString() },
+          { id: '222', title: 'Test Card 2', status: 'review', created: new Date().toISOString() }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/?view=stream');
+  await page.waitForLoadState('networkidle');
+
+  await expect(page.locator('main.overflow-x-auto')).toBeVisible();
+  await expect(page.locator('.stream-column').first()).toBeVisible();
+  await expect(page.locator('.log-entry').first()).toBeVisible();
+
+  // Verify batch actions footer is rendered
+  await expect(page.locator('text=Execute_Batch')).toBeVisible();
+  await expect(page.locator('text=Select All')).toBeVisible();
+
+  // Save screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});

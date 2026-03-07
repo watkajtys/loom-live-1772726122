@@ -9,6 +9,10 @@ import { DataViewLayout } from '../components/DataViewLayout';
 import { SplitHeader } from '../components/content/split/SplitHeader';
 import { SplitFooter } from '../components/content/split/SplitFooter';
 import { SplitBoard } from '../components/content/split/SplitBoard';
+import { StreamBoard } from '../components/content/stream/StreamBoard';
+import { StreamHeader } from '../components/content/stream/StreamHeader';
+import { StreamFooter } from '../components/content/stream/StreamFooter';
+import { StreamBatchActions } from '../components/content/stream/StreamBatchActions';
 
 export const ContentPipeline: React.FC = () => {
   const {
@@ -32,6 +36,19 @@ export const ContentPipeline: React.FC = () => {
   const error = contentError || stagesError;
 
   const isSplitMode = viewMode.toLowerCase() === 'split';
+  const isStreamMode = viewMode.toLowerCase() === 'stream';
+
+  if (isStreamMode) {
+    return (
+      <div className="bg-obsidian text-slate-300 font-display selection:bg-accent/30 selection:text-accent h-screen w-full overflow-hidden flex flex-col absolute inset-0 z-50">
+        <div className="fixed inset-0 grid-bg pointer-events-none z-0"></div>
+        <StreamHeader />
+        <StreamBoard stages={stages} data={data} />
+        <StreamBatchActions />
+        <StreamFooter />
+      </div>
+    );
+  }
 
   if (isSplitMode) {
     return (
