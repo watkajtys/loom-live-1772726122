@@ -3027,3 +3027,142 @@ test('Implement the AX Reports view', async ({ page }) => {
   // Save screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Define Knowledge Base data types and API fetching hooks', async ({ page }) => {
+  // Mock API responses for knowledge articles
+  await page.route('**/api/collections/knowledge_articles/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          page: 1,
+          perPage: 50,
+          totalItems: 2,
+          totalPages: 1,
+          items: [
+            {
+              id: 'art_1',
+              collectionId: 'knowledge_articles_col',
+              collectionName: 'knowledge_articles',
+              created: '2023-01-01T00:00:00.000Z',
+              updated: '2023-01-01T00:00:00.000Z',
+              title: 'Understanding PocketBase',
+              content: 'PocketBase is an open source backend...',
+              category: 'Backend',
+              author_id: 'user_1',
+              status: 'published',
+              tags: ['pocketbase', 'backend']
+            },
+            {
+              id: 'art_2',
+              collectionId: 'knowledge_articles_col',
+              collectionName: 'knowledge_articles',
+              created: '2023-01-02T00:00:00.000Z',
+              updated: '2023-01-02T00:00:00.000Z',
+              title: 'React Hooks Guide',
+              content: 'Hooks are a new addition in React 16.8...',
+              category: 'Frontend',
+              author_id: 'user_2',
+              status: 'draft',
+              tags: ['react', 'hooks']
+            }
+          ]
+        })
+      });
+    } else if (route.request().method() === 'POST') {
+      const payload = JSON.parse(route.request().postData() || '{}');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'art_new',
+          collectionId: 'knowledge_articles_col',
+          collectionName: 'knowledge_articles',
+          created: '2023-01-03T00:00:00.000Z',
+          updated: '2023-01-03T00:00:00.000Z',
+          ...payload
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+
+  const result = await page.evaluate(async () => {
+    try {
+      // 1. Check if types/schemas exist
+      const schemas = await import('/src/schema/knowledgeArticles.ts');
+      const collections = await import('/src/constants/collections.ts');
+      
+      const hasCollections = collections.COLLECTIONS.KNOWLEDGE_ARTICLES === 'knowledge_articles';
+      const hasSchema = !!schemas.CreateKnowledgeArticleSchema && !!schemas.FetchKnowledgeArticlesOptionsSchema;
+
+      // 2. Test API Utilities
+      const api = await import('/src/lib/api/knowledgeArticles.ts');
+      
+      // Fetch
+      const fetchResult = await api.fetchKnowledgeArticles();
+      const hasCorrectItems = fetchResult.items.length === 2 && fetchResult.items[0].title === 'Understanding PocketBase';
+
+      // Create
+      const newArticleData = {
+        title: 'New Article',
+        content: 'Content...',
+        category: 'Test',
+        author_id: 'user_test',
+        status: 'published' as const,
+        tags: ['test']
+      };
+      const createResult = await api.createKnowledgeArticle(newArticleData);
+      const isCreatedSuccessfully = createResult.id === 'art_new' && createResult.title === 'New Article';
+
+      // Create Validation Failure
+      let createValidationFailed = false;
+      let validationErrorStatus = 0;
+      try {
+        await api.createKnowledgeArticle({ title: '', content: '' } as any);
+      } catch (error: any) {
+        if (error.name === 'ValidationError') {
+          createValidationFailed = true;
+          validationErrorStatus = error.status;
+        }
+      }
+
+      // 3. Check hook
+      const hook = await import('/src/hooks/useKnowledgeArticles.ts');
+      const hasHook = typeof hook.useKnowledgeArticles === 'function';
+
+      return {
+        hasCollections,
+        hasSchema,
+        hasCorrectItems,
+        isCreatedSuccessfully,
+        createValidationFailed,
+        validationErrorStatus,
+        hasHook,
+      };
+    } catch (e: any) {
+      console.error(e);
+      return {
+        error: true,
+        name: e.name,
+        message: e.message,
+        stack: e.stack
+      };
+    }
+  });
+
+  expect(result).not.toHaveProperty('error');
+  expect(result.hasCollections).toBe(true);
+  expect(result.hasSchema).toBe(true);
+  expect(result.hasCorrectItems).toBe(true);
+  expect(result.isCreatedSuccessfully).toBe(true);
+  expect(result.createValidationFailed).toBe(true);
+  expect(result.validationErrorStatus).toBe(400);
+  expect(result.hasHook).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

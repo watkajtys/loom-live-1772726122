@@ -8,4 +8,5 @@ export const COLLECTIONS = {
   PIPELINE_CARDS: 'pipeline_cards',
   PIPELINE_STEPS: 'pipeline_steps',
   PIPELINE_RUNS: 'pipeline_runs',
+  KNOWLEDGE_ARTICLES: 'knowledge_articles',
 };

@@ -91,3 +91,12 @@ export type PipelineRequest = PipelineRequestBase & (
   | { status: 'approved'; approved_by: string; approved_at: string }
   | { status: 'rejected'; rejected_by: string; rejected_at: string; rejection_reason: string }
 );
+
+export type KnowledgeArticle = RecordModel & {
+  title: string;
+  content: string;
+  category: string;
+  author_id: string; // relation
+  status: 'draft' | 'published' | 'archived';
+  tags: string[];
+};
