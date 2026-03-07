@@ -3349,3 +3349,16 @@ test('Create the ScoutAgent class in src/agents/scout.py', async ({ page }) => {
   await page.goto('/');
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Create the ScribeAgent class in src/agents/scribe.py', async ({ page }) => {
+  // Verify the file exists and contains the required content
+  const filePath = path.join(process.cwd(), 'src/agents/scribe.py');
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  expect(fileContent).toContain('class ScribeAgent:');
+  expect(fileContent).toContain('llm'); // LLM wrapper or logic
+  expect(fileContent).toContain('8090'); // PocketBase port
+
+  await page.goto('/');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
