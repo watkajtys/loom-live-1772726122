@@ -39,22 +39,31 @@ export const fetchPipelineCards = async (options: FetchPipelineCardsOptions): Pr
   }
 };
 
+// Implement POST, PUT/PATCH, and DELETE endpoints for managing Pipeline Board cards/items.
 export const createPipelineCard = async (data: CreatePipelineCardDTO): Promise<PipelineCard> => {
   try {
+    // Validate the incoming DTO against our rigid schema constraints
     const validatedData = CreatePipelineCardSchema.parse(data);
-    return await pb.collection(COLLECTIONS.PIPELINE_CARDS).create<PipelineCard>(validatedData);
+    
+    // Execute POST request via PocketBase SDK
+    const newRecord = await pb.collection(COLLECTIONS.PIPELINE_CARDS).create<PipelineCard>(validatedData);
+    return newRecord;
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new ValidationError('Bad Request: Invalid pipeline card payload', error.errors);
     }
-    throw error;
+    throw error; // Standard bubbling for network errors
   }
 };
 
 export const updatePipelineCard = async (id: string, data: UpdatePipelineCardDTO): Promise<PipelineCard> => {
   try {
+    // Enforce total parameter governance via Zod validation
     const validatedData = UpdatePipelineCardSchema.parse(data);
-    return await pb.collection(COLLECTIONS.PIPELINE_CARDS).update<PipelineCard>(id, validatedData);
+    
+    // Execute PUT/PATCH request
+    const updatedRecord = await pb.collection(COLLECTIONS.PIPELINE_CARDS).update<PipelineCard>(id, validatedData);
+    return updatedRecord;
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new ValidationError('Bad Request: Invalid pipeline card payload', error.errors);
@@ -65,8 +74,12 @@ export const updatePipelineCard = async (id: string, data: UpdatePipelineCardDTO
 
 export const deletePipelineCard = async (id: string): Promise<boolean> => {
   try {
+    // Strict schema-driven validation for the parameter
     const validatedId = DeletePipelineCardIdSchema.parse(id);
-    return await pb.collection(COLLECTIONS.PIPELINE_CARDS).delete(validatedId);
+    
+    // Execute DELETE request against the backend
+    const isDeleted = await pb.collection(COLLECTIONS.PIPELINE_CARDS).delete(validatedId);
+    return isDeleted;
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new ValidationError('Bad Request: Invalid pipeline card ID', error.errors);

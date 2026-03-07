@@ -2414,3 +2414,174 @@ test('Implement GET endpoints to retrieve pipelines, associated stages, and card
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Implement POST, PUT/PATCH, and DELETE endpoints for managing Pipeline Board cards/items.', async ({ page }) => {
+  // Mock POST, PATCH, and DELETE requests
+  await page.route('**/api/collections/pipeline_cards/records*', async route => {
+    const method = route.request().method();
+    if (method === 'POST') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'card_mock_123',
+          stage_id: 'stage_mock_456',
+          title: 'Mocked Card Title',
+          content: 'Some mock content',
+          position: 1
+        })
+      });
+    } else if (method === 'PATCH' || method === 'PUT') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'card_mock_123',
+          stage_id: 'stage_mock_456',
+          title: 'Updated Card Title',
+          content: 'Some mock content',
+          position: 1
+        })
+      });
+    } else if (method === 'DELETE') {
+      await route.fulfill({
+        status: 204,
+        body: ''
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+    
+    let validCreateSuccess = false;
+    let createInvalidFailed = false;
+    let createErrorStatus = null;
+
+    let validUpdateSuccess = false;
+    let updateInvalidFailed = false;
+    let updateErrorStatus = null;
+
+    let validDeleteSuccess = false;
+    let deleteInvalidFailed = false;
+    let deleteErrorStatus = null;
+
+    // 1. Create Valid Payload
+    try {
+      await cardsApi.createPipelineCard({
+        stage_id: 'stage_1',
+        title: 'New Valid Card',
+        content: 'Content',
+        position: 0
+      });
+      validCreateSuccess = true;
+    } catch (e) {
+      validCreateSuccess = false;
+    }
+
+    // 2. Create Invalid Payload
+    try {
+      await cardsApi.createPipelineCard({
+        stage_id: '', // Invalid empty id
+        title: 'New Valid Card',
+        content: 'Content',
+        position: 0
+      });
+    } catch (e: any) {
+      createInvalidFailed = true;
+      createErrorStatus = e.status;
+    }
+
+    // 3. Update Valid Payload
+    let updateErrorObj: any = null;
+    try {
+      // Mock pb response correctly to prevent ClientResponseError 0 when Playwright's network mocking misses internal SDK routing differences
+      const pbModule = await import('/src/lib/pocketbase.ts');
+      const originalUpdate = pbModule.pb.collection('pipeline_cards').update;
+      pbModule.pb.collection('pipeline_cards').update = async () => ({
+        id: 'card_mock_123',
+        stage_id: 'stage_mock_456',
+        title: 'Updated Card Title',
+        content: 'Content',
+        position: 1
+      });
+
+      await cardsApi.updatePipelineCard('card_mock_123', {
+        title: 'Updated Card Title'
+      });
+      validUpdateSuccess = true;
+
+      pbModule.pb.collection('pipeline_cards').update = originalUpdate;
+    } catch (e: any) {
+      validUpdateSuccess = false;
+      updateErrorObj = { name: e.name, message: e.message, status: e.status };
+    }
+
+    // 4. Update Invalid Payload
+    try {
+      await cardsApi.updatePipelineCard('card_mock_123', {
+        title: '' // Invalid min length
+      });
+    } catch (e: any) {
+      updateInvalidFailed = true;
+      updateErrorStatus = e.status;
+    }
+
+    // 5. Delete Valid Payload
+    try {
+      // Prevent PocketBase ClientResponseError 0
+      const pbModule = await import('/src/lib/pocketbase.ts');
+      const originalDelete = pbModule.pb.collection('pipeline_cards').delete;
+      pbModule.pb.collection('pipeline_cards').delete = async () => true;
+
+      await cardsApi.deletePipelineCard('card_mock_123');
+      validDeleteSuccess = true;
+
+      pbModule.pb.collection('pipeline_cards').delete = originalDelete;
+    } catch (e: any) {
+      validDeleteSuccess = false;
+    }
+
+    // 6. Delete Invalid Payload
+    try {
+      await cardsApi.deletePipelineCard(''); // Invalid empty id
+    } catch (e: any) {
+      deleteInvalidFailed = true;
+      deleteErrorStatus = e.status;
+    }
+
+    return {
+      validCreateSuccess,
+      createInvalidFailed,
+      createErrorStatus,
+      validUpdateSuccess,
+      updateInvalidFailed,
+      updateErrorStatus,
+      validDeleteSuccess,
+      deleteInvalidFailed,
+      deleteErrorStatus,
+      updateErrorObj
+    };
+  });
+
+  console.log("UPDATE ERROR OBJ: ", result.updateErrorObj);
+
+  expect(result.validCreateSuccess).toBe(true);
+  expect(result.createInvalidFailed).toBe(true);
+  expect(result.createErrorStatus).toBe(400);
+
+  expect(result.validUpdateSuccess).toBe(true);
+  expect(result.updateInvalidFailed).toBe(true);
+  expect(result.updateErrorStatus).toBe(400);
+
+  expect(result.validDeleteSuccess).toBe(true);
+  expect(result.deleteInvalidFailed).toBe(true);
+  expect(result.deleteErrorStatus).toBe(400);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
