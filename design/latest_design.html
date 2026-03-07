@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Orchestrator: Matrix Overload Layout</title>
+<title>Advoloom Orchestrator: Legibility-First Grid</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -14,7 +14,7 @@
                     colors: {
                         "primary": "#00f2ff",
                         "accent": "#00f2ff",
-                        "obsidian": "#050608",
+                        "obsidian": "#020305",
                         "terminal-cyan": "#00f2ff",
                         "terminal-green": "#00ff41",
                         "terminal-bg": "#0a0c10",
@@ -24,8 +24,8 @@
                         "mono": ["JetBrains Mono", "monospace"]
                     },
                     animation: {
-                        'matrix-scroll': 'matrix 20s linear infinite',
-                        'scanline': 'scanline 4s linear infinite',
+                        'matrix-scroll': 'matrix 40s linear infinite',
+                        'scanline': 'scanline 8s linear infinite',
                         'rapid-pulse': 'pulse-ring 0.4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'neon-glow': 'neon-pulse 2s ease-in-out infinite',
                     },
@@ -43,8 +43,8 @@
                             '50%': { opacity: '0.4', transform: 'scale(1.5)' }
                         },
                         'neon-pulse': {
-                            '0%, 100%': { borderColor: 'rgba(0, 255, 65, 0.3)', boxShadow: '0 0 5px rgba(0, 255, 65, 0.1)' },
-                            '50%': { borderColor: 'rgba(0, 255, 65, 1)', boxShadow: '0 0 15px rgba(0, 255, 65, 0.4)' }
+                            '0%, 100%': { borderColor: 'rgba(0, 255, 65, 0.4)', boxShadow: '0 0 5px rgba(0, 255, 65, 0.2)' },
+                            '50%': { borderColor: 'rgba(0, 255, 65, 1)', boxShadow: '0 0 15px rgba(0, 255, 65, 0.5)' }
                         }
                     }
                 },
@@ -55,301 +55,284 @@
         @layer components {
             .grid-bg {
                 background-image: 
-                    linear-gradient(to right, rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-                background-size: 32px 32px;
+                    linear-gradient(to right, rgba(0, 242, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
+                background-size: 48px 48px;
             }
             .neon-frame {
-                @apply border border-terminal-cyan/30 shadow-[0_0_10px_rgba(0,242,255,0.1)];
+                @apply border border-terminal-cyan/40 bg-black/80 shadow-[0_0_15px_rgba(0,0,0,0.5)];
             }
             .sidebar-link {
-                @apply flex items-center gap-3 px-3 py-1.5 text-[10px] font-mono text-slate-400 hover:text-accent hover:bg-accent/10 border-l border-transparent hover:border-accent transition-all duration-150 uppercase tracking-tight;
+                @apply flex items-center gap-4 px-4 py-2 text-[12px] font-mono text-slate-300 hover:text-accent hover:bg-accent/10 border-l-2 border-transparent hover:border-accent transition-all duration-150 uppercase tracking-wide;
             }
             .compact-card {
-                @apply border border-terminal-cyan/10 bg-black/40 p-3 mb-2 hover:border-terminal-cyan/30 transition-all duration-200 relative overflow-hidden;
+                @apply border border-terminal-cyan/20 bg-black/60 p-4 mb-3 hover:border-terminal-cyan/50 transition-all duration-200 relative overflow-hidden;
             }
             .pulse-indicator {
-                @apply size-1.5 bg-terminal-cyan shadow-[0_0_8px_rgba(0,242,255,0.8)];
+                @apply size-2 bg-terminal-cyan shadow-[0_0_10px_rgba(0,242,255,0.9)];
                 animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
             .heartbeat-indicator {
-                @apply size-1.5 bg-terminal-green shadow-[0_0_8px_rgba(0,255,65,0.8)];
+                @apply size-2 bg-terminal-green shadow-[0_0_10px_rgba(0,255,65,0.9)];
                 animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
             .heartbeat-rapid {
-                @apply size-1.5 bg-terminal-green shadow-[0_0_12px_rgba(0,255,65,1)];
+                @apply size-2 bg-terminal-green shadow-[0_0_14px_rgba(0,255,65,1)];
                 animation: pulse-ring 0.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
-            @keyframes pulse-ring {
-                0%, 100% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.4; transform: scale(1.3); }
-            }
             .metadata-pill {
-                @apply px-1 py-0.5 border border-terminal-cyan/20 bg-terminal-cyan/5 text-[8px] font-mono text-terminal-cyan uppercase;
+                @apply px-2 py-0.5 border border-terminal-cyan/30 bg-terminal-cyan/10 text-[10px] font-mono text-terminal-cyan font-bold uppercase;
             }
             .custom-scrollbar::-webkit-scrollbar {
-                width: 3px;
+                width: 5px;
             }
             .custom-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
+                background: rgba(0,0,0,0.3);
             }
             .custom-scrollbar::-webkit-scrollbar-thumb {
-                @apply bg-terminal-cyan/20 hover:bg-terminal-cyan/40;
+                @apply bg-terminal-cyan/30 hover:bg-terminal-cyan/50;
             }
             .terminal-header {
-                @apply h-8 border-b border-terminal-cyan/20 bg-terminal-cyan/5 flex items-center px-3 shrink-0;
+                @apply h-10 border-b border-terminal-cyan/30 bg-terminal-cyan/10 flex items-center px-4 shrink-0;
             }
             .node-row {
-                @apply border-b border-white/5 py-2 cursor-pointer hover:bg-terminal-cyan/5 transition-colors relative z-10;
+                @apply border-b border-white/10 py-3 cursor-pointer hover:bg-terminal-cyan/10 transition-colors relative z-10;
             }
             .pid-row {
-                @apply flex items-center justify-between py-1 px-4 text-[9px] font-mono border-l border-terminal-cyan/20 ml-2 mt-1;
+                @apply flex items-center justify-between py-1.5 px-4 text-[10px] font-mono border-l-2 border-terminal-cyan/40 ml-2 mt-1.5;
             }
             .matrix-bg-text {
-                @apply absolute inset-0 pointer-events-none opacity-[0.03] text-[8px] font-mono leading-none break-all whitespace-pre-wrap select-none overflow-hidden;
+                @apply absolute inset-0 pointer-events-none opacity-[0.015] text-[10px] font-mono leading-relaxed break-all whitespace-pre-wrap select-none overflow-hidden;
                 color: theme('colors.terminal-green');
             }
             .telemetry-banner {
-                @apply relative overflow-hidden bg-black border-y border-terminal-cyan/30 py-3 px-4 flex items-center justify-center shrink-0;
+                @apply relative overflow-hidden bg-black border-y border-terminal-cyan/40 py-4 px-6 flex items-center justify-center shrink-0;
             }
             .scanline-effect {
-                @apply absolute left-0 right-0 h-[2px] bg-terminal-cyan/20 shadow-[0_0_15px_rgba(0,242,255,0.5)] pointer-events-none;
-                animation: scanline 4s linear infinite;
+                @apply absolute left-0 right-0 h-[3px] bg-terminal-cyan/10 shadow-[0_0_20px_rgba(0,242,255,0.3)] pointer-events-none;
+                animation: scanline 8s linear infinite;
             }
         }
     </style>
 </head>
-<body class="bg-obsidian text-slate-300 font-display selection:bg-accent/30 selection:text-accent h-screen overflow-hidden flex flex-col">
+<body class="bg-obsidian text-slate-200 font-display selection:bg-accent/40 selection:text-white h-screen overflow-hidden flex flex-col">
 <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
-<header class="relative z-40 h-12 border-b border-terminal-cyan/30 bg-black flex items-center justify-between px-6 shrink-0">
+<header class="relative z-40 h-14 border-b border-terminal-cyan/40 bg-black flex items-center justify-between px-8 shrink-0">
 <div class="flex items-center gap-6">
-<div class="flex items-center gap-2">
-<div class="w-6 h-6 border border-accent flex items-center justify-center">
-<span class="material-symbols-outlined text-accent text-sm">hub</span>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 border-2 border-accent flex items-center justify-center">
+<span class="material-symbols-outlined text-accent text-lg">hub</span>
 </div>
 <div class="leading-none">
-<h1 class="text-sm font-bold text-white tracking-widest uppercase">ORCHESTRATOR</h1>
-<span class="text-[8px] font-mono text-accent/60 tracking-[0.4em]">VARIANT_03_MATRIX_OVERLOAD</span>
+<h1 class="text-base font-bold text-white tracking-widest uppercase">ADVOLOOM_ORCHESTRATOR</h1>
+<span class="text-[9px] font-mono text-accent/80 tracking-[0.5em]">LEGIBILITY_GRID_V3</span>
 </div>
 </div>
 </div>
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-4 text-[10px] font-mono">
-<span class="text-slate-500">CLUSTER_STATUS:</span>
-<span class="text-terminal-green animate-pulse">OVERLOAD_OPTIMIZED</span>
-<span class="text-slate-500 ml-2">UPTIME:</span>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-6 text-[11px] font-mono font-bold">
+<div class="flex items-center gap-2">
+<span class="text-slate-400">CLUSTER_STATUS:</span>
+<span class="text-terminal-green">OVERLOAD_OPTIMIZED</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-slate-400">UPTIME:</span>
 <span class="text-terminal-cyan">082:44:12</span>
 </div>
 </div>
+</div>
 </header>
-<div class="flex-1 flex overflow-hidden relative z-10 p-2 gap-2">
-<aside class="w-60 neon-frame bg-black/60 backdrop-blur-md flex flex-col shrink-0">
-<div class="p-3 border-b border-terminal-cyan/20 bg-terminal-cyan/5">
-<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">01_COMMANDS</span>
+<div class="flex-1 flex overflow-hidden relative z-10 p-3 gap-3">
+<aside class="w-72 neon-frame flex flex-col shrink-0">
+<div class="p-4 border-b border-terminal-cyan/30 bg-terminal-cyan/10">
+<span class="text-[11px] font-bold text-terminal-cyan uppercase tracking-widest">01_COMMANDS</span>
 </div>
-<nav class="flex-1 overflow-y-auto custom-scrollbar py-2">
-<div class="mb-4">
-<h3 class="px-3 text-[9px] font-mono text-slate-600 uppercase mb-1 flex items-center gap-2">
-<span class="w-1 h-1 bg-slate-600"></span> CORE_OPS
+<nav class="flex-1 overflow-y-auto custom-scrollbar py-3">
+<div class="mb-6">
+<h3 class="px-4 text-[10px] font-mono text-slate-400 uppercase mb-2 flex items-center gap-2 font-bold">
+<span class="w-1.5 h-1.5 bg-terminal-cyan"></span> CORE_OPERATIONS
                 </h3>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">terminal</span> Shell_Access</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">settings_ethernet</span> Port_Scan</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">history_toggle_off</span> Reset_Logs</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span> Shell_Access_Panel</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[18px]">settings_ethernet</span> Network_Port_Scan</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[18px]">history_toggle_off</span> System_Reset_Logs</a>
 </div>
-<div class="mb-4">
-<h3 class="px-3 text-[9px] font-mono text-slate-600 uppercase mb-1 flex items-center gap-2">
-<span class="w-1 h-1 bg-slate-600"></span> AGENT_MODS
+<div class="mb-6">
+<h3 class="px-4 text-[10px] font-mono text-slate-400 uppercase mb-2 flex items-center gap-2 font-bold">
+<span class="w-1.5 h-1.5 bg-terminal-cyan"></span> AGENT_MODULES
                 </h3>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">smart_toy</span> GPT4_Turbo_V3</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">model_training</span> Local_Llama_8B</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[18px]">smart_toy</span> GPT4_Turbo_V3_Engine</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[18px]">model_training</span> Local_Llama_8B_Model</a>
 </div>
 </nav>
-<div class="p-3 border-t border-terminal-cyan/20 text-[9px] font-mono">
-<div class="text-slate-500 uppercase">Input_Mode:</div>
+<div class="p-4 border-t border-terminal-cyan/30 text-[11px] font-mono bg-black/60">
+<div class="text-slate-400 uppercase font-bold mb-1">Input_Override:</div>
 <div class="text-terminal-cyan">TERMINAL_OVERRIDE_ACTIVE</div>
 </div>
 </aside>
-<main class="flex-1 flex flex-col overflow-hidden gap-2">
-<div class="h-10 neon-frame bg-black/80 flex items-center justify-between px-5 shrink-0 border-terminal-cyan/20">
+<main class="flex-1 flex flex-col overflow-hidden gap-3">
+<div class="h-12 neon-frame flex items-center justify-between px-6 shrink-0">
 <div class="flex items-center gap-4">
-<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">02_LIVE_STREAM_MATRIX</span>
-<div class="flex items-center gap-2">
+<span class="text-[11px] font-bold text-terminal-cyan uppercase tracking-widest">02_LIVE_STREAM_MATRIX</span>
+<div class="flex items-center gap-3">
 <span class="pulse-indicator"></span>
-<span class="text-[9px] font-mono text-terminal-cyan">STREAMING</span>
+<span class="text-[10px] font-mono text-terminal-cyan font-bold">STREAM_ACTIVE</span>
 </div>
 </div>
 <div class="flex items-center gap-3">
-<button class="flex items-center gap-2 px-3 py-1 border border-terminal-cyan/40 bg-terminal-cyan/10 text-terminal-cyan text-[9px] font-mono hover:bg-terminal-cyan/20 transition-colors uppercase">
-<span class="material-symbols-outlined text-[12px]">pause_circle</span>
+<button class="flex items-center gap-2 px-4 py-1.5 border border-terminal-cyan/40 bg-terminal-cyan/15 text-terminal-cyan text-[10px] font-mono font-bold hover:bg-terminal-cyan/30 transition-colors uppercase">
+<span class="material-symbols-outlined text-[14px]">pause_circle</span>
                     PAUSE_STREAM
                 </button>
 </div>
 </div>
-<div class="flex-1 flex gap-2 overflow-hidden">
-<section class="flex-1 neon-frame bg-black/40 flex flex-col overflow-hidden">
+<div class="flex-1 flex gap-3 overflow-hidden">
+<section class="flex-1 neon-frame flex flex-col overflow-hidden">
 <div class="terminal-header justify-between">
-<span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">SYSTEM_LOGS</span>
-<span class="text-[8px] font-mono text-slate-600">S_PRIORITY: CRITICAL</span>
+<span class="text-[10px] font-bold text-slate-200 uppercase tracking-wider">SYSTEM_LOGS</span>
+<span class="text-[10px] font-mono text-slate-400 font-bold">PRIORITY: CRITICAL</span>
 </div>
-<div class="flex-1 overflow-y-auto custom-scrollbar p-3">
+<div class="flex-1 overflow-y-auto custom-scrollbar p-4">
 <div class="compact-card">
-<div class="flex justify-between items-start mb-1">
-<span class="text-[9px] font-mono text-terminal-cyan font-bold uppercase">Kernel_Boot_Seq</span>
-<span class="text-[8px] font-mono text-slate-600">14:55:01</span>
+<div class="flex justify-between items-start mb-2">
+<span class="text-[11px] font-mono text-terminal-cyan font-bold uppercase">Kernel_Boot_Seq</span>
+<span class="text-[10px] font-mono text-slate-400">14:55:01</span>
 </div>
-<p class="text-[10px] font-mono text-slate-400 leading-tight">Memory allocation verified. Peripheral scan complete. No errors detected.</p>
-<div class="mt-2 flex gap-1">
+<p class="text-[12px] font-mono text-slate-200 leading-relaxed">Memory allocation verified. Peripheral scan complete. No hardware errors detected in primary bus.</p>
+<div class="mt-3 flex gap-2">
 <span class="metadata-pill">PID: 1022</span>
 <span class="metadata-pill">CPU: 0.1%</span>
 </div>
 </div>
 <div class="compact-card">
-<div class="flex justify-between items-start mb-1">
-<span class="text-[9px] font-mono text-terminal-green font-bold uppercase">Net_Handshake</span>
-<span class="text-[8px] font-mono text-slate-600">14:54:30</span>
+<div class="flex justify-between items-start mb-2">
+<span class="text-[11px] font-mono text-terminal-green font-bold uppercase">Net_Handshake</span>
+<span class="text-[10px] font-mono text-slate-400">14:54:30</span>
 </div>
-<p class="text-[10px] font-mono text-slate-400 leading-tight">Incoming connection from proxy node 04. SSL Handshake succeeded.</p>
+<p class="text-[12px] font-mono text-slate-200 leading-relaxed">Incoming secure connection from proxy node 04. SSL Handshake succeeded. Encryption active.</p>
 </div>
 </div>
 </section>
-<section class="flex-1 neon-frame bg-black/40 flex flex-col overflow-hidden">
+<section class="flex-1 neon-frame flex flex-col overflow-hidden">
 <div class="terminal-header justify-between">
-<span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">AGENT_LOGS</span>
-<span class="text-[8px] font-mono text-slate-600">A_PRIORITY: HIGH</span>
+<span class="text-[10px] font-bold text-slate-200 uppercase tracking-wider">AGENT_LOGS</span>
+<span class="text-[10px] font-mono text-slate-400 font-bold">PRIORITY: HIGH</span>
 </div>
-<div class="flex-1 overflow-y-auto custom-scrollbar p-3">
+<div class="flex-1 overflow-y-auto custom-scrollbar p-4">
 <div class="compact-card">
-<div class="flex justify-between items-start mb-1">
-<span class="text-[9px] font-mono text-terminal-cyan font-bold uppercase flex items-center gap-1">
-<span class="pulse-indicator size-1"></span>
+<div class="flex justify-between items-start mb-2">
+<span class="text-[11px] font-mono text-terminal-cyan font-bold uppercase flex items-center gap-2">
+<span class="pulse-indicator size-2"></span>
                                 Decision_Engine
                             </span>
-<span class="text-[8px] font-mono text-slate-600">14:55:04</span>
+<span class="text-[10px] font-mono text-slate-400">14:55:04</span>
 </div>
-<div class="p-2 bg-terminal-cyan/5 border-l border-terminal-cyan/30 mt-1">
-<p class="text-[10px] font-mono text-slate-300 italic">"Redirecting workflow to node_B based on current latency spike."</p>
+<div class="p-3 bg-terminal-cyan/10 border-l-2 border-terminal-cyan/50 mt-2">
+<p class="text-[12px] font-mono text-slate-100 italic">"Redirecting workflow to node_B based on detected latency spike in US-EAST."</p>
 </div>
 </div>
 </div>
 </section>
 </div>
-<div class="p-2 bg-black neon-frame border-terminal-cyan/20">
-<div class="flex items-center gap-3 bg-terminal-cyan/5 border border-terminal-cyan/20 px-3 py-1.5">
-<span class="text-terminal-green font-mono text-xs font-bold">$</span>
-<input autofocus="" class="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-slate-700" placeholder="SEND_COMMAND_TO_ACTIVE_FEED..." type="text"/>
-<div class="w-1.5 h-3.5 bg-terminal-green animate-pulse"></div>
+<div class="p-3 bg-black neon-frame">
+<div class="flex items-center gap-4 bg-terminal-cyan/10 border border-terminal-cyan/30 px-4 py-2.5">
+<span class="text-terminal-green font-mono text-sm font-bold">$</span>
+<input autofocus="" class="bg-transparent border-none focus:ring-0 text-white font-mono text-[13px] w-full uppercase placeholder-slate-600 font-bold" placeholder="SEND_COMMAND_TO_ACTIVE_FEED..." type="text"/>
+<div class="w-2 h-5 bg-terminal-green animate-pulse"></div>
 </div>
 </div>
 </main>
-<aside class="w-80 neon-frame bg-black flex flex-col shrink-0 relative overflow-hidden">
+<aside class="w-[360px] neon-frame flex flex-col shrink-0 relative overflow-hidden">
 <div class="matrix-bg-text animate-matrix-scroll">
-            0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 
-            0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00
-            0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33
-            0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE
-            0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 
-            0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00
-            0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33
-            0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE
+            0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 
+            0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00
+            0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE
         </div>
 <div class="telemetry-banner">
 <div class="scanline-effect"></div>
-<span class="text-xs font-mono font-bold text-terminal-cyan tracking-[0.3em] z-10">TELEMETRY_STATUS: <span class="text-white">OPTIMIZED</span></span>
+<span class="text-sm font-mono font-bold text-terminal-cyan tracking-[0.4em] z-10">TELEMETRY_STATUS: <span class="text-white">OPTIMIZED</span></span>
 </div>
-<div class="p-3 border-b border-terminal-cyan/20 bg-terminal-cyan/5 flex justify-between items-center relative z-10">
-<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">03_CLUSTER_MONITOR</span>
-<span class="text-[8px] font-mono text-slate-500">NODES_ACTIVE: 04</span>
+<div class="p-4 border-b border-terminal-cyan/30 bg-terminal-cyan/10 flex justify-between items-center relative z-10">
+<span class="text-[11px] font-bold text-terminal-cyan uppercase tracking-widest">03_CLUSTER_MONITOR</span>
+<span class="text-[10px] font-mono text-slate-300 font-bold">ACTIVE: 04</span>
 </div>
-<div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2 relative z-10">
-<div class="node-row px-1">
-<div class="flex items-center justify-between mb-1">
-<span class="text-[10px] font-mono text-white flex items-center gap-2">
+<div class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-3 relative z-10">
+<div class="node-row px-2">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[12px] font-mono text-white font-bold flex items-center gap-3">
 <span class="heartbeat-rapid"></span>
-                        WORKER_US_WEST
+                        WORKER_US_WEST_01
                     </span>
-<div class="flex items-center gap-2">
-<span class="text-[8px] font-mono text-terminal-green bg-terminal-green/10 px-1 font-bold">HIGH_LOAD</span>
-<span class="material-symbols-outlined text-[14px] text-slate-500">expand_less</span>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-mono text-terminal-green bg-terminal-green/20 px-2 py-0.5 border border-terminal-green/40 font-bold">HIGH_LOAD</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400">expand_less</span>
 </div>
 </div>
-<div class="space-y-0.5">
-<div class="pid-row bg-terminal-cyan/5">
-<span class="text-terminal-cyan">PID: 8821</span>
-<span class="text-slate-500 italic">MODEL: GPT-4-T</span>
+<div class="space-y-1">
+<div class="pid-row bg-terminal-cyan/10">
+<span class="text-terminal-cyan font-bold">PID: 8821</span>
+<span class="text-slate-300 italic">MODEL: GPT-4-TURBO</span>
 </div>
-<div class="pid-row bg-terminal-cyan/5">
-<span class="text-terminal-cyan">PID: 9012</span>
-<span class="text-slate-500 italic">MODEL: LLAMA3_70B</span>
+<div class="pid-row bg-terminal-cyan/10">
+<span class="text-terminal-cyan font-bold">PID: 9012</span>
+<span class="text-slate-300 italic">MODEL: LLAMA3_70B_V2</span>
 </div>
 </div>
 </div>
-<div class="node-row px-1">
-<div class="flex items-center justify-between mb-1">
-<span class="text-[10px] font-mono text-white flex items-center gap-2">
+<div class="node-row px-2">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[12px] font-mono text-white font-bold flex items-center gap-3">
 <span class="heartbeat-indicator"></span>
-                        WORKER_EU_CENT
+                        WORKER_EU_CENT_04
                     </span>
-<div class="flex items-center gap-2">
-<span class="text-[8px] font-mono text-slate-500">LAT:</span>
-<span class="text-[9px] font-mono text-terminal-green">42ms</span>
-<span class="material-symbols-outlined text-[14px] text-slate-500">expand_more</span>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-mono text-slate-400 font-bold uppercase">LATENCY:</span>
+<span class="text-[11px] font-mono text-terminal-green font-bold">42ms</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
 </div>
 </div>
 </div>
-<div class="node-row px-1">
-<div class="flex items-center justify-between mb-1">
-<span class="text-[10px] font-mono text-white flex items-center gap-2">
+<div class="node-row px-2">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[12px] font-mono text-white font-bold flex items-center gap-3">
 <span class="heartbeat-rapid"></span>
-                        WORKER_ASIA_S
+                        WORKER_ASIA_SOUTH
                     </span>
-<div class="flex items-center gap-2">
-<span class="text-[8px] font-mono text-terminal-green bg-terminal-green/10 px-1 font-bold">STRESS</span>
-<span class="material-symbols-outlined text-[14px] text-slate-500">expand_more</span>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-mono text-terminal-green bg-terminal-green/20 px-2 py-0.5 border border-terminal-green/40 font-bold">STRESS</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
 </div>
 </div>
 </div>
-<div class="node-row px-1 opacity-40 grayscale">
-<div class="flex items-center justify-between mb-1">
-<span class="text-[10px] font-mono text-slate-400 flex items-center gap-2">
-<span class="size-1.5 bg-slate-700"></span>
-                        WORKER_BR_NORTH
-                    </span>
-<div class="flex items-center gap-2">
-<span class="text-[9px] font-mono text-slate-600">IDLE</span>
-<span class="material-symbols-outlined text-[14px] text-slate-700">expand_more</span>
+<div class="mt-8 border border-terminal-cyan/20 p-4 bg-black/60 shadow-inner">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[11px] font-mono text-slate-300 font-bold uppercase tracking-tight">System_Stability_Index</span>
+<span class="text-[11px] font-mono text-terminal-green font-bold">94.2%</span>
+</div>
+<div class="h-2 bg-white/10 overflow-hidden">
+<div class="h-full bg-terminal-green w-[94.2%] shadow-[0_0_12px_rgba(0,255,65,0.6)]"></div>
 </div>
 </div>
 </div>
-<div class="mt-6 border border-terminal-cyan/10 p-3 bg-black/40">
-<div class="flex justify-between items-center mb-2">
-<span class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">System_Stability</span>
-<span class="text-[9px] font-mono text-terminal-green">94.2%</span>
-</div>
-<div class="h-1 bg-white/5 overflow-hidden">
-<div class="h-full bg-terminal-green w-[94.2%] shadow-[0_0_8px_rgba(0,255,65,0.5)]"></div>
-</div>
-</div>
-</div>
-<div class="p-3 border-t border-terminal-cyan/20 bg-black space-y-2 relative z-10">
-<button class="w-full py-2 border-2 border-terminal-green/30 bg-terminal-green/5 animate-neon-glow hover:bg-terminal-green/20 transition-all flex items-center justify-center gap-2 group">
-<span class="material-symbols-outlined text-[16px] text-terminal-green group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
-<span class="text-[10px] font-mono text-terminal-green font-bold tracking-widest uppercase">REBOOT_IDLE_NODES</span>
+<div class="p-4 border-t border-terminal-cyan/30 bg-black space-y-3 relative z-10">
+<button class="w-full py-3 border-2 border-terminal-green/40 bg-terminal-green/10 animate-neon-glow hover:bg-terminal-green/30 transition-all flex items-center justify-center gap-3 group">
+<span class="material-symbols-outlined text-[20px] text-terminal-green group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
+<span class="text-[11px] font-mono text-terminal-green font-bold tracking-[0.2em] uppercase">REBOOT_IDLE_NODES</span>
 </button>
 <div class="flex justify-between items-center px-1">
-<span class="text-[8px] font-mono text-slate-600 uppercase">Engine_ID:</span>
-<span class="text-[8px] font-mono text-slate-400 tracking-tighter">RE-771-MATRIX-OVERLOAD</span>
+<span class="text-[9px] font-mono text-slate-500 uppercase font-bold">Engine_ID:</span>
+<span class="text-[9px] font-mono text-slate-300 tracking-tighter font-bold">RE-771-LEGIBILITY-GRID</span>
 </div>
 </div>
 </aside>
 </div>
-<footer class="h-6 border-t border-terminal-cyan/30 bg-black px-6 flex items-center justify-between relative z-40 shrink-0">
-<div class="flex items-center gap-6">
-<div class="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">I/O_STREAM: 4.8MB/S</div>
-<div class="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">LATENCY: 4ms</div>
+<footer class="h-8 border-t border-terminal-cyan/40 bg-black px-8 flex items-center justify-between relative z-40 shrink-0">
+<div class="flex items-center gap-8">
+<div class="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-tight">I/O_STREAM: 4.8MB/S</div>
+<div class="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-tight">LATENCY: 4ms</div>
 </div>
-<div class="flex items-center gap-4">
-<span class="text-[8px] font-mono text-slate-600 uppercase">Buffer: 0x8892AF</span>
-<span class="text-[8px] font-mono text-slate-600">Â© 2024_ADVOLOOM_SYSTEMS</span>
+<div class="flex items-center gap-6">
+<span class="text-[10px] font-mono text-slate-400 font-bold uppercase">Buffer: 0x8892AF</span>
+<span class="text-[10px] font-mono text-slate-500 font-bold">Â© 2024_ADVOLOOM_SYSTEMS</span>
 </div>
 </footer>
 
