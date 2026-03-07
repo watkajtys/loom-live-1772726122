@@ -1,0 +1,184 @@
+diff --git a/tests/verify.spec.ts b/tests/verify.spec.ts
+index dbf7813..676696c 100644
+--- a/tests/verify.spec.ts
++++ b/tests/verify.spec.ts
+@@ -152,7 +152,7 @@ test('Define the Pipeline database schema and create its initial migration.', as
+   
+   // Navigate to root to take the screenshot
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+   await page.screenshot({ path: 'evidence.png', fullPage: true });
+ });
+ 
+@@ -188,7 +188,7 @@ test('Define the Card/Item database schema and create its migration.', async ({
+   
+   // Navigate to root to take the screenshot
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+   await page.screenshot({ path: 'evidence.png', fullPage: true });
+ });
+ 
+@@ -212,7 +212,7 @@ test('Create validation schemas for Pipeline mutations', async ({ page }) => {
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const contentApi = await import('/src/lib/api/content.ts');
+@@ -320,7 +320,7 @@ test('Enforce Total Parameter Governance on GET and DELETE Pipeline secondary ro
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const stagesApi = await import('/src/lib/api/pipeline/stages.ts');
+@@ -933,7 +933,7 @@ test('PipelineStep and PipelineRun interfaces enforce state-driven types', async
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     // Dynamically fetch using our specific API pattern to verify the structure matches 
+@@ -1533,7 +1533,7 @@ test('Define backend database schema models for the Pipeline Board (Pipeline, St
+ 
+ test('Define validation schemas for Pipeline CRUD payloads', async ({ page }) => {
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const validationResults = await page.evaluate(async () => {
+     // Dynamic import to fetch the new Zod schemas directly inside the browser
+@@ -1698,7 +1698,7 @@ test('PipelineStep and PipelineRun CRUD APIs format correctly', async ({ page })
+ 
+ test('Define validation schemas for Pipeline Execution payloads', async ({ page }) => {
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const validationResults = await page.evaluate(async () => {
+     // Dynamic import to fetch the new Zod schemas directly inside the browser
+@@ -1904,7 +1904,7 @@ test('Create validation schemas and apply them to the Pipeline creation (POST) A
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+@@ -2024,7 +2024,7 @@ test('Create validation schemas and apply them to the Pipeline update (PUT/PATCH
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+@@ -2170,7 +2170,7 @@ test('Apply validation schemas for parameters and queries to GET and DELETE Pipe
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+@@ -2270,7 +2270,7 @@ test('Apply validation schema to Pipeline POST controller', async ({ page }) =>
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+@@ -2316,7 +2316,7 @@ test('Apply validation schema to Pipeline POST controller', async ({ page }) =>
+ test('Pipeline POST controller structure and layout fixes', async ({ page }) => {
+   // Verify that the ContentHeader has been split properly by checking for the exported components
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     try {
+@@ -2346,7 +2346,7 @@ test('Pipeline POST controller structure and layout fixes', async ({ page }) =>
+ 
+ test('ContentBoard cleanly maps layout state without magic numbers', async ({ page }) => {
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     try {
+@@ -2405,7 +2405,7 @@ test('Define the Stage database schema and create its migration.', async ({ page
+   
+   // Navigate to root to take the screenshot
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+   await page.screenshot({ path: 'evidence.png', fullPage: true });
+ });
+ 
+@@ -2457,7 +2457,7 @@ test('Implement GET endpoints to retrieve pipelines, associated stages, and card
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+@@ -2544,7 +2544,7 @@ test('Implement POST, PUT/PATCH, and DELETE endpoints for managing Pipeline Boar
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+@@ -2738,7 +2738,7 @@ test('Implement frontend data fetching logic for the Pipeline Board', async ({ p
+   });
+ 
+   await page.goto('/');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   const result = await page.evaluate(async () => {
+     // In a real application, these hooks would be used in a React component
+@@ -2779,7 +2779,7 @@ test('Implement frontend data fetching logic for the Pipeline Board', async ({ p
+ 
+ test('User can access Stream view and view stream cards', async ({ page }) => {
+   await page.goto('/?view=stream');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   // Verify stream layout elements
+   await expect(page.locator('header h1', { hasText: 'Advoloom' })).toBeVisible();
+@@ -2816,7 +2816,7 @@ test('User can access Stream view and view stream cards', async ({ page }) => {
+   });
+ 
+   await page.goto('/?view=stream');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   await expect(page.locator('main.overflow-x-auto')).toBeVisible();
+   await expect(page.locator('.stream-column').first()).toBeVisible();
+@@ -2882,7 +2882,7 @@ test('Implement drag-and-drop or state transition logic for Pipeline Cards', asy
+ 
+   // Navigate to compact board view which uses ContentBoard
+   await page.goto('/?view=compact');
+-  await page.waitForLoadState('networkidle');
++  
+ 
+   // Verify the card is in the Drafting column initially
+   const card = page.locator('text=Test Card 1');
