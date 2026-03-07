@@ -3676,3 +3676,43 @@ test('Integrate performance profiling or request tracing middleware to monitor e
   // Capture evidence screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Execute a standard orchestrator API call and verify that execution duration, request tracing, and bottlenecks are logged via the global pipeline', async ({ page }) => {
+  // Capture console logs from the page
+  const logs: string[] = [];
+  page.on('console', msg => logs.push(msg.text()));
+
+  // Mock PocketBase API responses to ensure the dashboard loads and triggers requests
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    // Delay slightly to simulate a measurable execution time greater than 100ms bottleneck threshold
+    await new Promise(resolve => setTimeout(resolve, 150));
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ page: 1, perPage: 50, totalItems: 0, totalPages: 1, items: [] })
+    });
+  });
+
+  await page.goto('/dashboard');
+  
+  // Wait for the feed to be visible to ensure requests have completed
+  await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
+
+  // Give logs a tiny bit to flush
+  await page.waitForTimeout(500);
+
+  // Assert that telemetry logged request trace
+  const hasRequestTrace = logs.some(l => l.includes('[TELEMETRY] Request Trace: GET /api/collections/social_mentions/records'));
+  expect(hasRequestTrace).toBe(true);
+
+  // Assert that telemetry logged execution duration
+  const hasExecutionDuration = logs.some(l => l.includes('[TELEMETRY] Execution Duration:'));
+  expect(hasExecutionDuration).toBe(true);
+
+  // Assert that telemetry detected a bottleneck since we waited 150ms
+  const hasBottleneckWarning = logs.some(l => l.includes('[TELEMETRY] BOTTLENECK DETECTED: Execution exceeded 100ms threshold'));
+  expect(hasBottleneckWarning).toBe(true);
+
+  // Capture evidence screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

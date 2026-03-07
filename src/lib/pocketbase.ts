@@ -1,4 +1,5 @@
 import PocketBase from 'pocketbase';
+import { telemetryMiddleware } from './api/middleware';
 
 const getPocketBaseUrl = () => {
   if (import.meta.env.VITE_POCKETBASE_URL) {
@@ -8,30 +9,15 @@ const getPocketBaseUrl = () => {
 };
 
 class RequestProfiler {
-  private listeners: Set<(metrics: any) => void> = new Set();
-  private metrics: { url: string; duration: number; timestamp: number }[] = [];
-
   subscribe(listener: (metrics: any) => void) {
-    this.listeners.add(listener);
-    listener(this.metrics);
-    return () => this.listeners.delete(listener);
-  }
-
-  record(url: string, duration: number) {
-    this.metrics.push({ url, duration, timestamp: Date.now() });
-    // keep only last 50 metrics
-    if (this.metrics.length > 50) {
-      this.metrics.shift();
-    }
-    this.notify();
-  }
-
-  private notify() {
-    this.listeners.forEach((listener) => listener([...this.metrics]));
+    return telemetryMiddleware.subscribe((metrics) => {
+      // map to what useProfiler expects
+      listener(metrics.map(m => ({ url: m.url, duration: m.duration, timestamp: m.timestamp })));
+    });
   }
   
   getMetrics() {
-    return this.metrics;
+    return telemetryMiddleware.getMetrics().map(m => ({ url: m.url, duration: m.duration, timestamp: m.timestamp }));
   }
 }
 
@@ -39,30 +25,19 @@ export const profiler = new RequestProfiler();
 
 export const pb = new PocketBase(getPocketBaseUrl());
 
-pb.beforeSend = function (url, options) {
-    // Add a start time to the request options
-    (options as any).startTime = performance.now();
-    return { url, options };
-};
-
-pb.afterSend = function (response, data) {
-    // Calculate the duration
-    const startTime = (response.url as any)?.__req_options?.startTime || (response as any).startTime; // PocketBase doesn't strictly expose options in afterSend easily via response. But we can monkey patch pb.send
-    return data;
-};
-
-// Monkey patch send to get duration accurately since afterSend doesn't receive original options easily
+// Monkey patch send to get duration accurately and pipe into our new global telemetry middleware
 const originalSend = pb.send.bind(pb);
-pb.send = async function (path: string, options: any) {
+pb.send = async function (path: string, options?: any) {
     const start = performance.now();
+    const method = options?.method || 'GET';
     try {
         const res = await originalSend(path, options);
         const duration = performance.now() - start;
-        profiler.record(path, duration);
+        telemetryMiddleware.record(path, method, duration);
         return res;
     } catch (e) {
         const duration = performance.now() - start;
-        profiler.record(path, duration);
+        telemetryMiddleware.record(path, method, duration);
         throw e;
     }
 };
