@@ -1,24 +1,11 @@
 import React, { useMemo } from 'react';
-import {
-  DndContext,
-  DragOverlay,
-  closestCorners,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  DragStartEvent,
-  DragOverEvent,
-  DragEndEvent,
-  defaultDropAnimationSideEffects,
-} from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { SortableContext } from '@dnd-kit/sortable';
 import { PipelineStage as PipelineStageComponent } from './PipelineStage';
 import { CompactPipelineCard } from './CompactPipelineCard';
 import { TransformedContentPipeline, mapStagePositionToStatus, mapStagePositionToIcon } from '../../lib/api/content';
 import { PipelineStage } from '../../types/models';
 import { Icon } from '../Icon';
+import { PipelineDragOrchestrator } from './PipelineDragOrchestrator';
 
 interface ContentBoardProps {
   data: TransformedContentPipeline[];
@@ -37,74 +24,40 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
 }) => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const handleMoveCard = (cardId: string, newStageId: string | number) => {
+    if (!onMoveCard) return;
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    // Implement drag-and-drop or state transition logic for Pipeline Cards
-    // State transitions handles changes in drag states
-    setActiveId(null);
-    const { active, over } = event;
-
-    if (!over) return;
-    if (active.id === over.id) return;
-
-    if (onMoveCard) {
-      // Find the stage position from the over container or item
-      let newStagePosition = -1;
-      
-      const overId = String(over.id);
-      
-      // If dropped over a stage directly
-      const stage = stages.find(s => s.id === overId || String(s.position) === overId);
-      if (stage) {
-        newStagePosition = stage.position;
-      } else {
-        // If dropped over a card, find its stage
-        const overCard = data.find(c => c.id === overId);
-        if (overCard) {
-          const targetStage = stages.find(s => mapStagePositionToStatus(s.position) === overCard.status);
-          if (targetStage) {
-            newStagePosition = targetStage.position;
-          }
+    let newStagePosition = -1;
+    const overId = String(newStageId);
+    
+    // If dropped over a stage directly
+    const stage = stages.find(s => s.id === overId || String(s.position) === overId);
+    if (stage) {
+      newStagePosition = stage.position;
+    } else {
+      // If dropped over a card, find its stage
+      const overCard = data.find(c => c.id === overId);
+      if (overCard) {
+        const targetStage = stages.find(s => mapStagePositionToStatus(s.position) === overCard.status);
+        if (targetStage) {
+          newStagePosition = targetStage.position;
         }
       }
+    }
 
-      if (newStagePosition !== -1) {
-        onMoveCard(active.id as string, newStagePosition);
-      }
+    if (newStagePosition !== -1) {
+      onMoveCard(cardId, newStagePosition);
     }
   };
 
-  const activeCard = useMemo(
-    () => data.find((item) => item.id === activeId),
-    [activeId, data]
-  );
-
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+    <PipelineDragOrchestrator
+      data={data}
+      stages={stages}
+      onMoveCard={handleMoveCard}
+      activeId={activeId}
+      setActiveId={setActiveId}
+      layoutType="board"
     >
       {stages.map((stage) => {
         // Map stage position to corresponding business logic status using the centralized domain mapper
@@ -142,18 +95,6 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
           </PipelineStageComponent>
         );
       })}
-      
-      <DragOverlay dropAnimation={{
-        sideEffects: defaultDropAnimationSideEffects({
-          styles: {
-            active: {
-              opacity: '0.4',
-            },
-          },
-        }),
-      }}>
-        {activeCard ? <CompactPipelineCard content={activeCard} isOverlay={true} /> : null}
-      </DragOverlay>
-    </DndContext>
+    </PipelineDragOrchestrator>
   );
 };

@@ -3716,3 +3716,20 @@ test('Execute a standard orchestrator API call and verify that execution duratio
   // Capture evidence screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Verify Orchestrator Feed decoupled architecture', async ({ page }) => {
+  // Instead of dynamically importing src files inside the browser context,
+  // we check the file contents to verify the Open-Closed Principle architecture is maintained.
+  const filePath = path.join(process.cwd(), 'src/hooks/useOrchestratorFeed.ts');
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  expect(fileContent).toContain('export const FEED_PROVIDERS: FeedProviderConfig<any>[] = [');
+  expect(fileContent).toContain('COLLECTIONS.SOCIAL_MENTIONS');
+  expect(fileContent).toContain('COLLECTIONS.CONTENT_PIPELINE');
+  expect(fileContent).toContain('COLLECTIONS.KNOWLEDGE_SOURCES');
+  expect(fileContent).toContain('COLLECTIONS.AX_REPORTS');
+  
+  // Verify it doesn't call usePocketBase statically over and over, violating OCP
+  expect(fileContent).toContain('FEED_PROVIDERS.forEach');
+  expect(fileContent).toContain('useRealtimeSubscription');
+});
