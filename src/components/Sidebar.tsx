@@ -1,7 +1,8 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { Icon } from './Icon';
 import { useExecution } from '../providers/ExecutionProvider';
+import { UTILITY_ACTIONS } from '../constants/utilityConfig';
 
 export const Sidebar: React.FC = () => {
   const { routes } = useExecution();
@@ -33,12 +34,20 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       <div className="flex flex-col gap-6">
-        <button className="text-slate-400 hover:text-accent transition-colors">
-          <Icon name="settings" />
-        </button>
-        <div className="size-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-[10px] font-bold text-accent font-mono tracking-widest shadow-[0_0_10px_rgba(0,242,255,0.1)]">
-          AV
-        </div>
+        {UTILITY_ACTIONS.map((utility) => {
+          if (utility.isAvatar) {
+            return (
+              <Link key={utility.id} to={utility.path || '#'} className="size-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-[10px] font-bold text-accent font-mono tracking-widest shadow-[0_0_10px_rgba(0,242,255,0.1)] hover:bg-accent/20 transition-colors">
+                {utility.label}
+              </Link>
+            );
+          }
+          return (
+            <Link key={utility.id} to={utility.path || '#'} className="text-slate-400 hover:text-accent transition-colors flex justify-center items-center">
+              <Icon name={utility.icon} />
+            </Link>
+          );
+        })}
       </div>
     </aside>
   );

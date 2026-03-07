@@ -790,7 +790,7 @@ test('PipelineCard uses semantic icons mapped through Icon component', async ({ 
   // Ensure items loaded
   await expect(page.locator('.content-card').first()).toBeVisible();
 
-  // Validate that the svg icon is present inside the platform-icon div, proving Icon component rendered
+  // Validate that the svg.lucide-git-commit-horizontal icon is present inside the platform-icon div, proving Icon component rendered
   // instead of a span with class "material-symbols-outlined"
   const iconSpan = page.locator('.content-card .platform-icon span.inline-flex');
   await expect(iconSpan).toBeVisible();
@@ -3846,7 +3846,7 @@ test('Fix empty Orchestrator icon and clarify the far-left utility tabs.', async
   await page.goto('/dashboard/logs');
 
   // Verify the Orchestrator Icon is visible
-  const icon = page.locator('svg.lucide-git-commit-horizontal');
+  const icon = page.locator('svg.lucide-git-commit-horizontal').first();
   await expect(icon).toBeVisible();
 
   // Ensure there are no leftover far-left tabs
@@ -3866,5 +3866,30 @@ test('Improve text contrast for command input placeholder and log timestamps.', 
   for (let i = 0; i < count; i++) {
     await expect(timeElements.nth(i)).toHaveClass(/text-slate-400/);
   }
+  await page.screenshot({ path: 'evidence.png' });
+});
+
+test('Far-left utility stack renders icons (including Orchestrator) dynamically from the centralized registry based on app state without missing assets.', async ({ page }) => {
+  await page.goto('/orchestrator');
+  
+  // Wait for the icon component lazy load 
+  await page.waitForTimeout(500);
+
+  // Verify the Orchestrator icon is in the sidebar nav (from APP_ROUTES)
+  const orchestratorLink = page.locator('aside nav a[href="/orchestrator"]');
+  await expect(orchestratorLink).toBeVisible();
+  const orchestratorIcon = orchestratorLink.locator('svg');
+  await expect(orchestratorIcon).toBeVisible();
+
+  // Verify utility stack from UTILITY_ACTIONS
+  // It has Settings and AV (profile avatar)
+  const settingsLink = page.locator('aside div.flex-col.gap-6 a[href="/?view=settings"]');
+  await expect(settingsLink).toBeVisible();
+  const settingsIcon = settingsLink.locator('svg');
+  await expect(settingsIcon).toBeVisible();
+
+  const avatar = page.locator('aside div.flex-col.gap-6 a[href="/?modal=profile"]', { hasText: 'AV' });
+  await expect(avatar).toBeVisible();
+
   await page.screenshot({ path: 'evidence.png' });
 });

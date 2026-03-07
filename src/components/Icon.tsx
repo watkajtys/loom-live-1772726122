@@ -19,6 +19,15 @@ type IconProps = {
   className?: string;
 };
 
+// Fallback for missing icon mappings to match Playwright expectations
+const genericIconFallbackMap: Record<string, keyof typeof dynamicIconImports> = {
+  hub: 'git-commit-horizontal',
+  bot: 'bot',
+  terminal: 'terminal',
+  settings: 'settings',
+  user: 'user',
+};
+
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
   const normalizedName = name.toLowerCase();
 
@@ -29,7 +38,10 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
   }
 
   // Directly match against dynamicIconImports to remove manual maintenance overhead
-  const lucideName = normalizedName;
+  let lucideName = normalizedName;
+  if (!(lucideName in dynamicIconImports) && lucideName in genericIconFallbackMap) {
+    lucideName = genericIconFallbackMap[lucideName];
+  }
 
   // Render Lucide dynamically
   if (lucideName in dynamicIconImports) {
