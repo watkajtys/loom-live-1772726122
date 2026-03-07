@@ -16,6 +16,10 @@ import {
 
 const COLLECTION = 'pipeline_requests';
 
+/**
+ * Fetches a paginated and filtered list of Pipeline Requests.
+ * Enforces URL parameter governance by strictly validating search queries.
+ */
 export async function fetchPipelineRequests(options?: FetchPipelineRequestsOptionsDTO): Promise<{ items: PipelineRequest[] }> {
   try {
     const validatedOptions = FetchPipelineRequestsOptionsSchema.parse(options || {});
@@ -41,6 +45,9 @@ export async function fetchPipelineRequests(options?: FetchPipelineRequestsOptio
   }
 }
 
+/**
+ * Retrieves a single Pipeline Request by its ID.
+ */
 export async function fetchPipelineRequest(id: string): Promise<PipelineRequest> {
   try {
     return await pb.collection(COLLECTION).getOne<PipelineRequest>(id, {
@@ -51,6 +58,10 @@ export async function fetchPipelineRequest(id: string): Promise<PipelineRequest>
   }
 }
 
+/**
+ * Creates a new Pipeline Request.
+ * Validates the request body payload against the designated schema.
+ */
 export async function createPipelineRequest(data: CreatePipelineRequestDTO): Promise<PipelineRequest> {
   try {
     const validatedData = CreatePipelineRequestSchema.parse(data);
@@ -63,6 +74,10 @@ export async function createPipelineRequest(data: CreatePipelineRequestDTO): Pro
   }
 }
 
+/**
+ * Updates an existing Pipeline Request.
+ * Validates the partial payload against the designated schema.
+ */
 export async function updatePipelineRequest(id: string, data: UpdatePipelineRequestDTO): Promise<PipelineRequest> {
   try {
     const validatedData = UpdatePipelineRequestSchema.parse(data);
@@ -75,6 +90,10 @@ export async function updatePipelineRequest(id: string, data: UpdatePipelineRequ
   }
 }
 
+/**
+ * Deletes a Pipeline Request by its ID.
+ * Validates the ID parameter before executing the deletion.
+ */
 export async function deletePipelineRequest(id: string): Promise<void> {
   try {
     const validatedId = DeletePipelineRequestIdSchema.parse(id);
