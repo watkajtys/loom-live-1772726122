@@ -2585,3 +2585,104 @@ test('Implement POST, PUT/PATCH, and DELETE endpoints for managing Pipeline Boar
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Implement frontend data fetching logic for the Pipeline Board', async ({ page }) => {
+  // Mock API responses for usePipelines
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          page: 1,
+          perPage: 50,
+          totalItems: 1,
+          totalPages: 1,
+          items: [
+            {
+              id: 'pipe_frontend_1',
+              collectionId: 'pipelines_col',
+              collectionName: 'pipelines',
+              created: '2023-01-01T00:00:00.000Z',
+              updated: '2023-01-01T00:00:00.000Z',
+              title: 'Frontend Test Pipeline',
+              description: 'Testing usePipelines hook'
+            }
+          ]
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  // Mock API responses for usePipelineCards
+  await page.route('**/api/collections/pipeline_cards/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          page: 1,
+          perPage: 50,
+          totalItems: 1,
+          totalPages: 1,
+          items: [
+            {
+              id: 'card_frontend_1',
+              collectionId: 'pipeline_cards_col',
+              collectionName: 'pipeline_cards',
+              created: '2023-01-01T00:00:00.000Z',
+              updated: '2023-01-01T00:00:00.000Z',
+              stage_id: 'stage_test_1',
+              title: 'Frontend Test Card',
+              content: 'Testing usePipelineCards hook',
+              position: 0
+            }
+          ]
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    // In a real application, these hooks would be used in a React component
+    // We are testing that the hook files are correctly constructed and export the functions
+    try {
+      const { usePipelines } = await import('/src/hooks/usePipelines.ts');
+      const { usePipelineCards } = await import('/src/hooks/usePipelineCards.ts');
+      
+      const pipelinesExist = typeof usePipelines === 'function';
+      const pipelineCardsExist = typeof usePipelineCards === 'function';
+
+      // Verify the fetching logic through the underlying API utilities they wrap
+      // Since hooks can't be called outside React components
+      const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+      const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+      
+      const pipelines = await pipelinesApi.fetchPipelines();
+      const cards = await cardsApi.fetchPipelineCards({ stage_id: 'stage_test_1' });
+
+      return {
+        hooksExist: pipelinesExist && pipelineCardsExist,
+        pipelineData: pipelines.items[0],
+        cardData: cards.items[0]
+      };
+    } catch (e) {
+      console.error(e);
+      return { error: true };
+    }
+  });
+
+  expect(result).not.toHaveProperty('error');
+  expect(result.hooksExist).toBe(true);
+  expect(result.pipelineData.title).toBe('Frontend Test Pipeline');
+  expect(result.cardData.title).toBe('Frontend Test Card');
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
