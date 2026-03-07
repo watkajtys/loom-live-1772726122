@@ -3794,3 +3794,17 @@ test('Trigger an orchestrator event and verify Terminal Green logs stream into t
   
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Fix empty Orchestrator icon and clarify the far-left utility tabs.', async ({ page }) => {
+  await page.goto('/dashboard/logs');
+
+  // Verify the Orchestrator Icon is visible
+  const icon = page.locator('svg.lucide-git-commit-horizontal');
+  await expect(icon).toBeVisible();
+
+  // Ensure there are no leftover far-left tabs
+  const possibleTabs = page.locator('div.absolute.left-0.bg-blue, div.fixed.left-0.bg-blue');
+  await expect(possibleTabs).toHaveCount(0);
+
+  await page.screenshot({ path: 'evidence.png' });
+});

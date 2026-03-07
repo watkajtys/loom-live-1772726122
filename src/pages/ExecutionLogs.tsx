@@ -30,7 +30,7 @@ export const ExecutionLogs: React.FC = () => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 border border-accent flex items-center justify-center">
-              <Icon name="git-commit" className="text-accent text-sm" />
+              <Icon name="git-commit-horizontal" className="text-accent text-sm" />
             </div>
             <div className="leading-none">
               <h1 className="text-sm font-bold text-white tracking-widest uppercase">ORCHESTRATOR</h1>

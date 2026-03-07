@@ -8,7 +8,7 @@ export const Sidebar: React.FC = () => {
   const sidebarRoutes = routes.filter(route => route.showInSidebar);
 
   return (
-    <aside className="w-16 flex flex-col items-center py-6 border-r border-primary/20 bg-background-dark z-20">
+    <aside className="w-16 flex flex-col items-center py-6 border-r border-accent/20 bg-black z-20">
       <div className="mb-10 text-accent">
         <Icon name="terminal" className="text-3xl" />
       </div>
@@ -20,12 +20,12 @@ export const Sidebar: React.FC = () => {
             to={item.path}
             className={({ isActive }) =>
               `group relative flex items-center justify-center p-2 rounded-lg transition-colors ${
-                isActive ? 'bg-primary/20 text-accent' : 'text-slate-400 hover:text-accent'
+                isActive ? 'bg-accent/10 text-accent' : 'text-slate-400 hover:text-accent'
               }`
             }
           >
             <Icon name={item.icon} />
-            <span className="absolute left-14 hidden group-hover:block bg-background-dark border border-primary/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50">
+            <span className="absolute left-14 hidden group-hover:block bg-black border border-accent/20 px-2 py-1 text-xs rounded whitespace-nowrap z-50 font-mono tracking-widest text-accent uppercase shadow-[0_0_10px_rgba(0,242,255,0.1)]">
               {item.label}
             </span>
           </NavLink>
@@ -36,7 +36,7 @@ export const Sidebar: React.FC = () => {
         <button className="text-slate-400 hover:text-accent transition-colors">
           <Icon name="settings" />
         </button>
-        <div className="size-8 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-[10px] font-bold text-accent">
+        <div className="size-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-[10px] font-bold text-accent font-mono tracking-widest shadow-[0_0_10px_rgba(0,242,255,0.1)]">
           AV
         </div>
       </div>
