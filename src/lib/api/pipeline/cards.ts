@@ -15,7 +15,6 @@ import {
 
 export interface FetchPipelineCardsOptions extends FetchPipelineCardsOptionsDTO {}
 
-// Implement GET endpoints to retrieve pipelines, associated stages, and cards.
 export const fetchPipelineCards = async (options: FetchPipelineCardsOptions): Promise<{ items: PipelineCard[]; totalItems: number }> => {
   try {
     const validatedOptions = FetchPipelineCardsOptionsSchema.parse(options);
@@ -33,7 +32,7 @@ export const fetchPipelineCards = async (options: FetchPipelineCardsOptions): Pr
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+      throw new ValidationError('Bad Request: Invalid fetch options', error.issues);
     }
     throw error;
   }
@@ -50,7 +49,7 @@ export const createPipelineCard = async (data: CreatePipelineCardDTO): Promise<P
     return newRecord;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline card payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline card payload', error.issues);
     }
     throw error; // Standard bubbling for network errors
   }
@@ -66,7 +65,7 @@ export const updatePipelineCard = async (id: string, data: UpdatePipelineCardDTO
     return updatedRecord;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline card payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline card payload', error.issues);
     }
     throw error;
   }
@@ -82,7 +81,7 @@ export const deletePipelineCard = async (id: string): Promise<boolean> => {
     return isDeleted;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline card ID', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline card ID', error.issues);
     }
     throw error;
   }

@@ -37,7 +37,7 @@ export async function fetchPipelineRequests(options?: FetchPipelineRequestsOptio
     return { items: records };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+      throw new ValidationError('Bad Request: Invalid fetch options', error.issues);
     }
     throw error;
   }
@@ -66,7 +66,7 @@ export async function createPipelineRequest(data: CreatePipelineRequestDTO): Pro
     return await pb.collection(COLLECTION).create<PipelineRequest>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError(`Bad Request: Invalid ${COLLECTION} payload`, error.errors);
+      throw new ValidationError(`Bad Request: Invalid ${COLLECTION} payload`, error.issues);
     }
     throw error;
   }
@@ -82,7 +82,7 @@ export async function updatePipelineRequest(id: string, data: UpdatePipelineRequ
     return await pb.collection(COLLECTION).update<PipelineRequest>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError(`Bad Request: Invalid ${COLLECTION} payload`, error.errors);
+      throw new ValidationError(`Bad Request: Invalid ${COLLECTION} payload`, error.issues);
     }
     throw error;
   }
@@ -98,7 +98,7 @@ export async function deletePipelineRequest(id: string): Promise<void> {
     await pb.collection(COLLECTION).delete(validatedId);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline request ID', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline request ID', error.issues);
     }
     throw error;
   }

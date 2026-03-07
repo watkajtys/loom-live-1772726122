@@ -57,6 +57,128 @@ test('Implement the Knowledge Base main layout and sidebar navigation', async ({
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Implement Pipeline validation schemas for query (GET) and update (PUT/PATCH) controllers, and write unit tests.', async ({ page }) => {
+  // Mock PocketBase API responses
+  await page.route('**/api/collections/pipelines/records/*', async route => {
+    if (route.request().method() === 'PATCH' || route.request().method() === 'PUT') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'test_123',
+          title: 'New Title'
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          page: 1,
+          perPage: 50,
+          totalItems: 0,
+          totalPages: 1,
+          items: []
+        })
+      });
+    } else if (route.request().method() === 'PATCH' || route.request().method() === 'PUT') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'test_123',
+          title: 'New Title'
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+
+  const result = await page.evaluate(async () => {
+    // Import API methods that use the validation schemas directly
+    const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+
+    let fetchPipelinesValidPassed = false;
+    let fetchPipelinesInvalidFailed = false;
+    let getErrorStatus = null;
+
+    let updatePipelineValidPassed = false;
+    let updatePipelineInvalidFailed = false;
+    let updateErrorStatus = null;
+
+    // FetchPipelinesOptions Valid
+    try {
+      await pipelinesApi.fetchPipelines({
+        page: 1,
+        perPage: 50,
+      });
+      fetchPipelinesValidPassed = true;
+    } catch (e) {
+      fetchPipelinesValidPassed = false;
+    }
+
+    // FetchPipelinesOptions Invalid
+    try {
+      await pipelinesApi.fetchPipelines({
+        page: -1,
+      });
+      fetchPipelinesInvalidFailed = false;
+    } catch (e: any) {
+      fetchPipelinesInvalidFailed = true;
+      getErrorStatus = e.status;
+    }
+
+    // UpdatePipeline Valid
+    try {
+      await pipelinesApi.updatePipeline('test_123', {
+        title: 'New Title',
+      });
+      updatePipelineValidPassed = true;
+    } catch (e) {
+      updatePipelineValidPassed = false;
+    }
+
+    // UpdatePipeline Invalid
+    try {
+      await pipelinesApi.updatePipeline('test_123', {
+        title: '',
+      });
+      updatePipelineInvalidFailed = false;
+    } catch (e: any) {
+      updatePipelineInvalidFailed = true;
+      updateErrorStatus = e.status;
+    }
+
+    return {
+      fetchPipelinesValidPassed,
+      fetchPipelinesInvalidFailed,
+      getErrorStatus,
+      updatePipelineValidPassed,
+      updatePipelineInvalidFailed,
+      updateErrorStatus,
+    };
+  });
+
+  expect(result.fetchPipelinesValidPassed).toBe(true);
+  expect(result.fetchPipelinesInvalidFailed).toBe(true);
+  expect(result.getErrorStatus).toBe(400);
+
+  expect(result.updatePipelineValidPassed).toBe(true);
+  expect(result.updatePipelineInvalidFailed).toBe(true);
+  expect(result.updateErrorStatus).toBe(400);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Integrate data fetching and interactive state management', async ({ page }) => {
   // Mock API responses to render initial board
   await page.route('**/api/collections/pipeline_stages/records*', async route => {

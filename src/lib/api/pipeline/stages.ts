@@ -15,7 +15,6 @@ import {
 
 export interface FetchPipelineStagesOptions extends FetchPipelineStagesOptionsDTO {}
 
-// Implement GET endpoints to retrieve pipelines, associated stages, and cards.
 export const fetchPipelineStages = async (options: FetchPipelineStagesOptions): Promise<{ items: PipelineStage[]; totalItems: number }> => {
   try {
     const validatedOptions = FetchPipelineStagesOptionsSchema.parse(options);
@@ -33,7 +32,7 @@ export const fetchPipelineStages = async (options: FetchPipelineStagesOptions): 
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+      throw new ValidationError('Bad Request: Invalid fetch options', error.issues);
     }
     throw error;
   }
@@ -45,7 +44,7 @@ export const createPipelineStage = async (data: CreatePipelineStageDTO): Promise
     return await pb.collection(COLLECTIONS.PIPELINE_STAGES).create<PipelineStage>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline stage payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline stage payload', error.issues);
     }
     throw error;
   }
@@ -57,7 +56,7 @@ export const updatePipelineStage = async (id: string, data: UpdatePipelineStageD
     return await pb.collection(COLLECTIONS.PIPELINE_STAGES).update<PipelineStage>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline stage payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline stage payload', error.issues);
     }
     throw error;
   }
@@ -69,7 +68,7 @@ export const deletePipelineStage = async (id: string): Promise<boolean> => {
     return await pb.collection(COLLECTIONS.PIPELINE_STAGES).delete(validatedId);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline stage ID', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline stage ID', error.issues);
     }
     throw error;
   }

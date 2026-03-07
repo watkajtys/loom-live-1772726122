@@ -10,7 +10,6 @@ export interface FetchPipelinesOptions {
   filter?: string;
   sort?: string;
 }
-// Implement GET endpoints to retrieve pipelines, associated stages, and cards.
 export const fetchPipelines = async (options: FetchPipelinesOptions = {}): Promise<{ items: Pipeline[]; totalItems: number }> => {
   try {
     const validatedOptions = FetchPipelinesOptionsSchema.parse(options);
@@ -26,7 +25,7 @@ export const fetchPipelines = async (options: FetchPipelinesOptions = {}): Promi
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+      throw new ValidationError('Bad Request: Invalid fetch options', error.issues);
     }
     throw error;
   }
@@ -38,7 +37,7 @@ export const createPipeline = async (data: CreatePipelineDTO): Promise<Pipeline>
     return await pb.collection(COLLECTIONS.PIPELINES).create<Pipeline>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline payload', error.issues);
     }
     throw error;
   }
@@ -49,7 +48,7 @@ export const updatePipeline = async (id: string, data: UpdatePipelineDTO): Promi
     return await pb.collection(COLLECTIONS.PIPELINES).update<Pipeline>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline payload', error.issues);
     }
     throw error;
   }
@@ -60,7 +59,7 @@ export const deletePipeline = async (id: string): Promise<boolean> => {
     return await pb.collection(COLLECTIONS.PIPELINES).delete(validatedId);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline ID', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline ID', error.issues);
     }
     throw error;
   }

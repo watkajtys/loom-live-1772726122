@@ -34,7 +34,7 @@ export const fetchPipelineRuns = async (options: FetchPipelineRunsOptions): Prom
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid fetch options', error.errors);
+      throw new ValidationError('Bad Request: Invalid fetch options', error.issues);
     }
     throw error;
   }
@@ -46,7 +46,7 @@ export const createPipelineRun = async (data: CreatePipelineRunDTO): Promise<Pip
     return await pb.collection(COLLECTIONS.PIPELINE_RUNS).create<PipelineRun>(validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline run payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline run payload', error.issues);
     }
     throw error;
   }
@@ -58,7 +58,7 @@ export const updatePipelineRun = async (id: string, data: UpdatePipelineRunDTO):
     return await pb.collection(COLLECTIONS.PIPELINE_RUNS).update<PipelineRun>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline run payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline run payload', error.issues);
     }
     throw error;
   }
@@ -70,7 +70,7 @@ export const updatePipelineRunStatus = async (id: string, data: UpdatePipelineRu
     return await pb.collection(COLLECTIONS.PIPELINE_RUNS).update<PipelineRun>(id, validatedData);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline run status payload', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline run status payload', error.issues);
     }
     throw error;
   }
@@ -82,7 +82,7 @@ export const deletePipelineRun = async (id: string): Promise<boolean> => {
     return await pb.collection(COLLECTIONS.PIPELINE_RUNS).delete(validatedId);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new ValidationError('Bad Request: Invalid pipeline run ID', error.errors);
+      throw new ValidationError('Bad Request: Invalid pipeline run ID', error.issues);
     }
     throw error;
   }
