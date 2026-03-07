@@ -3956,7 +3956,7 @@ test('', async ({ page }) => {
   await expect(rebootButton).toBeVisible();
   
   // Verify initial styling has text-obsidian
-  await expect(rebootButton.locator('span.text-obsidian')).toBeVisible();
+  await expect(rebootButton.locator('span.text-obsidian').first()).toBeVisible();
 
   // Press Enter while focused on it to trigger the keyboard event
   await rebootButton.focus();
