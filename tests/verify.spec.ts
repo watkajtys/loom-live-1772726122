@@ -3465,3 +3465,104 @@ test('User opens /dashboard and sees the Space Grotesk and JetBrains Mono typogr
   // Take screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('User initiates an agentic pipeline and the UI dynamically renders real-time state transitions and encapsulated outputs from the Ingester, Scout, Critic, and Scribe agents.', async ({ page }) => {
+  // Mock PocketBase API responses for the 4 collections
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1, perPage: 50, totalItems: 1, totalPages: 1, items: [
+          {
+            id: 'sm_1',
+            created: new Date().toISOString(),
+            platform: 'twitter',
+            query: 'pocketbase',
+            draft_reply: 'Replying to user123: Thanks for mentioning!',
+            status: 'pending'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1, perPage: 50, totalItems: 1, totalPages: 1, items: [
+          {
+            id: 'cp_1',
+            created: new Date().toISOString(),
+            title: 'Tutorial: PocketBase relations',
+            markdown_body: '# How to master PocketBase relations\n\nStep 1: Understand...',
+            status: 'drafting'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/knowledge_sources/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1, perPage: 50, totalItems: 1, totalPages: 1, items: [
+          {
+            id: 'ks_1',
+            created: new Date().toISOString(),
+            source_type: 'docs_url',
+            url: 'https://pocketbase.io/docs/',
+            vectorization_status: 'vectorized',
+            last_synced: new Date().toISOString()
+          }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/ax_reports/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        page: 1, perPage: 50, totalItems: 1, totalPages: 1, items: [
+          {
+            id: 'ax_1',
+            created: new Date().toISOString(),
+            error_log: 'ClientResponseError 400',
+            suggested_fix: 'Check the logs. Apply the patch.',
+            status: 'pending'
+          }
+        ]
+      })
+    });
+  });
+
+  await page.goto('/dashboard');
+  
+  // Wait for the feed items to load
+  await page.waitForSelector('article.feed-item');
+
+  // Assert Agent Encapsulated Outputs are rendered
+  await expect(page.locator('text=SCOUT')).toBeVisible();
+  await expect(page.locator('text=Replying to user123: Thanks for mentioning!')).toBeVisible();
+
+  await expect(page.locator('text=SCRIBE')).toBeVisible();
+  await expect(page.locator('text=Tutorial: PocketBase relations')).toBeVisible();
+
+  await expect(page.locator('text=INGESTER')).toBeVisible();
+  await expect(page.locator('text=https://pocketbase.io/docs/')).toBeVisible();
+
+  await expect(page.locator('text=CRITIC')).toBeVisible();
+  await expect(page.locator('text=ClientResponseError 400')).toBeVisible();
+  
+  // Wait a moment before taking screenshot
+  await page.waitForTimeout(100);
+
+  // Take screenshot as required
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

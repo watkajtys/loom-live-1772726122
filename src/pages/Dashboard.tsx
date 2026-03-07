@@ -1,40 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useOrchestratorFeed } from '../hooks/useOrchestratorFeed';
 
 export const Dashboard: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeMacro = searchParams.get('macro') || '';
-  const activeScript = searchParams.get('script') || 'sync_github.py';
+  const activeMacro = searchParams.get('macro');
+  const activeScript = searchParams.get('script');
+  
+  const { feed, loading } = useOrchestratorFeed();
 
   return (
-    <div className="flex-1 flex flex-col bg-obsidian text-slate-300 font-sans selection:bg-accent/30 selection:text-accent overflow-hidden relative">
-      <div className="absolute inset-0 grid-bg pointer-events-none z-0"></div>
-      
-      {/* We are skipping the TopBar since the app's Layout already provides a TopBar. 
-          However, the design shows a very specific header: ORCHESTRATOR NODE_CONTROL_V3.0. 
-          To match the exact design, we'll embed the specific header inside our page. */}
-      <header className="relative z-40 h-14 border-b border-white/10 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3">
-            <div className="size-8 bg-accent/10 border border-accent/40 flex items-center justify-center">
-              <span className="material-symbols-outlined text-accent text-xl">hub</span>
-            </div>
-            <div className="leading-none">
-              <h1 className="text-lg font-bold text-white tracking-tight uppercase">ORCHESTRATOR</h1>
-              <span className="text-[9px] font-mono text-accent/60 tracking-[0.3em]">NODE_CONTROL_V3.0</span>
-            </div>
+    <div className="flex flex-col h-full bg-obsidian text-slate-300 font-sans overflow-hidden">
+      <header className="h-14 border-b border-white/10 bg-black flex items-center justify-between px-6 shrink-0 relative z-40">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center size-8 bg-white/5 rounded-sm border border-white/10">
+            <span className="material-symbols-outlined text-white text-sm">hub</span>
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-white uppercase tracking-widest leading-none">ORCHESTRATOR</h1>
+            <span className="text-[10px] font-mono text-accent uppercase">NODE_CONTROL_V3.0</span>
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-6 px-4 py-1.5 border border-white/10 bg-white/5">
-            <div className="flex flex-col">
-              <span className="text-[8px] font-mono text-slate-500">THREADS</span>
-              <span className="text-[10px] font-mono text-terminal-cyan">14_ACTIVE</span>
-            </div>
-            <div className="flex flex-col border-l border-white/10 pl-4">
-              <span className="text-[8px] font-mono text-slate-500">LATENCY</span>
-              <span className="text-[10px] font-mono text-terminal-green">12MS</span>
+        <div className="flex items-center gap-6">
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] font-mono text-slate-500 uppercase">System_Load</span>
+            <div className="flex items-center gap-1 mt-1">
+              <div className="w-8 h-1 bg-white/10 overflow-hidden"><div className="h-full bg-accent w-[45%]"></div></div>
+              <div className="w-8 h-1 bg-white/10 overflow-hidden"><div className="h-full bg-terminal-green w-[82%]"></div></div>
+              <div className="w-8 h-1 bg-white/10 overflow-hidden"><div className="h-full bg-accent w-[21%]"></div></div>
             </div>
           </div>
         </div>
@@ -46,17 +40,12 @@ export const Dashboard: React.FC = () => {
             <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">COMMAND_LIBRARY</span>
           </div>
           
-          <nav className="flex-1 overflow-y-auto custom-scrollbar py-4">
+          <nav className="flex-1 overflow-y-auto py-4 custom-scrollbar">
             <div className="mb-6">
-              <h3 className="px-4 text-[9px] font-mono text-slate-600 uppercase mb-2">Automation Macros</h3>
+              <h3 className="px-4 text-[9px] font-mono text-slate-600 uppercase mb-2">Execution Macros</h3>
               <button 
-                onClick={() => setSearchParams({ macro: 'auto_ingest' })}
-                className={`w-full text-left sidebar-link ${activeMacro === 'auto_ingest' ? 'border-l-accent text-accent bg-accent/5' : ''}`}>
-                <span className="material-symbols-outlined text-sm">bolt</span> Auto_Ingest_Repo
-              </button>
-              <button 
-                onClick={() => setSearchParams({ macro: 'batch_vectorize' })}
-                className={`w-full text-left sidebar-link ${activeMacro === 'batch_vectorize' ? 'border-l-accent text-accent bg-accent/5' : ''}`}>
+                onClick={() => setSearchParams({ macro: 'sync_vectors' })}
+                className={`w-full text-left sidebar-link ${activeMacro === 'sync_vectors' ? 'border-l-accent text-accent bg-accent/5' : ''}`}>
                 <span className="material-symbols-outlined text-sm">cyclone</span> Batch_Vectorize
               </button>
               <button 
@@ -114,76 +103,49 @@ export const Dashboard: React.FC = () => {
           </div>
           
           <section className="flex-1 overflow-y-auto custom-scrollbar">
-            <article className="feed-item">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <span className="text-[10px] font-mono text-slate-600 mt-1 whitespace-nowrap">14:02:44.22</span>
-                  <div>
-                    <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-                      <span className="size-1.5 bg-terminal-cyan"></span>
-                      INITIATING_CROSS_REPO_SYNC
-                    </h4>
-                    <div className="flex gap-2 mt-2">
-                      <span className="metadata-pill">AGENT: SYNC_MASTER</span>
-                      <span className="metadata-pill">TARGET: GITHUB_ADVOLOOM</span>
-                      <span className="metadata-pill">PRIORITY: HIGH</span>
-                    </div>
-                    <div className="agent-decision">
-                      <span className="text-accent">DECISION_LOG:</span> Analyzed delta between main and dev branches. Detected 12 un-indexed commits. Spawning 3 worker nodes for parallel ingestion.
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[9px] font-mono text-terminal-green uppercase">STATUS: PROCESSING</span>
+            {loading ? (
+              <div className="p-12 text-center opacity-20 select-none">
+                <span className="text-[10px] font-mono uppercase tracking-[1em]">Listening_to_Event_Bus...</span>
               </div>
-            </article>
-
-            <article className="feed-item">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <span className="text-[10px] font-mono text-slate-600 mt-1 whitespace-nowrap">13:58:12.89</span>
-                  <div>
-                    <h4 className="text-sm font-bold text-white/80 uppercase flex items-center gap-2">
-                      <span className="size-1.5 bg-terminal-green"></span>
-                      KNOWLEDGE_SYNTHESIS_COMPLETE
-                    </h4>
-                    <div className="flex gap-2 mt-2">
-                      <span className="metadata-pill">AGENT: DOC_SYNTH</span>
-                      <span className="metadata-pill">TASK_ID: 99x-A2</span>
+            ) : (
+              feed.map((item) => (
+                <article key={item.id} className={`feed-item ${item.isError ? 'bg-red-500/[0.02]' : ''}`}>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-4">
+                      <span className={`text-[10px] font-mono mt-1 whitespace-nowrap ${item.isError ? 'text-red-900' : 'text-slate-600'}`}>
+                        {new Date(item.timestamp).toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 2 })}
+                      </span>
+                      <div>
+                        <h4 className={`text-sm font-bold uppercase flex items-center gap-2 ${item.isError ? 'text-red-500' : 'text-white'}`}>
+                          <span className={`size-1.5 ${item.isError ? 'bg-red-500' : (item.statusColor.replace('text-', 'bg-'))}`}></span>
+                          {item.title}
+                        </h4>
+                        <div className="flex gap-2 mt-2">
+                          <span className={`metadata-pill ${item.isError ? 'border-red-900/30 text-red-400' : ''}`}>AGENT: {item.agent}</span>
+                          {item.metadata.map((meta, idx) => (
+                            <span key={idx} className={`metadata-pill ${meta.isError ? 'border-red-900/30 text-red-400' : ''}`}>
+                              {meta.label}: {meta.value}
+                            </span>
+                          ))}
+                        </div>
+                        <div className={`agent-decision ${item.isError ? '!border-red-500/10' : ''}`}>
+                          <span className={item.isError ? 'text-red-500' : 'text-accent'}>
+                            {item.isError ? 'AUTONOMOUS_ACTION:' : 'DECISION_LOG:'}
+                          </span> {item.decisionLog}
+                        </div>
+                      </div>
                     </div>
-                    <div className="agent-decision">
-                      <span className="text-terminal-green">DECISION_LOG:</span> Documentation for "Advanced Webhooks" summarized. 4 core concepts extracted. Vectors inserted into primary partition.
-                    </div>
+                    <span className={`text-[9px] font-mono uppercase ${item.statusColor}`}>STATUS: {item.status}</span>
                   </div>
-                </div>
-                <span className="text-[9px] font-mono text-slate-500 uppercase">STATUS: SUCCESS</span>
-              </div>
-            </article>
+                </article>
+              ))
+            )}
 
-            <article className="feed-item bg-red-500/[0.02]">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <span className="text-[10px] font-mono text-red-900 mt-1 whitespace-nowrap">13:45:01.05</span>
-                  <div>
-                    <h4 className="text-sm font-bold text-red-500 uppercase flex items-center gap-2">
-                      <span className="size-1.5 bg-red-500"></span>
-                      API_RATE_LIMIT_WARNING
-                    </h4>
-                    <div className="flex gap-2 mt-2">
-                      <span className="metadata-pill border-red-900/30 text-red-400">ERR_CODE: 429</span>
-                      <span className="metadata-pill border-red-900/30 text-red-400">ORIGIN: DISCORD_BRIDGE</span>
-                    </div>
-                    <div className="agent-decision !border-red-500/10">
-                      <span className="text-red-500">AUTONOMOUS_ACTION:</span> Backing off ingestion frequency by 40%. Scheduled retry in 300s. Monitoring pool health.
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[9px] font-mono text-red-500 uppercase">STATUS: DEGRADED</span>
+            {feed.length === 0 && !loading && (
+              <div className="p-12 text-center opacity-20 select-none">
+                <span className="text-[10px] font-mono uppercase tracking-[1em]">Listening_to_Event_Bus...</span>
               </div>
-            </article>
-
-            <div className="p-12 text-center opacity-20 select-none">
-              <span className="text-[10px] font-mono uppercase tracking-[1em]">Listening_to_Event_Bus...</span>
-            </div>
+            )}
           </section>
 
           <div className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none">
