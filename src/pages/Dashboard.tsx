@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useOrchestratorFeed } from '../hooks/useOrchestratorFeed';
 import { useHealthCheck } from '../hooks/useHealthCheck';
+import { useProfiler } from '../hooks/useProfiler';
 
 export const Dashboard: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,6 +11,7 @@ export const Dashboard: React.FC = () => {
   
   const { feed, loading } = useOrchestratorFeed();
   const { isConnected } = useHealthCheck();
+  const { avgLatency } = useProfiler();
 
   return (
     <div className="flex flex-col h-full bg-obsidian text-slate-300 font-sans overflow-hidden">
@@ -177,6 +179,7 @@ export const Dashboard: React.FC = () => {
             <span className="text-[9px] font-mono text-terminal-green uppercase tracking-tighter">Core: Running</span>
           </div>
           <div className="text-[9px] font-mono text-slate-600 uppercase">Mem_Usage: 14.2GB / 64GB</div>
+          <div className="text-[9px] font-mono text-terminal-green uppercase">API_Latency: {avgLatency}ms</div>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-[9px] font-mono text-slate-600">ORCH_ID: 771-KILO-9</span>

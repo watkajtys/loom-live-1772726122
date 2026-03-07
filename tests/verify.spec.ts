@@ -3608,3 +3608,38 @@ test('', async ({ page }) => {
   // Verify it does not show disconnected
   await expect(page.locator('span', { hasText: 'REMOTE_ENGINE: DISCONNECTED' })).toBeHidden();
 });
+
+test('Integrate performance profiling or request tracing middleware to monitor execution times and identify resource bottlenecks.', async ({ page }) => {
+  // Mock PocketBase API responses to ensure the dashboard loads and triggers requests
+  await page.route('**/api/collections/social_mentions/records*', async route => {
+    // Delay slightly to simulate a measurable execution time
+    await new Promise(resolve => setTimeout(resolve, 50));
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ page: 1, perPage: 50, totalItems: 0, totalPages: 1, items: [] })
+    });
+  });
+
+  await page.goto('/dashboard');
+  
+  // Wait for the feed to be visible to ensure requests have completed
+  await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
+
+  // Verify the latency metric is displayed in the footer
+  const latencyElement = page.locator('div', { hasText: 'API_Latency:' }).first();
+  await expect(latencyElement).toBeVisible();
+
+  // Verify the value is correctly formatted (e.g. API_Latency: 50ms)
+  const textContent = await latencyElement.textContent();
+  expect(textContent).toMatch(/API_Latency:\s*\d+ms/i);
+
+  // Assert that it uses the Terminal Green typography identity
+  // The element found might be a parent wrapper if hasText matched a larger block,
+  // let's explicitly target the text-terminal-green span or div containing the text
+  const preciseLatencyElement = page.locator('div.text-terminal-green', { hasText: 'API_Latency:' }).first();
+  await expect(preciseLatencyElement).toBeVisible();
+
+  // Capture evidence screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
