@@ -2829,3 +2829,93 @@ test('User can access Stream view and view stream cards', async ({ page }) => {
   // Save screenshot
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('Implement drag-and-drop or state transition logic for Pipeline Cards', async ({ page }) => {
+  // Mock API responses to render initial board
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        items: [
+          { id: 'stage_1', title: 'Drafting', position: 0 },
+          { id: 'stage_2', title: 'Review', position: 1 },
+          { id: 'stage_3', title: 'Published', position: 2 }
+        ]
+      })
+    });
+  });
+
+  await page.route('**/api/collections/content_pipeline/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          items: [
+            { id: 'card_1', title: 'Test Card 1', status: 'drafting', created: new Date().toISOString() },
+          ]
+        })
+      });
+    } else if (route.request().method() === 'PATCH' || route.request().method() === 'PUT') {
+      const payload = JSON.parse(route.request().postData() || '{}');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'card_1',
+          title: 'Test Card 1',
+          status: payload.status,
+          created: new Date().toISOString()
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  // Intercept the PATCH request to verify it's called
+  const patchRequestPromise = page.waitForRequest(request => 
+    request.url().includes('/api/collections/content_pipeline/records/card_1') &&
+    (request.method() === 'PATCH' || request.method() === 'PUT')
+  );
+
+  // Navigate to compact board view which uses ContentBoard
+  await page.goto('/?view=compact');
+  await page.waitForLoadState('networkidle');
+
+  // Verify the card is in the Drafting column initially
+  const card = page.locator('text=Test Card 1');
+  await expect(card).toBeVisible();
+
+  // Get bounding boxes for the drag and drop simulation
+  const cardBox = await card.boundingBox();
+  expect(cardBox).not.toBeNull();
+
+  const targetStageHeader = page.locator('h3', { hasText: 'Review' });
+  await expect(targetStageHeader).toBeVisible();
+  const targetBox = await targetStageHeader.boundingBox();
+  expect(targetBox).not.toBeNull();
+
+  // Simulate drag and drop using page.mouse
+  if (cardBox && targetBox) {
+    await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
+    await page.mouse.down();
+    // Move slightly to start drag
+    await page.mouse.move(cardBox.x + cardBox.width / 2 + 10, cardBox.y + cardBox.height / 2 + 10);
+    // Move to target
+    await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 5 });
+    await page.mouse.up();
+  }
+
+  // Verify the API was called correctly
+  const patchRequest = await patchRequestPromise;
+  const postData = JSON.parse(patchRequest.postData() || '{}');
+  expect(postData.status).toBe('review');
+
+  // Verify optimistic UI update: the card should now have the styles associated with the 'review' column
+  // (We check for the review color 'text-accent' which we know is applied in the review stage)
+  await expect(page.locator('.compact-log-card .text-accent').first()).toBeVisible({ timeout: 5000 });
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

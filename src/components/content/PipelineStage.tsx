@@ -2,7 +2,10 @@ import React from 'react';
 import { Icon, SemanticIconName } from '../Icon';
 import { getStageStyles } from '../../utils/theme';
 
+import { useDroppable } from '@dnd-kit/core';
+
 export interface PipelineStageProps {
+  id?: string;
   title: string;
   count: number;
   icon: SemanticIconName;
@@ -14,6 +17,7 @@ export interface PipelineStageProps {
 }
 
 export const PipelineStage: React.FC<PipelineStageProps> = ({
+  id,
   title,
   count,
   icon,
@@ -23,6 +27,14 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
   actionGutter,
   children,
 }) => {
+  const { setNodeRef } = useDroppable({
+    id: id || title,
+    data: {
+      type: 'Stage',
+      status,
+    },
+  });
+
   const styles = getStageStyles(status);
 
   const stageColumnBaseClass = "flex flex-col h-full bg-black/40 border-x border-white/5 transition-all duration-300 relative";
@@ -67,8 +79,8 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
         </button>
       </header>
       
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
+      <div className="flex flex-1 overflow-hidden" ref={setNodeRef}>
+        <div className="flex-1 overflow-y-auto p-3 custom-scrollbar min-h-[100px]">
           {children}
         </div>
         

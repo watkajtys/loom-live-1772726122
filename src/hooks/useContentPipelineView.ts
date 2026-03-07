@@ -1,6 +1,7 @@
 import { useContentFilters } from './useContentFilters';
 import { useUrlState } from './useUrlState';
 import { useContentPipeline } from './useContentPipeline';
+import { mapStagePositionToStatus, updateContentPipeline } from '../lib/api/content';
 import { pb } from '../lib/pocketbase';
 
 export const useContentPipelineView = () => {
@@ -74,11 +75,34 @@ export const useContentPipelineView = () => {
     setSearchParams(newParams);
   };
 
-  const { data, loading, error } = useContentPipeline({
+  const { data, loading, error, mutate } = useContentPipeline({
     sort: '-created',
     filter: filterString || undefined,
     subscribe: true,
   });
+
+  const updateContentStatus = async (cardId: string, newStagePosition: number) => {
+    const newStatus = mapStagePositionToStatus(newStagePosition);
+    
+    // Optimistic UI update
+    const previousData = [...data];
+    mutate(
+      data.map((item) => 
+        item.id === cardId ? { ...item, status: newStatus } : item
+      ),
+      false
+    );
+
+    try {
+      await updateContentPipeline(cardId, { status: newStatus });
+      // Revalidate to ensure server state matches
+      mutate();
+    } catch (err) {
+      console.error("Failed to update status", err);
+      // Revert optimistic update
+      mutate(previousData, false);
+    }
+  };
 
   return {
     search,
@@ -92,5 +116,6 @@ export const useContentPipelineView = () => {
     data,
     loading,
     error,
+    updateContentStatus,
   };
 };

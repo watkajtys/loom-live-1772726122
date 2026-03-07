@@ -11,6 +11,7 @@ export interface ContentPipelineDataResponse {
   data: TransformedContentPipeline[];
   loading: boolean;
   error: Error | null;
+  mutate: (data?: any, opts?: any) => Promise<any>;
 }
 
 const fetcher = async ([_, options]: readonly [string, ContentPipelineFetchOptions]) => {
@@ -19,7 +20,7 @@ const fetcher = async ([_, options]: readonly [string, ContentPipelineFetchOptio
 };
 
 export function useContentPipeline(options: ContentPipelineFetchOptions = { subscribe: true }): ContentPipelineDataResponse {
-  const { data, loading, error } = usePocketBase<ContentPipeline, ContentPipelineFetchOptions>(
+  const { data, loading, error, mutate } = usePocketBase<ContentPipeline, ContentPipelineFetchOptions>(
     COLLECTIONS.CONTENT_PIPELINE,
     options,
     fetcher
@@ -29,5 +30,6 @@ export function useContentPipeline(options: ContentPipelineFetchOptions = { subs
     data: data as unknown as TransformedContentPipeline[],
     loading,
     error: error || null,
+    mutate,
   };
 }

@@ -1,17 +1,48 @@
 import React from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Icon } from '../Icon';
 import { TransformedContentPipeline } from '../../lib/api/content';
 import { getCompactPipelineStatusDisplay } from '../../utils/theme';
 
 interface CompactPipelineCardProps {
   content: TransformedContentPipeline;
+  isOverlay?: boolean;
 }
 
-export const CompactPipelineCard: React.FC<CompactPipelineCardProps> = ({ content }) => {
+export const CompactPipelineCard: React.FC<CompactPipelineCardProps> = ({ content, isOverlay }) => {
   const statusDisplay = getCompactPipelineStatusDisplay(content.status);
   
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: content.id,
+    data: {
+      type: 'Card',
+      content,
+    },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging && !isOverlay ? 0.4 : 1,
+    zIndex: isDragging ? 999 : undefined,
+  };
+
   return (
-    <div className={`compact-log-card glass-panel py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12 ${statusDisplay.borderClass}`}>
+    <div 
+      ref={isOverlay ? undefined : setNodeRef}
+      style={style}
+      {...(isOverlay ? {} : attributes)}
+      {...(isOverlay ? {} : listeners)}
+      className={`compact-log-card glass-panel py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12 ${isOverlay ? 'cursor-grabbing scale-105 shadow-xl shadow-black/50' : 'cursor-grab active:cursor-grabbing'} ${statusDisplay.borderClass}`}
+    >
       <div className="size-6 flex items-center justify-center bg-black/40 border border-white/5 text-slate-400 shrink-0">
         <Icon name={content.platformIcon} className="text-[14px]" />
       </div>

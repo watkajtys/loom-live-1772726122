@@ -75,6 +75,7 @@ export const createContentPipeline = async (data: CreateContentPipelineDTO): Pro
 };
 
 export const updateContentPipeline = async (id: string, data: UpdateContentPipelineDTO): Promise<ContentPipeline> => {
+  // Implement drag-and-drop or state transition logic for Pipeline Cards
   try {
     const validatedData = UpdateContentPipelineSchema.parse(data);
     return await pb.collection(COLLECTIONS.CONTENT_PIPELINE).update<ContentPipeline>(id, validatedData);

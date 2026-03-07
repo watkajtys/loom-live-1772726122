@@ -24,6 +24,7 @@ export const ContentPipeline: React.FC = () => {
     data,
     loading: contentLoading,
     error: contentError,
+    updateContentStatus,
   } = useContentPipelineView();
 
   const {
@@ -91,6 +92,7 @@ export const ContentPipeline: React.FC = () => {
             stages={stages}
             collapsedStages={collapsedStages}
             toggleCollapse={toggleCollapse}
+            onMoveCard={updateContentStatus}
           />
         )}
       </DataViewLayout>
