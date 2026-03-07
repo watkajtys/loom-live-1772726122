@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const KnowledgeGraphView: React.FC = () => {
   return (
@@ -34,9 +35,9 @@ export const KnowledgeGraphView: React.FC = () => {
             <span className="text-terminal-green animate-pulse">●</span>
             Embedding Engine: ON
           </div>
-          <button className="w-9 h-9 flex items-center justify-center border border-white/10 hover:bg-white/5 text-slate-400 hover:text-white transition-all">
-            <span className="material-symbols-outlined text-xl">settings</span>
-          </button>
+          <Link to="/?view=feed" className="w-9 h-9 flex items-center justify-center border border-white/10 hover:bg-white/5 text-slate-400 hover:text-white transition-all" title="Feed View">
+            <span className="material-symbols-outlined text-xl">list</span>
+          </Link>
         </div>
       </header>
 

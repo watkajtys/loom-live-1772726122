@@ -3174,3 +3174,29 @@ test('Define Knowledge Base data types and API fetching hooks', async ({ page })
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Implement the Knowledge Base article list and search components', async ({ page }) => {
+  await page.goto('/?view=feed');
+
+  // Verify headers from KnowledgeFeedView
+  await expect(page.locator('h1', { hasText: 'KB_FEED' })).toBeVisible();
+  await expect(page.locator('span', { hasText: 'COMMAND_INTERFACE_V3' })).toBeVisible();
+
+  // Verify search input placeholder
+  await expect(page.locator('input[placeholder="SEARCH_INDEX_OR_EXECUTE_CMD..."]')).toBeVisible();
+
+  // Verify some list elements exist (we hardcoded a few)
+  await expect(page.locator('text=security_compliance_audit_v4.md')).toBeVisible();
+  await expect(page.locator('text=api_v2_endpoint_mapping.json')).toBeVisible();
+
+  // Test search functionality
+  await page.fill('input[placeholder="SEARCH_INDEX_OR_EXECUTE_CMD..."]', 'api_v2');
+  
+  // security_compliance_audit_v4.md should be hidden
+  await expect(page.locator('text=security_compliance_audit_v4.md')).toBeHidden();
+  // api_v2_endpoint_mapping.json should still be visible
+  await expect(page.locator('text=api_v2_endpoint_mapping.json')).toBeVisible();
+
+  // Save screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
