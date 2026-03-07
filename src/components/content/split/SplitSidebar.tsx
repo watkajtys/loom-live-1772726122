@@ -3,6 +3,7 @@ import { PipelineStage } from '../../../types/models';
 import { TransformedContentPipeline, mapStagePositionToStatus } from '../../../lib/api/content';
 import { Icon } from '../../Icon';
 import { getStageStyles } from '../../../utils/theme';
+import { useDroppable } from '@dnd-kit/core';
 
 interface SplitSidebarProps {
   stages: PipelineStage[];
@@ -10,6 +11,50 @@ interface SplitSidebarProps {
   activeStageId: string;
   onSelectStage: (stageId: string) => void;
 }
+
+const DroppableSidebarItem: React.FC<{
+  stage: PipelineStage;
+  isActive: boolean;
+  statusColorClass: string;
+  titleColorClass: string;
+  textColorClass: string;
+  stageDataCount: number;
+  onClick: () => void;
+}> = ({ stage, isActive, statusColorClass, titleColorClass, textColorClass, stageDataCount, onClick }) => {
+  const { setNodeRef } = useDroppable({
+    id: String(stage.position),
+    data: {
+      type: 'SplitSidebarItem',
+      status: mapStagePositionToStatus(stage.position),
+    },
+  });
+
+  return (
+    <div 
+      ref={setNodeRef}
+      onClick={onClick}
+      className={`flex items-center gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/[0.03] transition-all cursor-pointer relative overflow-hidden ${isActive ? 'bg-accent/10 border-r-2 border-r-accent' : ''}`}
+    >
+      <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,242,255,0.5)] ${statusColorClass}`}></div>
+      <div className="flex-1">
+        <h4 className={`text-[11px] font-bold uppercase ${isActive ? 'text-white' : titleColorClass}`}>{stage.title}</h4>
+        <p className={`text-[9px] font-mono ${isActive ? 'text-accent' : textColorClass}`}>{stageDataCount} ITEMS</p>
+      </div>
+      
+      {!isActive && (
+        <Icon name="chevron-right" className="text-slate-600 text-sm" />
+      )}
+      
+      {isActive && (
+        <div className="flex gap-0.5">
+          <div className="w-1 h-3 bg-accent/40"></div>
+          <div className="w-1 h-2 bg-accent/40"></div>
+          <div className="w-1 h-4 bg-accent"></div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const SplitSidebar: React.FC<SplitSidebarProps> = ({
   stages,
@@ -53,29 +98,16 @@ export const SplitSidebar: React.FC<SplitSidebarProps> = ({
           // we map review to active/accent, drafting to green, published to green.
           
           return (
-            <div 
+            <DroppableSidebarItem
               key={stage.id}
+              stage={stage}
+              isActive={isActive}
+              statusColorClass={statusColorClass}
+              titleColorClass={titleColorClass}
+              textColorClass={textColorClass}
+              stageDataCount={stageData.length}
               onClick={() => onSelectStage(stage.id)}
-              className={`flex items-center gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/[0.03] transition-all cursor-pointer relative overflow-hidden ${isActive ? 'bg-accent/10 border-r-2 border-r-accent' : ''}`}
-            >
-              <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,242,255,0.5)] ${statusColorClass}`}></div>
-              <div className="flex-1">
-                <h4 className={`text-[11px] font-bold uppercase ${isActive ? 'text-white' : titleColorClass}`}>{stage.title}</h4>
-                <p className={`text-[9px] font-mono ${isActive ? 'text-accent' : textColorClass}`}>{stageData.length} ITEMS</p>
-              </div>
-              
-              {!isActive && (
-                <Icon name="chevron-right" className="text-slate-600 text-sm" />
-              )}
-              
-              {isActive && (
-                <div className="flex gap-0.5">
-                  <div className="w-1 h-3 bg-accent/40"></div>
-                  <div className="w-1 h-2 bg-accent/40"></div>
-                  <div className="w-1 h-4 bg-accent"></div>
-                </div>
-              )}
-            </div>
+            />
           );
         })}
       </div>

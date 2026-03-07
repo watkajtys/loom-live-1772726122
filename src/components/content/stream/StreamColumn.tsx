@@ -2,6 +2,8 @@ import React from 'react';
 import { PipelineStage } from '../../../types/models';
 import { TransformedContentPipeline, mapStagePositionToStatus } from '../../../lib/api/content';
 import { StreamCard } from './StreamCard';
+import { useDroppable } from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
 
 interface StreamColumnProps {
   stage: PipelineStage;
@@ -72,8 +74,16 @@ export const StreamColumn: React.FC<StreamColumnProps> = ({ stage, data }) => {
 
   const formattedCount = data.length.toString().padStart(2, '0');
 
+  const { setNodeRef } = useDroppable({
+    id: String(stage.position),
+    data: {
+      type: 'StreamColumn',
+      status,
+    },
+  });
+
   return (
-    <section className={`stream-column ${styles.columnBorder}`}>
+    <section ref={setNodeRef} className={`stream-column ${styles.columnBorder} flex flex-col h-full`}>
       <header className="p-4 border-b border-white/10 bg-black/60 sticky top-0 z-20">
         <div className="flex justify-between items-center mb-1">
           <h3 className="text-sm font-bold text-white tracking-widest uppercase">{stage.title}</h3>
@@ -89,9 +99,11 @@ export const StreamColumn: React.FC<StreamColumnProps> = ({ stage, data }) => {
       
       {data.length > 0 ? (
         <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
-          {data.map(item => (
-            <StreamCard key={item.id} content={item} stageStatus={status} />
-          ))}
+          <SortableContext items={data.map(d => d.id)}>
+            {data.map(item => (
+              <StreamCard key={item.id} content={item} stageStatus={status} />
+            ))}
+          </SortableContext>
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-center text-center p-6">

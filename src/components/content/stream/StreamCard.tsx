@@ -1,13 +1,16 @@
 import React from 'react';
 import { TransformedContentPipeline } from '../../../lib/api/content';
 import { getCompactPipelineStatusDisplay } from '../../../utils/theme';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface StreamCardProps {
   content: TransformedContentPipeline;
   stageStatus: string;
+  isOverlay?: boolean;
 }
 
-export const StreamCard: React.FC<StreamCardProps> = ({ content, stageStatus }) => {
+export const StreamCard: React.FC<StreamCardProps> = ({ content, stageStatus, isOverlay }) => {
   const statusDisplay = getCompactPipelineStatusDisplay(content.status);
   
   // Custom mock data for terminal look
@@ -33,8 +36,36 @@ export const StreamCard: React.FC<StreamCardProps> = ({ content, stageStatus }) 
     badgeText = 'QUEUED';
   }
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: content.id,
+    data: {
+      type: 'StreamCard',
+      content,
+    },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging && !isOverlay ? 0.4 : 1,
+    zIndex: isDragging ? 999 : undefined,
+  };
+
   return (
-    <div className={`log-entry ${borderClass}`}>
+    <div 
+      ref={isOverlay ? undefined : setNodeRef}
+      style={style}
+      {...(isOverlay ? {} : attributes)}
+      {...(isOverlay ? {} : listeners)}
+      className={`log-entry ${borderClass} cursor-grab active:cursor-grabbing ${isOverlay ? 'shadow-2xl shadow-black scale-105' : ''}`}
+    >
       <div className={`flex justify-between text-[9px] font-mono ${badgeColor} mb-2`}>
         <span>#{content.id.substring(0, 6).toUpperCase()}</span>
         {isProcessing ? (

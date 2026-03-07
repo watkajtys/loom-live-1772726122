@@ -13,6 +13,9 @@ import { StreamBoard } from '../components/content/stream/StreamBoard';
 import { StreamHeader } from '../components/content/stream/StreamHeader';
 import { StreamFooter } from '../components/content/stream/StreamFooter';
 import { StreamBatchActions } from '../components/content/stream/StreamBatchActions';
+import { LoadingState } from '../components/states/LoadingState';
+import { ErrorState } from '../components/states/ErrorState';
+import { EmptyState } from '../components/states/EmptyState';
 
 export const ContentPipeline: React.FC = () => {
   const {
@@ -44,7 +47,14 @@ export const ContentPipeline: React.FC = () => {
       <div className="bg-obsidian text-slate-300 font-display selection:bg-accent/30 selection:text-accent h-screen w-full overflow-hidden flex flex-col absolute inset-0 z-50">
         <div className="fixed inset-0 grid-bg pointer-events-none z-0"></div>
         <StreamHeader />
-        <StreamBoard stages={stages} data={data} />
+        <div className="flex-1 relative overflow-hidden flex flex-col">
+          {loading && <LoadingState />}
+          {error && !loading && <ErrorState error={error} />}
+          {!loading && !error && data.length === 0 && stages.length === 0 && <EmptyState />}
+          {!loading && !error && (
+            <StreamBoard stages={stages} data={data} onMoveCard={updateContentStatus} />
+          )}
+        </div>
         <StreamBatchActions />
         <StreamFooter />
       </div>
@@ -57,12 +67,20 @@ export const ContentPipeline: React.FC = () => {
         <div className="absolute inset-0 grid-bg pointer-events-none"></div>
         <div className="w-full max-w-[1440px] h-[860px] glass-panel relative overflow-hidden flex flex-col">
           <SplitHeader />
-          <SplitBoard 
-            stages={stages} 
-            data={data} 
-            activeStageId={activeStageId} 
-            onSelectStage={setActiveStageId} 
-          />
+          <div className="flex-1 relative overflow-hidden flex flex-col">
+            {loading && <LoadingState />}
+            {error && !loading && <ErrorState error={error} />}
+            {!loading && !error && data.length === 0 && stages.length === 0 && <EmptyState />}
+            {!loading && !error && (
+              <SplitBoard 
+                stages={stages} 
+                data={data} 
+                activeStageId={activeStageId} 
+                onSelectStage={setActiveStageId} 
+                onMoveCard={updateContentStatus}
+              />
+            )}
+          </div>
           <SplitFooter />
         </div>
       </div>
