@@ -1,4 +1,5 @@
 import { RecordModel } from 'pocketbase';
+import { PipelineConfig } from '../schema/pipeline/base';
 
 export type SocialMention = RecordModel & {
   platform: string;
@@ -22,14 +23,6 @@ export type ContentPipeline = ContentPipelineBase & (
   | { status: 'published' }
 );
 
-import {
-  CreateContentPipelineDTO as SchemaCreateContentPipelineDTO,
-  UpdateContentPipelineDTO as SchemaUpdateContentPipelineDTO
-} from '../schema/content';
-
-export type CreateContentPipelineDTO = SchemaCreateContentPipelineDTO;
-export type UpdateContentPipelineDTO = SchemaUpdateContentPipelineDTO;
-
 export type AXReport = RecordModel & {
   error_log: string;
   suggested_fix: string;
@@ -43,33 +36,11 @@ export type KnowledgeSource = RecordModel & {
   last_synced: string;
 };
 
-import {
-  CreatePipelineDTO as SchemaCreatePipelineDTO,
-  UpdatePipelineDTO as SchemaUpdatePipelineDTO,
-  CreatePipelineStageDTO as SchemaCreatePipelineStageDTO,
-  UpdatePipelineStageDTO as SchemaUpdatePipelineStageDTO,
-  CreatePipelineCardDTO as SchemaCreatePipelineCardDTO,
-  UpdatePipelineCardDTO as SchemaUpdatePipelineCardDTO,
-  CreatePipelineStepDTO as SchemaCreatePipelineStepDTO,
-  UpdatePipelineStepDTO as SchemaUpdatePipelineStepDTO,
-  CreatePipelineRunDTO as SchemaCreatePipelineRunDTO,
-  UpdatePipelineRunDTO as SchemaUpdatePipelineRunDTO,
-  PipelineConfig,
-  PipelineExecutionArguments as SchemaPipelineExecutionArguments,
-  TriggerPipelineRunPayload as SchemaTriggerPipelineRunPayload,
-  UpdatePipelineRunStatusPayload as SchemaUpdatePipelineRunStatusPayload,
-  CreatePipelineRequestDTO as SchemaCreatePipelineRequestDTO,
-  UpdatePipelineRequestDTO as SchemaUpdatePipelineRequestDTO
-} from '../schema/pipeline';
-
 export type Pipeline = RecordModel & {
   title: string;
   description?: string;
   config?: PipelineConfig;
 };
-
-export type CreatePipelineDTO = SchemaCreatePipelineDTO;
-export type UpdatePipelineDTO = SchemaUpdatePipelineDTO;
 
 export type PipelineStage = RecordModel & {
   pipeline_id: string; // relation
@@ -77,18 +48,12 @@ export type PipelineStage = RecordModel & {
   position: number;
 };
 
-export type CreatePipelineStageDTO = SchemaCreatePipelineStageDTO;
-export type UpdatePipelineStageDTO = SchemaUpdatePipelineStageDTO;
-
 export type PipelineCard = RecordModel & {
   stage_id: string; // relation
   title: string;
   content: string;
   position: number;
 };
-
-export type CreatePipelineCardDTO = SchemaCreatePipelineCardDTO;
-export type UpdatePipelineCardDTO = SchemaUpdatePipelineCardDTO;
 
 type PipelineStepBase = RecordModel & {
   card_id: string; // relation
@@ -104,9 +69,6 @@ export type PipelineStep = PipelineStepBase & (
   | { status: 'failed' }
 );
 
-export type CreatePipelineStepDTO = SchemaCreatePipelineStepDTO;
-export type UpdatePipelineStepDTO = SchemaUpdatePipelineStepDTO;
-
 type PipelineRunBase = RecordModel & {
   pipeline_id: string; // relation
   started_at: string;
@@ -117,13 +79,6 @@ export type PipelineRun = PipelineRunBase & (
   | { status: 'completed'; completed_at: string; log?: string }
   | { status: 'failed'; completed_at: string; log: string }
 );
-
-export type CreatePipelineRunDTO = SchemaCreatePipelineRunDTO;
-export type UpdatePipelineRunDTO = SchemaUpdatePipelineRunDTO;
-
-export type PipelineExecutionArguments = SchemaPipelineExecutionArguments;
-export type TriggerPipelineRunPayload = SchemaTriggerPipelineRunPayload;
-export type UpdatePipelineRunStatusPayload = SchemaUpdatePipelineRunStatusPayload;
 
 type PipelineRequestBase = RecordModel & {
   pipeline_id: string; // relation
@@ -136,6 +91,3 @@ export type PipelineRequest = PipelineRequestBase & (
   | { status: 'approved'; approved_by: string; approved_at: string }
   | { status: 'rejected'; rejected_by: string; rejected_at: string; rejection_reason: string }
 );
-
-export type CreatePipelineRequestDTO = SchemaCreatePipelineRequestDTO;
-export type UpdatePipelineRequestDTO = SchemaUpdatePipelineRequestDTO;

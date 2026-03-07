@@ -1,14 +1,16 @@
 import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
-import { PipelineStage, CreatePipelineStageDTO, UpdatePipelineStageDTO } from '../../../types/models';
+import { PipelineStage } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
 import { 
   CreatePipelineStageSchema, 
   UpdatePipelineStageSchema,
   FetchPipelineStagesOptionsSchema,
   DeletePipelineStageIdSchema,
-  FetchPipelineStagesOptionsDTO
+  FetchPipelineStagesOptionsDTO,
+  CreatePipelineStageDTO,
+  UpdatePipelineStageDTO
 } from '../../../schema/pipeline';
 
 export interface FetchPipelineStagesOptions extends FetchPipelineStagesOptionsDTO {}

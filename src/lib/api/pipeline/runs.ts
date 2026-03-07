@@ -1,7 +1,7 @@
 import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
-import { PipelineRun, CreatePipelineRunDTO, UpdatePipelineRunDTO } from '../../../types/models';
+import { PipelineRun } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
 import { 
   CreatePipelineRunSchema, 
@@ -10,7 +10,9 @@ import {
   UpdatePipelineRunStatusPayload,
   FetchPipelineRunsOptionsSchema,
   DeletePipelineRunIdSchema,
-  FetchPipelineRunsOptionsDTO
+  FetchPipelineRunsOptionsDTO,
+  CreatePipelineRunDTO,
+  UpdatePipelineRunDTO
 } from '../../../schema/pipeline';
 
 export interface FetchPipelineRunsOptions extends FetchPipelineRunsOptionsDTO {}

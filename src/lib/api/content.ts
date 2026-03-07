@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { pb } from '../pocketbase';
-import { ContentPipeline, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../types/models';
+import { ContentPipeline } from '../../types/models';
 import { COLLECTIONS } from '../../constants/collections';
 import { SemanticIconName } from '../../components/Icon';
 import { ValidationError } from './errors';
-import { CreateContentPipelineSchema, UpdateContentPipelineSchema } from '../../schema/content';
+import { CreateContentPipelineSchema, UpdateContentPipelineSchema, CreateContentPipelineDTO, UpdateContentPipelineDTO } from '../../schema/content';
 
 export interface FetchContentOptions {
   page?: number;
@@ -16,6 +16,25 @@ export interface FetchContentOptions {
 export type TransformedContentPipeline = ContentPipeline & {
   agentId: string;
   platformIcon: SemanticIconName;
+};
+
+// Domain Mapper to extract stage mapping logic from components
+export const mapStagePositionToStatus = (position: number): ContentPipeline['status'] => {
+  const map: Record<number, ContentPipeline['status']> = {
+    0: 'drafting',
+    1: 'review',
+    2: 'published'
+  };
+  return map[position] || 'drafting';
+};
+
+export const mapStagePositionToIcon = (position: number): SemanticIconName => {
+  const map: Record<number, SemanticIconName> = {
+    0: 'file-pen',
+    1: 'message-square',
+    2: 'radio'
+  };
+  return map[position] || 'circle-dashed';
 };
 
 export const fetchContentPipeline = async (options: FetchContentOptions = {}): Promise<{ items: TransformedContentPipeline[]; totalItems: number }> => {

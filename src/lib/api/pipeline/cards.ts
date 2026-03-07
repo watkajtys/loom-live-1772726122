@@ -1,14 +1,16 @@
 import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
-import { PipelineCard, CreatePipelineCardDTO, UpdatePipelineCardDTO } from '../../../types/models';
+import { PipelineCard } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
 import { 
   CreatePipelineCardSchema, 
   UpdatePipelineCardSchema,
   FetchPipelineCardsOptionsSchema,
   DeletePipelineCardIdSchema,
-  FetchPipelineCardsOptionsDTO
+  FetchPipelineCardsOptionsDTO,
+  CreatePipelineCardDTO,
+  UpdatePipelineCardDTO
 } from '../../../schema/pipeline';
 
 export interface FetchPipelineCardsOptions extends FetchPipelineCardsOptionsDTO {}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { PipelineStage as PipelineStageComponent } from './PipelineStage';
 import { CompactPipelineCard } from './CompactPipelineCard';
-import { TransformedContentPipeline } from '../../lib/api/content';
+import { TransformedContentPipeline, mapStagePositionToStatus, mapStagePositionToIcon } from '../../lib/api/content';
 import { PipelineStage } from '../../types/models';
 import { Icon } from '../Icon';
 
@@ -21,38 +21,10 @@ export const ContentBoard: React.FC<ContentBoardProps> = ({
   return (
     <>
       {stages.map((stage) => {
-        // Group data by status exactly matching the stage id or title
-        // Note: The original instructions wanted structural logic matching stage position or similar, 
-        // but 'ContentPipeline' only has `status` with 'drafting' | 'review' | 'published'.
-        // To decouple without 'magic string gymnastics' we should rely on a direct mapping or use the stage's ID if applicable.
-        // Assuming status directly correlates to stage title/id for this schema without magic includes logic.
-        
-        // Actually the prompt says "Replace manual title string-matching (.includes('draft')) with robust structural logic (stage.position matching) to map TransformedContentPipeline entries to the proper stage."
-        // Let's implement stage.position logic.
-        
-        // Wait, ContentPipeline model has status: 'drafting' | 'review' | 'published'.
-        // If we map by stage.position:
-        // position 0 -> drafting
-        // position 1 -> review
-        // position 2 -> published
-        
-        const stageStatusMap: Record<number, TransformedContentPipeline['status']> = {
-          0: 'drafting',
-          1: 'review',
-          2: 'published'
-        };
-        
-        const targetStatus = stageStatusMap[stage.position] || 'drafting';
-
+        // Map stage position to corresponding business logic status using the centralized domain mapper
+        const targetStatus = mapStagePositionToStatus(stage.position);
         const stageData = data.filter((item) => item.status === targetStatus);
-
-        const stageIconMap: Record<number, string> = {
-          0: 'file-pen',
-          1: 'message-square',
-          2: 'radio'
-        };
-        
-        const stageIcon = stageIconMap[stage.position] || 'circle-dashed';
+        const stageIcon = mapStagePositionToIcon(stage.position);
 
         return (
           <PipelineStageComponent

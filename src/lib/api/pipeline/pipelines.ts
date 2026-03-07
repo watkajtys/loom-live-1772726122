@@ -1,9 +1,9 @@
 import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
-import { Pipeline, CreatePipelineDTO, UpdatePipelineDTO } from '../../../types/models';
+import { Pipeline } from '../../../types/models';
 import { COLLECTIONS } from '../../../constants/collections';
-import { CreatePipelineSchema, UpdatePipelineSchema, FetchPipelinesOptionsSchema, DeletePipelineIdSchema, FetchPipelinesOptionsDTO } from '../../../schema/pipeline';
+import { CreatePipelineSchema, UpdatePipelineSchema, FetchPipelinesOptionsSchema, DeletePipelineIdSchema, FetchPipelinesOptionsDTO, CreatePipelineDTO, UpdatePipelineDTO } from '../../../schema/pipeline';
 export interface FetchPipelinesOptions {
   page?: number;
   perPage?: number;

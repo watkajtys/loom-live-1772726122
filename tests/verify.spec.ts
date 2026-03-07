@@ -2184,3 +2184,33 @@ test('Pipeline POST controller structure and layout fixes', async ({ page }) => 
   expect(result.hasGetStageStyles).toBe(true);
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('ContentBoard cleanly maps layout state without magic numbers', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    try {
+      const contentApi = await import('/src/lib/api/content.ts');
+
+      return {
+        hasStatusMapper: typeof contentApi.mapStagePositionToStatus === 'function',
+        hasIconMapper: typeof contentApi.mapStagePositionToIcon === 'function',
+        statusDrafting: contentApi.mapStagePositionToStatus(0),
+        statusReview: contentApi.mapStagePositionToStatus(1),
+        statusPublished: contentApi.mapStagePositionToStatus(2),
+      };
+    } catch (e) {
+      return { error: true };
+    }
+  });
+
+  expect(result).not.toHaveProperty('error');
+  expect(result.hasStatusMapper).toBe(true);
+  expect(result.hasIconMapper).toBe(true);
+  expect(result.statusDrafting).toBe('drafting');
+  expect(result.statusReview).toBe('review');
+  expect(result.statusPublished).toBe('published');
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

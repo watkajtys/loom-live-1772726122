@@ -1,17 +1,15 @@
 import { ValidationError } from '../errors';
 import { z } from 'zod';
 import { pb } from '../../pocketbase';
-import { 
-  PipelineRequest, 
-  CreatePipelineRequestDTO, 
-  UpdatePipelineRequestDTO 
-} from '../../../types/models';
+import { PipelineRequest } from '../../../types/models';
 import { 
   CreatePipelineRequestSchema, 
   UpdatePipelineRequestSchema,
   FetchPipelineRequestsOptionsSchema,
   DeletePipelineRequestIdSchema,
-  FetchPipelineRequestsOptionsDTO
+  FetchPipelineRequestsOptionsDTO,
+  CreatePipelineRequestDTO,
+  UpdatePipelineRequestDTO
 } from '../../../schema/pipeline';
 
 const COLLECTION = 'pipeline_requests';
