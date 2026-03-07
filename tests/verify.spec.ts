@@ -3808,3 +3808,16 @@ test('Fix empty Orchestrator icon and clarify the far-left utility tabs.', async
 
   await page.screenshot({ path: 'evidence.png' });
 });
+
+test('Improve text contrast for command input placeholder and log timestamps.', async ({ page }) => {
+  await page.goto('/dashboard/logs');
+  const input = page.getByPlaceholder('SEND_COMMAND_TO_ACTIVE_FEED...');
+  await expect(input).toHaveClass(/placeholder-slate-500/);
+  
+  const timeElements = await page.locator('.text-\\[8px\\].font-mono.text-slate-400');
+  const count = await timeElements.count();
+  for (let i = 0; i < count; i++) {
+    await expect(timeElements.nth(i)).toHaveClass(/text-slate-400/);
+  }
+  await page.screenshot({ path: 'evidence.png' });
+});

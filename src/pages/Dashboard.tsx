@@ -160,7 +160,7 @@ export const Dashboard: React.FC = () => {
                 <span className="material-symbols-outlined text-terminal-green text-lg">terminal</span>
                 <div className="flex-1 flex items-center">
                   <span className="text-terminal-green font-mono text-sm mr-2">$</span>
-                  <input autoFocus className="bg-transparent border-none focus:ring-0 text-white font-mono text-sm w-full uppercase placeholder-slate-700 outline-none" placeholder="EXECUTE_MACRO_OR_SYSTEM_COMMAND..." type="text"/>
+                  <input autoFocus className="bg-transparent border-none focus:ring-0 text-white font-mono text-sm w-full uppercase placeholder-slate-500 outline-none" placeholder="EXECUTE_MACRO_OR_SYSTEM_COMMAND..." type="text"/>
                   <span className="cursor-blink"></span>
                 </div>
                 <div className="flex items-center gap-1 opacity-40 group-focus-within:opacity-100 transition-opacity">
