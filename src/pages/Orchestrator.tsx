@@ -26,14 +26,14 @@ export const Orchestrator: React.FC = () => {
             </div>
             <div className="leading-none">
               <h1 className="text-sm font-bold text-white tracking-widest uppercase">ORCHESTRATOR</h1>
-              <span className="text-[8px] font-mono text-accent/60 tracking-[0.4em]">VARIANT_02_CLUSTER_MONITOR</span>
+              <span className="text-[8px] font-mono text-accent/60 tracking-[0.4em]">VARIANT_03_MATRIX_OVERLOAD</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-4 text-[10px] font-mono">
             <span className="text-slate-500">CLUSTER_STATUS:</span>
-            <span className="text-terminal-green">NODES_BALANCED</span>
+            <span className="text-terminal-green animate-pulse">OVERLOAD_OPTIMIZED</span>
             <span className="text-slate-500 ml-2">UPTIME:</span>
             <span className="text-accent">082:44:12</span>
           </div>
@@ -84,7 +84,7 @@ export const Orchestrator: React.FC = () => {
           </nav>
           <div className="p-3 border-t border-accent/20 text-[9px] font-mono">
             <div className="text-slate-500 uppercase">Input_Mode:</div>
-            <div className="text-accent">CLUSTER_SYNC_ENABLED</div>
+            <div className="text-accent">TERMINAL_OVERRIDE_ACTIVE</div>
           </div>
         </aside>
 
@@ -148,7 +148,7 @@ export const Orchestrator: React.FC = () => {
                     <span className="text-[8px] font-mono text-slate-600">14:55:04</span>
                   </div>
                   <div className="p-2 bg-accent/5 border-l border-accent/30 mt-1">
-                    <p className="text-[10px] font-mono text-slate-300 italic">"Redirecting workflow to node_B based on current latency spike (45ms &gt; 20ms threshold)."</p>
+                    <p className="text-[10px] font-mono text-slate-300 italic">"Redirecting workflow to node_B based on current latency spike."</p>
                   </div>
                 </div>
               </div>
@@ -172,40 +172,53 @@ export const Orchestrator: React.FC = () => {
           </div>
         </main>
 
-        <aside className="w-80 border border-accent/30 shadow-[0_0_10px_rgba(0,242,255,0.1)] bg-black/60 backdrop-blur-md flex flex-col shrink-0">
-          <div className="p-3 border-b border-accent/20 bg-accent/5 flex justify-between items-center">
+        <aside className="w-80 border border-accent/30 shadow-[0_0_10px_rgba(0,242,255,0.1)] bg-black flex flex-col shrink-0 relative overflow-hidden">
+          <div className="matrix-bg-text animate-matrix-scroll">
+            0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 
+            0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00
+            0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33
+            0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE
+            0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 0x4F 0x58 0x2A 0x8C 0x11 0xDE 
+            0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00 0x1A 0xCC 0x33 0x99 0xFF 0x00
+            0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33 0x88 0x77 0x66 0x55 0x44 0x33
+            0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE 0xDE 0xAD 0xBE 0xEF 0xCA 0xFE
+          </div>
+          <div className="telemetry-banner">
+            <div className="scanline-effect"></div>
+            <span className="text-xs font-mono font-bold text-accent tracking-[0.3em] z-10">TELEMETRY_STATUS: <span className="text-white">OPTIMIZED</span></span>
+          </div>
+          <div className="p-3 border-b border-accent/20 bg-accent/5 flex justify-between items-center relative z-10">
             <span className="text-[10px] font-bold text-accent uppercase tracking-widest">03_CLUSTER_MONITOR</span>
             <span className="text-[8px] font-mono text-slate-500">NODES_ACTIVE: 04</span>
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
-            <div className="border-b border-white/5 py-2 cursor-pointer hover:bg-accent/5 transition-colors px-1">
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2 relative z-10">
+            <div className="node-row px-1">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[10px] font-mono text-white flex items-center gap-2">
-                  <span className="size-1.5 bg-terminal-green shadow-[0_0_8px_rgba(0,255,65,0.8)] animate-[pulse-ring_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
+                  <span className="heartbeat-rapid"></span>
                   WORKER_US_WEST
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[8px] font-mono text-slate-500">LAT:</span>
-                  <span className="text-[9px] font-mono text-terminal-green">8ms</span>
+                  <span className="text-[8px] font-mono text-terminal-green bg-terminal-green/10 px-1 font-bold">HIGH_LOAD</span>
                   <Icon name="chevron-up" className="text-[14px] text-slate-500" />
                 </div>
               </div>
               <div className="space-y-0.5">
-                <div className="flex items-center justify-between py-1 px-4 text-[9px] font-mono border-l border-accent/20 ml-2 mt-1 bg-accent/5">
+                <div className="pid-row bg-accent/5">
                   <span className="text-accent">PID: 8821</span>
                   <span className="text-slate-500 italic">MODEL: GPT-4-T</span>
                 </div>
-                <div className="flex items-center justify-between py-1 px-4 text-[9px] font-mono border-l border-accent/20 ml-2 mt-1 bg-accent/5">
+                <div className="pid-row bg-accent/5">
                   <span className="text-accent">PID: 9012</span>
                   <span className="text-slate-500 italic">MODEL: LLAMA3_70B</span>
                 </div>
               </div>
             </div>
             
-            <div className="border-b border-white/5 py-2 cursor-pointer hover:bg-accent/5 transition-colors px-1">
+            <div className="node-row px-1">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[10px] font-mono text-white flex items-center gap-2">
-                  <span className="size-1.5 bg-terminal-green shadow-[0_0_8px_rgba(0,255,65,0.8)] animate-[pulse-ring_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
+                  <span className="heartbeat-indicator"></span>
                   WORKER_EU_CENT
                 </span>
                 <div className="flex items-center gap-2">
@@ -216,21 +229,20 @@ export const Orchestrator: React.FC = () => {
               </div>
             </div>
             
-            <div className="border-b border-white/5 py-2 cursor-pointer hover:bg-accent/5 transition-colors px-1">
+            <div className="node-row px-1">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[10px] font-mono text-white flex items-center gap-2">
-                  <span className="size-1.5 bg-terminal-green shadow-[0_0_8px_rgba(0,255,65,0.8)] animate-[pulse-ring_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
+                  <span className="heartbeat-rapid"></span>
                   WORKER_ASIA_S
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[8px] font-mono text-slate-500">LAT:</span>
-                  <span className="text-[9px] font-mono text-terminal-green">105ms</span>
+                  <span className="text-[8px] font-mono text-terminal-green bg-terminal-green/10 px-1 font-bold">STRESS</span>
                   <Icon name="chevron-down" className="text-[14px] text-slate-500" />
                 </div>
               </div>
             </div>
             
-            <div className="border-b border-white/5 py-2 cursor-pointer hover:bg-accent/5 transition-colors px-1 opacity-50 grayscale">
+            <div className="node-row px-1 opacity-40 grayscale">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[10px] font-mono text-slate-400 flex items-center gap-2">
                   <span className="size-1.5 bg-slate-700"></span>
@@ -245,23 +257,23 @@ export const Orchestrator: React.FC = () => {
             
             <div className="mt-6 border border-accent/10 p-3 bg-black/40">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Cluster_Load</span>
-                <span className="text-[9px] font-mono text-accent">68.4%</span>
+                <span className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">System_Stability</span>
+                <span className="text-[9px] font-mono text-terminal-green">94.2%</span>
               </div>
               <div className="h-1 bg-white/5 overflow-hidden">
-                <div className="h-full bg-accent w-[68%] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
+                <div className="h-full bg-terminal-green w-[94.2%] shadow-[0_0_8px_rgba(74,222,128,0.5)]"></div>
               </div>
             </div>
           </div>
           
-          <div className="p-3 border-t border-accent/20 bg-accent/5 space-y-2">
-            <button className="w-full py-2 border border-accent/30 bg-black hover:bg-accent/10 transition-colors flex items-center justify-center gap-2 group">
-              <Icon name="rotate-cw" className="text-[16px] text-accent group-hover:rotate-180 transition-transform duration-500" />
-              <span className="text-[10px] font-mono text-accent font-bold tracking-widest uppercase">REBOOT_IDLE_NODES</span>
+          <div className="p-3 border-t border-accent/20 bg-black space-y-2 relative z-10">
+            <button className="w-full py-2 border-2 border-terminal-green/30 bg-terminal-green/5 animate-neon-glow hover:bg-terminal-green/20 transition-all flex items-center justify-center gap-2 group">
+              <Icon name="rotate-cw" className="text-[16px] text-terminal-green group-hover:rotate-180 transition-transform duration-500" />
+              <span className="text-[10px] font-mono text-terminal-green font-bold tracking-widest uppercase">REBOOT_IDLE_NODES</span>
             </button>
             <div className="flex justify-between items-center px-1">
               <span className="text-[8px] font-mono text-slate-600 uppercase">Engine_ID:</span>
-              <span className="text-[8px] font-mono text-slate-400 tracking-tighter">RE-771-KILO-ORCH-9</span>
+              <span className="text-[8px] font-mono text-slate-400 tracking-tighter">RE-771-MATRIX-OVERLOAD</span>
             </div>
           </div>
         </aside>
@@ -269,11 +281,11 @@ export const Orchestrator: React.FC = () => {
       
       <footer className="h-6 border-t border-accent/30 bg-black px-6 flex items-center justify-between relative z-40 shrink-0">
         <div className="flex items-center gap-6">
-          <div className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">I/O_STREAM: 1.2MB/S</div>
-          <div className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">LATENCY: 12ms</div>
+          <div className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">I/O_STREAM: 4.8MB/S</div>
+          <div className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">LATENCY: 4ms</div>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[8px] font-mono text-slate-600 uppercase">Session: f0e1d2c3b4a5</span>
+          <span className="text-[8px] font-mono text-slate-600 uppercase">Buffer: 0x8892AF</span>
           <span className="text-[8px] font-mono text-slate-600">© 2024_ADVOLOOM_SYSTEMS</span>
         </div>
       </footer>

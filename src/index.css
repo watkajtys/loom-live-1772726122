@@ -137,6 +137,28 @@
   .chart-container {
       @apply relative flex items-center justify-center p-4 border border-white/5 bg-black/20;
   }
+  .node-row {
+      @apply border-b border-white/5 py-2 cursor-pointer hover:bg-accent/5 transition-colors relative z-10;
+  }
+  .pid-row {
+      @apply flex items-center justify-between py-1 px-4 text-[9px] font-mono border-l border-accent/20 ml-2 mt-1;
+  }
+  .matrix-bg-text {
+      @apply absolute inset-0 pointer-events-none opacity-[0.03] text-[8px] font-mono leading-none break-all whitespace-pre-wrap select-none overflow-hidden;
+      color: theme('colors.terminal-green');
+  }
+  .telemetry-banner {
+      @apply relative overflow-hidden bg-black border-y border-accent/30 py-3 px-4 flex items-center justify-center shrink-0;
+  }
+  .scanline-effect {
+      @apply absolute left-0 right-0 h-[2px] bg-accent/20 shadow-[0_0_15px_rgba(0,242,255,0.5)] pointer-events-none animate-scanline;
+  }
+  .heartbeat-indicator {
+      @apply size-1.5 bg-terminal-green shadow-[0_0_8px_rgba(74,222,128,0.8)] animate-[pulse-ring_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+  .heartbeat-rapid {
+      @apply size-1.5 bg-terminal-green shadow-[0_0_12px_rgba(74,222,128,1)] animate-rapid-pulse;
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {

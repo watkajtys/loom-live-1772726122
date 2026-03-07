@@ -383,6 +383,27 @@ test('Implement the Pipeline Board layout container UI (Split Command V2)', asyn
   await page.screenshot({ path: 'evidence.png' });
 });
 
+test('Engine State panel displays dynamic technical metrics with a low-opacity grid overlay and active status indicators.', async ({ page }) => {
+  await page.goto('/orchestrator');
+
+  // Verify headers and content mapping to specified typography and colors
+  await expect(page.locator('span', { hasText: 'VARIANT_03_MATRIX_OVERLOAD' })).toBeVisible();
+  
+  // Verify matrix text and telemetry banner are present
+  await expect(page.locator('.matrix-bg-text')).toBeVisible();
+  await expect(page.locator('.telemetry-banner')).toBeVisible();
+
+  // Verify heartbeat indicators and dynamic content
+  await expect(page.locator('.heartbeat-rapid').first()).toBeVisible();
+  await expect(page.locator('span', { hasText: 'WORKER_US_WEST' })).toBeVisible();
+
+  // Verify pulsing nodes status
+  await expect(page.locator('span', { hasText: 'OVERLOAD_OPTIMIZED' })).toHaveClass(/animate-pulse/);
+
+  // Take screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Define the Pipeline database schema and create its initial migration.', async ({ page }) => {
   // Directly verify the migration file content in the Node.js test runner context
   const pbMigrationsDir = path.join(process.cwd(), 'pb_migrations');
