@@ -3948,7 +3948,7 @@ test('Verify Orchestrator visual metadata presence', async ({ page }) => {
   await page.screenshot({ path: 'evidence.png' });
 });
 
-test('', async ({ page }) => {
+test('Strengthen UX affordance for the \'REBOOT_IDLE_NODES\' button.', async ({ page }) => {
   await page.goto('/dashboard/logs');
   
   // Verify the REBOOT button is visible and initially says [ REBOOT_IDLE_NODES ]
