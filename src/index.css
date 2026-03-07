@@ -118,6 +118,21 @@
   .cyan-glow {
       text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
   }
+  .terminal-window {
+      @apply bg-black/60 border border-white/10 backdrop-blur-md overflow-hidden flex flex-col;
+  }
+  .terminal-header {
+      @apply flex items-center justify-between px-3 py-1.5 border-b border-white/10 bg-white/5;
+  }
+  .cyan-glow-text {
+      text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+  }
+  .log-line {
+      @apply font-mono text-[11px] py-0.5 border-l-2 border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2;
+  }
+  .chart-container {
+      @apply relative flex items-center justify-center p-4 border border-white/5 bg-black/20;
+  }
 }
 
 .terminal-scroll::-webkit-scrollbar {

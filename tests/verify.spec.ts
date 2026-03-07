@@ -3007,3 +3007,23 @@ test('Implement drag-and-drop or state transition logic for Pipeline Cards', asy
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Implement the AX Reports view', async ({ page }) => {
+  await page.goto('/?view=reports');
+
+  // Verify headers from AXReportsHeader
+  await expect(page.locator('h1', { hasText: 'AX_REPORTS' })).toBeVisible();
+  await expect(page.locator('span', { hasText: 'SPLIT_LOG_VIEW_V2' })).toBeVisible();
+
+  // Verify layout windows
+  await expect(page.locator('span', { hasText: 'Agent_Thought_Stream.log' })).toBeVisible();
+  await expect(page.locator('span', { hasText: 'Knowledge_Coverage_Matrix' })).toBeVisible();
+  await expect(page.locator('span', { hasText: 'Interaction_Volume_By_Channel' })).toBeVisible();
+
+  // Verify some stat elements
+  await expect(page.locator('span', { hasText: '82%' })).toBeVisible();
+  await expect(page.locator('div', { hasText: '94.2%' }).first()).toBeVisible();
+
+  // Save screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

@@ -16,6 +16,7 @@ import { StreamBatchActions } from '../components/content/stream/StreamBatchActi
 import { LoadingState } from '../components/states/LoadingState';
 import { ErrorState } from '../components/states/ErrorState';
 import { EmptyState } from '../components/states/EmptyState';
+import { AXReportsV2 } from '../components/reports/AXReportsV2';
 
 export const ContentPipeline: React.FC = () => {
   const {
@@ -41,6 +42,11 @@ export const ContentPipeline: React.FC = () => {
 
   const isSplitMode = viewMode.toLowerCase() === 'split';
   const isStreamMode = viewMode.toLowerCase() === 'stream';
+  const isReportsMode = viewMode.toLowerCase() === 'reports';
+
+  if (isReportsMode) {
+    return <AXReportsV2 />;
+  }
 
   if (isStreamMode) {
     return (
