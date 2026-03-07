@@ -3566,3 +3566,45 @@ test('User initiates an agentic pipeline and the UI dynamically renders real-tim
   // Take screenshot as required
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('', async ({ page }) => {
+  // Mock health check API response
+  await page.route('**/api/health', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        code: 200,
+        message: 'API is healthy.',
+        data: {}
+      })
+    });
+  });
+
+  // 1. Check /healthz endpoint
+  await page.goto('/healthz');
+  await page.waitForSelector('pre');
+  
+  // Wait for the actual data to load, not just the "loading" state
+  await page.waitForFunction(() => {
+    const pre = document.querySelector('pre');
+    return pre && pre.textContent && pre.textContent.includes('healthy');
+  });
+
+  const jsonOutput = await page.locator('pre').textContent();
+  expect(jsonOutput).toContain('"status": "healthy"');
+  expect(jsonOutput).toContain('"app": "ok"');
+  expect(jsonOutput).toContain('"code": 200');
+
+  // Capture screenshot of health endpoint
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+
+  // 2. Check connected indicator on dashboard
+  await page.goto('/dashboard');
+  
+  // Verify connected status is visible
+  await expect(page.locator('span', { hasText: 'REMOTE_ENGINE: CONNECTED' })).toBeVisible();
+  
+  // Verify it does not show disconnected
+  await expect(page.locator('span', { hasText: 'REMOTE_ENGINE: DISCONNECTED' })).toBeHidden();
+});

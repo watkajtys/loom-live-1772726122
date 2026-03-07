@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useOrchestratorFeed } from '../hooks/useOrchestratorFeed';
+import { useHealthCheck } from '../hooks/useHealthCheck';
 
 export const Dashboard: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -8,6 +9,7 @@ export const Dashboard: React.FC = () => {
   const activeScript = searchParams.get('script');
   
   const { feed, loading } = useOrchestratorFeed();
+  const { isConnected } = useHealthCheck();
 
   return (
     <div className="flex flex-col h-full bg-obsidian text-slate-300 font-sans overflow-hidden">
@@ -84,8 +86,10 @@ export const Dashboard: React.FC = () => {
           
           <div className="p-4 border-t border-white/5">
             <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-terminal-green animate-pulse"></div>
-              <span className="text-[10px] font-mono text-slate-400">REMOTE_ENGINE: CONNECTED</span>
+              <div className={`size-2 rounded-full animate-pulse ${isConnected ? 'bg-terminal-green' : 'bg-red-500'}`}></div>
+              <span className={`text-[10px] font-mono ${isConnected ? 'text-slate-400' : 'text-red-500'}`}>
+                REMOTE_ENGINE: {isConnected ? 'CONNECTED' : 'DISCONNECTED'}
+              </span>
             </div>
           </div>
         </aside>

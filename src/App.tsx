@@ -5,6 +5,7 @@ import { CommunityQueue } from './pages/CommunityQueue';
 import { ContentPipeline } from './pages/ContentPipeline';
 import { AgentExecutionReports } from './pages/AgentExecutionReports';
 import { KnowledgeBase } from './pages/KnowledgeBase';
+import { Healthz } from './pages/Healthz';
 import { ExecutionProvider } from './providers/ExecutionProvider';
 import { TelemetryProvider } from './providers/TelemetryProvider';
 
@@ -13,6 +14,7 @@ export default function App() {
     <TelemetryProvider>
       <ExecutionProvider>
         <Routes>
+          <Route path="/healthz" element={<Healthz />} />
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/queue" element={<CommunityQueue />} />
