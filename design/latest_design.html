@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Orchestrator: Sidebar Workspace</title>
+<title>Advoloom Orchestrator: Triple-Column Terminal</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -14,7 +14,7 @@
                     colors: {
                         "primary": "#00f2ff",
                         "accent": "#00f2ff",
-                        "obsidian": "#06070a",
+                        "obsidian": "#050608",
                         "terminal-cyan": "#00f2ff",
                         "terminal-green": "#00ff41",
                         "terminal-bg": "#0a0c10",
@@ -31,24 +31,30 @@
         @layer components {
             .grid-bg {
                 background-image: 
-                    linear-gradient(to right, rgba(0, 242, 255, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
-                background-size: 40px 40px;
+                    linear-gradient(to right, rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+                background-size: 32px 32px;
+            }
+            .neon-frame {
+                @apply border border-terminal-cyan/30 shadow-[0_0_10px_rgba(0,242,255,0.1)];
             }
             .sidebar-link {
-                @apply flex items-center gap-3 px-4 py-2 text-[11px] font-mono text-slate-500 hover:text-accent hover:bg-accent/5 border-l-2 border-transparent hover:border-accent transition-all duration-200 uppercase tracking-wider;
+                @apply flex items-center gap-3 px-3 py-1.5 text-[10px] font-mono text-slate-400 hover:text-accent hover:bg-accent/10 border-l border-transparent hover:border-accent transition-all duration-150 uppercase tracking-tight;
             }
             .feed-item {
-                @apply border-b border-white/5 py-6 px-8 hover:bg-white/[0.01] transition-colors relative;
+                @apply border-b border-terminal-cyan/10 py-4 px-5 hover:bg-accent/[0.02] transition-colors relative;
             }
             .metadata-pill {
-                @apply px-2 py-0.5 border border-white/10 bg-white/5 text-[9px] font-mono text-slate-400 uppercase;
+                @apply px-1.5 py-0.5 border border-terminal-cyan/20 bg-terminal-cyan/5 text-[9px] font-mono text-terminal-cyan uppercase;
+            }
+            .stat-box {
+                @apply border border-terminal-cyan/20 bg-black/40 p-3 mb-3;
             }
             .agent-decision {
-                @apply mt-3 p-3 bg-black/40 border border-white/5 font-mono text-[10px] leading-relaxed text-slate-400;
+                @apply mt-2 p-2 border-l-2 border-terminal-cyan/30 bg-terminal-cyan/[0.03] font-mono text-[9px] leading-relaxed text-slate-400;
             }
             .cursor-blink {
-                @apply w-2 h-4 bg-terminal-green inline-block align-middle ml-1;
+                @apply w-1.5 h-3.5 bg-terminal-green inline-block align-middle ml-1;
                 animation: blink 1s step-end infinite;
             }
             @keyframes blink {
@@ -56,184 +62,230 @@
                 50% { opacity: 0; }
             }
             .custom-scrollbar::-webkit-scrollbar {
-                width: 4px;
+                width: 3px;
             }
             .custom-scrollbar::-webkit-scrollbar-track {
                 background: transparent;
             }
             .custom-scrollbar::-webkit-scrollbar-thumb {
-                @apply bg-white/10 hover:bg-accent/30;
+                @apply bg-terminal-cyan/20 hover:bg-terminal-cyan/40;
             }
         }
     </style>
 </head>
 <body class="bg-obsidian text-slate-300 font-display selection:bg-accent/30 selection:text-accent h-screen overflow-hidden flex flex-col">
 <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
-<header class="relative z-40 h-14 border-b border-white/10 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
-<div class="flex items-center gap-8">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 bg-accent/10 border border-accent/40 flex items-center justify-center">
-<span class="material-symbols-outlined text-accent text-xl">hub</span>
+<header class="relative z-40 h-12 border-b border-terminal-cyan/30 bg-black flex items-center justify-between px-6 shrink-0">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 border border-accent flex items-center justify-center">
+<span class="material-symbols-outlined text-accent text-sm">hub</span>
 </div>
 <div class="leading-none">
-<h1 class="text-lg font-bold text-white tracking-tight uppercase">ORCHESTRATOR</h1>
-<span class="text-[9px] font-mono text-accent/60 tracking-[0.3em]">NODE_CONTROL_V3.0</span>
+<h1 class="text-sm font-bold text-white tracking-widest uppercase">ORCHESTRATOR</h1>
+<span class="text-[8px] font-mono text-accent/60 tracking-[0.4em]">SYSTEM_V3.0_TRIPLE_COL</span>
 </div>
 </div>
 </div>
-<div class="flex items-center gap-4">
-<div class="flex items-center gap-6 px-4 py-1.5 border border-white/10 bg-white/5">
-<div class="flex flex-col">
-<span class="text-[8px] font-mono text-slate-500">THREADS</span>
-<span class="text-[10px] font-mono text-terminal-cyan">14_ACTIVE</span>
-</div>
-<div class="flex flex-col border-l border-white/10 pl-4">
-<span class="text-[8px] font-mono text-slate-500">LATENCY</span>
-<span class="text-[10px] font-mono text-terminal-green">12MS</span>
-</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-[10px] font-mono">
+<span class="text-slate-500">ENCRYPTION:</span>
+<span class="text-terminal-green">AES_256_ACTIVE</span>
+<span class="text-slate-500 ml-2">UPTIME:</span>
+<span class="text-terminal-cyan">142:12:05</span>
 </div>
 </div>
 </header>
-<div class="flex-1 flex overflow-hidden relative z-10">
-<aside class="w-64 border-r border-white/10 bg-black/40 backdrop-blur-md flex flex-col shrink-0">
-<div class="p-4 border-b border-white/5">
-<span class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">COMMAND_LIBRARY</span>
+<div class="flex-1 flex overflow-hidden relative z-10 p-2 gap-2">
+<aside class="w-64 neon-frame bg-black/60 backdrop-blur-md flex flex-col shrink-0">
+<div class="p-3 border-b border-terminal-cyan/20 bg-terminal-cyan/5">
+<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">01_COMMANDS</span>
 </div>
-<nav class="flex-1 overflow-y-auto custom-scrollbar py-4">
-<div class="mb-6">
-<h3 class="px-4 text-[9px] font-mono text-slate-600 uppercase mb-2">Automation Macros</h3>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">bolt</span> Auto_Ingest_Repo</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">cyclone</span> Batch_Vectorize</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">security</span> Audit_Permissions</a>
+<nav class="flex-1 overflow-y-auto custom-scrollbar py-2">
+<div class="mb-4">
+<h3 class="px-3 text-[9px] font-mono text-slate-600 uppercase mb-1 flex items-center gap-2">
+<span class="w-1 h-1 bg-slate-600"></span> MACROS
+                </h3>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">bolt</span> Auto_Ingest_Repo</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">cyclone</span> Batch_Vectorize</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">security</span> Audit_Permissions</a>
 </div>
-<div class="mb-6">
-<h3 class="px-4 text-[9px] font-mono text-slate-600 uppercase mb-2">Agent Prompt Templates</h3>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">psychology</span> Refactoring_Agent</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">support_agent</span> DevRel_Response</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">find_in_page</span> KB_Discovery</a>
+<div class="mb-4">
+<h3 class="px-3 text-[9px] font-mono text-slate-600 uppercase mb-1 flex items-center gap-2">
+<span class="w-1 h-1 bg-slate-600"></span> AGENT_PROMPTS
+                </h3>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">psychology</span> Refactoring_Agent</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">support_agent</span> DevRel_Response</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">find_in_page</span> KB_Discovery</a>
 </div>
-<div class="mb-6">
-<h3 class="px-4 text-[9px] font-mono text-slate-600 uppercase mb-2">Script Library</h3>
-<a class="sidebar-link border-l-accent text-accent bg-accent/5" href="#"><span class="material-symbols-outlined text-sm">code</span> sync_github.py</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">code</span> clean_vectors.sh</a>
-<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-sm">code</span> heartbeat_check.js</a>
+<div class="mb-4">
+<h3 class="px-3 text-[9px] font-mono text-slate-600 uppercase mb-1 flex items-center gap-2">
+<span class="w-1 h-1 bg-slate-600"></span> SCRIPT_LIB
+                </h3>
+<a class="sidebar-link border-l-accent text-accent bg-accent/10" href="#"><span class="material-symbols-outlined text-[14px]">code</span> sync_github.py</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">code</span> clean_vectors.sh</a>
+<a class="sidebar-link" href="#"><span class="material-symbols-outlined text-[14px]">code</span> pulse_check.js</a>
 </div>
 </nav>
-<div class="p-4 border-t border-white/5">
-<div class="flex items-center gap-2">
-<div class="size-2 rounded-full bg-terminal-green animate-pulse"></div>
-<span class="text-[10px] font-mono text-slate-400">REMOTE_ENGINE: CONNECTED</span>
-</div>
+<div class="p-3 border-t border-terminal-cyan/20 text-[9px] font-mono">
+<div class="text-slate-500 uppercase">Input_Mode:</div>
+<div class="text-terminal-cyan">TERMINAL_OVERRIDE</div>
 </div>
 </aside>
-<main class="flex-1 flex flex-col bg-black/20 overflow-hidden relative">
-<div class="h-12 border-b border-white/5 bg-black/40 flex items-center justify-between px-8 shrink-0">
+<main class="flex-1 neon-frame bg-black/40 flex flex-col overflow-hidden relative">
+<div class="h-10 border-b border-terminal-cyan/20 bg-terminal-cyan/5 flex items-center justify-between px-5 shrink-0">
 <div class="flex items-center gap-2">
-<span class="text-xs font-bold text-white uppercase tracking-widest">Orchestration_Feed</span>
-<span class="text-[9px] font-mono text-slate-600">// LOG_LEVEL: VERBOSE</span>
+<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">02_LIVE_FEED</span>
+<span class="text-[9px] font-mono text-slate-500">:: REALTIME_STREAM</span>
 </div>
-<div class="flex items-center gap-4">
-<button class="text-[10px] font-mono text-slate-500 hover:text-white uppercase">Export_Logs</button>
-<button class="text-[10px] font-mono text-slate-500 hover:text-white uppercase">Clear_Buffer</button>
+<div class="flex items-center gap-3">
+<button class="text-[9px] font-mono text-slate-500 hover:text-white uppercase">[Export]</button>
+<button class="text-[9px] font-mono text-slate-500 hover:text-white uppercase">[Clear]</button>
 </div>
 </div>
 <section class="flex-1 overflow-y-auto custom-scrollbar">
 <article class="feed-item">
-<div class="flex items-start justify-between">
 <div class="flex items-start gap-4">
-<span class="text-[10px] font-mono text-slate-600 mt-1 whitespace-nowrap">14:02:44.22</span>
-<div>
-<h4 class="text-sm font-bold text-white uppercase flex items-center gap-2">
-<span class="size-1.5 bg-terminal-cyan"></span>
-                                    INITIATING_CROSS_REPO_SYNC
-                                </h4>
-<div class="flex gap-2 mt-2">
-<span class="metadata-pill">AGENT: SYNC_MASTER</span>
-<span class="metadata-pill">TARGET: GITHUB_ADVOLOOM</span>
-<span class="metadata-pill">PRIORITY: HIGH</span>
+<span class="text-[10px] font-mono text-slate-600 mt-0.5">14:22:11</span>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="text-[11px] font-bold text-white uppercase tracking-wider flex items-center gap-2">
+<span class="size-1.5 bg-terminal-cyan"></span> SYNC_INITIATED
+                            </h4>
+<span class="text-[9px] font-mono text-terminal-cyan">ID: 0x88F2</span>
+</div>
+<div class="flex gap-2 mb-2">
+<span class="metadata-pill">AGENT: MASTER</span>
+<span class="metadata-pill">SRC: REPO_ALPHA</span>
 </div>
 <div class="agent-decision">
-<span class="text-accent">DECISION_LOG:</span> Analyzed delta between main and dev branches. Detected 12 un-indexed commits. Spawning 3 worker nodes for parallel ingestion.
-                                </div>
+                            &gt; ANALYZING_REPOSITORIES... <br/>
+                            &gt; DETECTED_3_NEW_COMMITS_IN_STAGING <br/>
+                            &gt; TRIGGERING_VECTOR_CONVERSION_POOL
+                        </div>
 </div>
-</div>
-<span class="text-[9px] font-mono text-terminal-green uppercase">STATUS: PROCESSING</span>
 </div>
 </article>
-<article class="feed-item">
-<div class="flex items-start justify-between">
+<article class="feed-item bg-terminal-green/[0.02]">
 <div class="flex items-start gap-4">
-<span class="text-[10px] font-mono text-slate-600 mt-1 whitespace-nowrap">13:58:12.89</span>
-<div>
-<h4 class="text-sm font-bold text-white/80 uppercase flex items-center gap-2">
-<span class="size-1.5 bg-terminal-green"></span>
-                                    KNOWLEDGE_SYNTHESIS_COMPLETE
-                                </h4>
-<div class="flex gap-2 mt-2">
-<span class="metadata-pill">AGENT: DOC_SYNTH</span>
-<span class="metadata-pill">TASK_ID: 99x-A2</span>
+<span class="text-[10px] font-mono text-slate-600 mt-0.5">14:19:45</span>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="text-[11px] font-bold text-terminal-green uppercase tracking-wider flex items-center gap-2">
+<span class="size-1.5 bg-terminal-green"></span> VECTOR_SYNC_OK
+                            </h4>
 </div>
 <div class="agent-decision">
-<span class="text-terminal-green">DECISION_LOG:</span> Documentation for "Advanced Webhooks" summarized. 4 core concepts extracted. Vectors inserted into primary partition.
-                                </div>
+                            &gt; 1,402 VECTORS PERSISTED TO CHROMA_DB <br/>
+                            &gt; LATENCY: 14MS | INTEGRITY: 100%
+                        </div>
 </div>
-</div>
-<span class="text-[9px] font-mono text-slate-500 uppercase">STATUS: SUCCESS</span>
 </div>
 </article>
-<article class="feed-item bg-red-500/[0.02]">
-<div class="flex items-start justify-between">
+<article class="feed-item border-l-2 border-l-red-500/50">
 <div class="flex items-start gap-4">
-<span class="text-[10px] font-mono text-red-900 mt-1 whitespace-nowrap">13:45:01.05</span>
-<div>
-<h4 class="text-sm font-bold text-red-500 uppercase flex items-center gap-2">
-<span class="size-1.5 bg-red-500"></span>
-                                    API_RATE_LIMIT_WARNING
-                                </h4>
-<div class="flex gap-2 mt-2">
-<span class="metadata-pill border-red-900/30 text-red-400">ERR_CODE: 429</span>
-<span class="metadata-pill border-red-900/30 text-red-400">ORIGIN: DISCORD_BRIDGE</span>
+<span class="text-[10px] font-mono text-red-900 mt-0.5">14:15:02</span>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="text-[11px] font-bold text-red-500 uppercase tracking-wider">EXTERNAL_API_TIMEOUT</h4>
 </div>
-<div class="agent-decision !border-red-500/10">
-<span class="text-red-500">AUTONOMOUS_ACTION:</span> Backing off ingestion frequency by 40%. Scheduled retry in 300s. Monitoring pool health.
-                                </div>
+<div class="agent-decision !border-red-500/20">
+                            &gt; ERROR: CONNECTION_REFUSED (ENDPOINT_04) <br/>
+                            &gt; AUTO_RETRIEVING_BACKUP_GATEWAY...
+                        </div>
 </div>
-</div>
-<span class="text-[9px] font-mono text-red-500 uppercase">STATUS: DEGRADED</span>
 </div>
 </article>
-<div class="p-12 text-center opacity-20 select-none">
-<span class="text-[10px] font-mono uppercase tracking-[1em]">Listening_to_Event_Bus...</span>
+<div class="p-8 text-center opacity-30 select-none">
+<span class="text-[9px] font-mono uppercase tracking-[0.5em]">Waiting_for_Kernel_Interrupt...</span>
 </div>
 </section>
-<div class="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none">
-<div class="w-full max-w-2xl px-4 pointer-events-auto">
-<div class="bg-black/90 border border-white/20 shadow-2xl backdrop-blur-2xl p-3 flex items-center gap-4 group">
-<span class="material-symbols-outlined text-terminal-green text-lg">terminal</span>
-<div class="flex-1 flex items-center">
-<span class="text-terminal-green font-mono text-sm mr-2">$</span>
-<input autofocus="" class="bg-transparent border-none focus:ring-0 text-white font-mono text-sm w-full uppercase placeholder-slate-700" placeholder="EXECUTE_MACRO_OR_SYSTEM_COMMAND..." type="text"/>
+<div class="p-2 bg-black border-t border-terminal-cyan/20">
+<div class="flex items-center gap-3 bg-terminal-cyan/5 border border-terminal-cyan/20 px-3 py-1.5">
+<span class="text-terminal-green font-mono text-xs font-bold">$</span>
+<input autofocus="" class="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-slate-700" placeholder="ENTER_SYS_COMMAND..." type="text"/>
 <span class="cursor-blink"></span>
-</div>
-<div class="flex items-center gap-1 opacity-40 group-focus-within:opacity-100 transition-opacity">
-<span class="text-[9px] font-mono text-slate-500 px-1.5 py-0.5 border border-white/10 uppercase">Enter</span>
-</div>
-</div>
 </div>
 </div>
 </main>
+<aside class="w-72 neon-frame bg-black/60 backdrop-blur-md flex flex-col shrink-0">
+<div class="p-3 border-b border-terminal-cyan/20 bg-terminal-cyan/5">
+<span class="text-[10px] font-bold text-terminal-cyan uppercase tracking-widest">03_ENGINE_STATS</span>
 </div>
-<footer class="h-8 border-t border-white/10 bg-black/90 px-6 flex items-center justify-between relative z-40 shrink-0">
-<div class="flex items-center gap-6">
+<div class="p-4 overflow-y-auto custom-scrollbar">
+<div class="stat-box">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[9px] font-mono text-slate-500">SYNC_STATUS</span>
+<span class="text-[9px] font-mono text-terminal-green">ACTIVE</span>
+</div>
+<div class="h-1 bg-white/5 overflow-hidden">
+<div class="h-full bg-terminal-cyan w-[64%]"></div>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-[8px] font-mono text-slate-600">6.4GB / 10GB</span>
+<span class="text-[8px] font-mono text-slate-600">64%</span>
+</div>
+</div>
+<div class="stat-box">
+<span class="text-[9px] font-mono text-slate-500 block mb-2">THREAD_DISTRIBUTION</span>
+<div class="grid grid-cols-4 gap-1">
+<div class="h-8 bg-terminal-cyan/40 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-white">14</div>
+<div class="h-8 bg-terminal-cyan/20 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-slate-400">08</div>
+<div class="h-8 bg-terminal-cyan/10 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-slate-500">00</div>
+<div class="h-8 bg-terminal-cyan/5 border border-terminal-cyan/30 flex items-center justify-center font-mono text-[10px] text-slate-600">--</div>
+</div>
+<div class="flex justify-between mt-2 text-[8px] font-mono text-slate-500">
+<span>CORE_A</span>
+<span>CORE_B</span>
+<span>CORE_C</span>
+<span>IDLE</span>
+</div>
+</div>
+<div class="stat-box !mb-0">
+<span class="text-[9px] font-mono text-slate-500 block mb-3">WORKER_NODES_ACTIVE</span>
+<div class="space-y-2">
+<div class="flex items-center justify-between border-b border-white/5 pb-1">
+<span class="text-[10px] font-mono text-white">NODE_01_OSLO</span>
+<span class="text-[9px] font-mono text-terminal-green">OK_12MS</span>
+</div>
+<div class="flex items-center justify-between border-b border-white/5 pb-1">
+<span class="text-[10px] font-mono text-white">NODE_02_SGP</span>
+<span class="text-[9px] font-mono text-terminal-green">OK_145MS</span>
+</div>
+<div class="flex items-center justify-between border-b border-white/5 pb-1">
+<span class="text-[10px] font-mono text-white">NODE_03_NYC</span>
+<span class="text-[9px] font-mono text-yellow-500">PENDING</span>
+</div>
+<div class="flex items-center justify-between opacity-30">
+<span class="text-[10px] font-mono text-white">NODE_04_AWS</span>
+<span class="text-[9px] font-mono text-slate-500">OFFLINE</span>
+</div>
+</div>
+</div>
+<div class="mt-6 space-y-2">
+<div class="flex flex-col gap-1">
+<span class="text-[8px] font-mono text-slate-600">KERNEL_HASH</span>
+<span class="text-[9px] font-mono text-slate-400 truncate">f0e1d2c3b4a5968778695a4b3c2d1e0f</span>
+</div>
+<div class="flex flex-col gap-1 pt-2 border-t border-white/5">
+<span class="text-[8px] font-mono text-slate-600">REMOTE_ENGINE</span>
 <div class="flex items-center gap-2">
-<span class="size-1.5 rounded-full bg-terminal-green"></span>
-<span class="text-[9px] font-mono text-terminal-green uppercase tracking-tighter">Core: Running</span>
+<span class="size-1.5 rounded-full bg-terminal-green animate-pulse"></span>
+<span class="text-[9px] font-mono text-terminal-green uppercase">CONNECTED_STREAM</span>
 </div>
-<div class="text-[9px] font-mono text-slate-600 uppercase">Mem_Usage: 14.2GB / 64GB</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<footer class="h-6 border-t border-terminal-cyan/30 bg-black px-6 flex items-center justify-between relative z-40 shrink-0">
+<div class="flex items-center gap-6">
+<div class="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">Mem_Usage: 14.2GB / 64GB</div>
+<div class="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">IO_LOAD: 0.12ms</div>
 </div>
 <div class="flex items-center gap-4">
-<span class="text-[9px] font-mono text-slate-600">ORCH_ID: 771-KILO-9</span>
-<span class="text-[9px] font-mono text-slate-600">Â© 2024_ADVOLOOM</span>
+<span class="text-[8px] font-mono text-slate-600">ORCH_ID: 771-KILO-9</span>
+<span class="text-[8px] font-mono text-slate-600">Â© 2024_ADVOLOOM_SYSTEMS</span>
 </div>
 </footer>
 
