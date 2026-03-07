@@ -62,7 +62,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
   }
 
   return (
-    <section className={`stage-column ${stageColumnBaseClass} w-[380px] shrink-0 ${status === 'published' ? 'bg-black/60' : ''}`}>
+    <section ref={setNodeRef} className={`stage-column ${stageColumnBaseClass} w-[380px] shrink-0 ${status === 'published' ? 'bg-black/60' : ''}`}>
       <header className={`h-14 flex items-center justify-between px-4 border-b border-white/10 ${styles.headerBg}`}>
         <div className="flex items-center gap-3">
           <Icon name={icon} className={`text-[18px] ${styles.iconColor}`} />
@@ -79,7 +79,7 @@ export const PipelineStage: React.FC<PipelineStageProps> = ({
         </button>
       </header>
       
-      <div className="flex flex-1 overflow-hidden" ref={setNodeRef}>
+      <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 overflow-y-auto p-3 custom-scrollbar min-h-[100px]">
           {children}
         </div>

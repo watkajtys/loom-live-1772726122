@@ -2,11 +2,20 @@
 > app@0.0.0 dev
 > vite --host
 
+Port 5173 is in use, trying another one...
+Port 5174 is in use, trying another one...
 
-  VITE v6.4.1  ready in 201 ms
+  VITE v6.4.1  ready in 241 ms
 
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: http://192.168.0.2:5173/
-4:37:20 AM [vite] (client) hmr update /src/components/content/ContentBoard.tsx, /src/index.css
-4:37:29 AM [vite] (client) hmr update /src/components/content/CompactPipelineCard.tsx, /src/index.css
-4:37:33 AM [vite] (client) hmr update /src/components/content/ContentBoard.tsx, /src/index.css
+  ➜  Local:   http://localhost:5175/
+  ➜  Network: http://192.168.0.2:5175/
+4:48:53 AM [vite] (client) page reload playwright-report/index.html
+4:49:33 AM [vite] (client) page reload playwright-report/index.html
+4:49:33 AM [vite] (client) page reload playwright-report/index.html
+4:51:39 AM [vite] (client) page reload playwright-report/index.html
+wright-report/index.html
+wright-report/index.html
+4:49:33 AM [vite] (client) page reload playwright-report/index.html
+4:50:42 AM [vite] (client) hmr update /src/components/content/PipelineStage.tsx, /src/index.css
+4:50:49 AM [vite] (client) hmr update /src/components/content/ContentBoard.tsx, /src/index.css
+4:51:39 AM [vite] (client) page reload playwright-report/index.html
