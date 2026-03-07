@@ -28,7 +28,7 @@ test('Dashboard renders Command, Feed, and State panes concurrently on wide-scre
   const streamPane = page.locator('span.uppercase', { hasText: '02_LIVE_STREAM_MATRIX' });
   await expect(streamPane).toBeVisible();
 
-  const statePane = page.locator('span.uppercase', { hasText: '03_CLUSTER_MONITOR' });
+  const statePane = page.locator('span.uppercase', { hasText: '03_ENGINE_STATS' });
   await expect(statePane).toBeVisible();
 
   // Verify layout structure contains all three elements concurrently
@@ -390,8 +390,8 @@ test('Engine State panel displays dynamic technical metrics with a low-opacity g
   await expect(page.locator('span', { hasText: 'VARIANT_03_MATRIX_OVERLOAD' })).toBeVisible();
   
   // Verify matrix text and telemetry banner are present
-  await expect(page.locator('.matrix-bg-text')).toBeVisible();
-  await expect(page.locator('.telemetry-banner')).toBeVisible();
+  await expect(page.locator('.matrix-bg-text').first()).toBeVisible();
+  await expect(page.locator('.telemetry-banner').first()).toBeVisible();
 
   // Verify heartbeat indicators and dynamic content
   await expect(page.locator('.heartbeat-rapid').first()).toBeVisible();

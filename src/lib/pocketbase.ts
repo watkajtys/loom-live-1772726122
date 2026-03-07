@@ -1,4 +1,4 @@
-import PocketBase from 'pocketbase';
+import PocketBase, { SendOptions } from 'pocketbase';
 import { telemetryMiddleware } from './api/middleware';
 
 const getPocketBaseUrl = () => {
@@ -23,15 +23,12 @@ class RequestProfiler {
 
 export const profiler = new RequestProfiler();
 
-export const pb = new PocketBase(getPocketBaseUrl());
-
-// Monkey patch send to get duration accurately and pipe into our new global telemetry middleware
-const originalSend = pb.send.bind(pb);
-pb.send = async function (path: string, options?: any) {
+class InstrumentedPocketBase extends PocketBase {
+  async send(path: string, options?: SendOptions) {
     const start = performance.now();
     const method = options?.method || 'GET';
     try {
-        const res = await originalSend(path, options);
+        const res = await super.send(path, options);
         const duration = performance.now() - start;
         telemetryMiddleware.record(path, method, duration);
         return res;
@@ -40,4 +37,7 @@ pb.send = async function (path: string, options?: any) {
         telemetryMiddleware.record(path, method, duration);
         throw e;
     }
-};
+  }
+}
+
+export const pb = new InstrumentedPocketBase(getPocketBaseUrl());

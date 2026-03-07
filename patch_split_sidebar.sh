@@ -1,3 +1,4 @@
+cat << 'INNER_EOF' > /tmp/split_sidebar_patch.tsx
 import React from 'react';
 import { PipelineStage } from '../../../types/models';
 import { TransformedContentPipeline, mapStagePositionToStatus } from '../../../lib/api/content';
@@ -103,3 +104,6 @@ export const SplitSidebar: React.FC<SplitSidebarProps> = ({
     </nav>
   );
 };
+INNER_EOF
+
+cat /tmp/split_sidebar_patch.tsx > src/components/content/split/SplitSidebar.tsx
