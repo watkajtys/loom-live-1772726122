@@ -3350,6 +3350,22 @@ test('Create the ScoutAgent class in src/agents/scout.py', async ({ page }) => {
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Create the main Advoloom Orchestrator loop in advoloom.py', async ({ page }) => {
+  // Verify the file exists and contains the required content
+  const filePath = path.join(process.cwd(), 'src/advoloom.py');
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  expect(fileContent).toContain('class AdvoloomOrchestrator:');
+  expect(fileContent).toContain('def run_loop');
+  expect(fileContent).toContain('ScoutAgent(');
+  expect(fileContent).toContain('ScribeAgent(');
+  expect(fileContent).toContain('IngesterAgent(');
+  expect(fileContent).toContain('CriticAgent(');
+
+  await page.goto('/');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Create the ScribeAgent class in src/agents/scribe.py', async ({ page }) => {
   // Verify the file exists and contains the required content
   const filePath = path.join(process.cwd(), 'src/agents/scribe.py');
