@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Advoloom Pipeline: Collapsible Gutter Stage</title>
+<title>Advoloom Pipeline: Split-Command View</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -16,6 +16,7 @@
                         "accent": "#00f2ff",
                         "obsidian": "#06070a",
                         "terminal-green": "#4ade80",
+                        "warning": "#facc15",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
@@ -36,236 +37,300 @@
             .glass-panel {
                 background: #06070a;
                 border: 1px solid rgba(0, 242, 255, 0.15);
-                box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
             }
-            .stage-column {
-                @apply flex flex-col h-full bg-black/40 border-x border-white/5 transition-all duration-300 relative;
-                width: 380px;
+            .stage-nav-item {
+                @apply flex items-center gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/[0.03] transition-all cursor-pointer relative overflow-hidden;
             }
-            .stage-column.collapsed {
-                @apply w-12 overflow-hidden;
+            .stage-nav-item.active {
+                @apply bg-accent/10 border-r-2 border-r-accent;
             }
-            .action-gutter {
-                @apply w-10 flex flex-col items-center py-4 border-l border-white/10 bg-black/60 gap-4 shrink-0;
+            .status-indicator {
+                @apply w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,242,255,0.5)];
             }
-            .compact-log-card {
-                @apply bg-black/40 border border-white/10 py-2 px-3 relative overflow-hidden transition-all duration-200 hover:bg-white/[0.04] border-l-4 flex items-center gap-3 h-12 mb-1.5 cursor-pointer;
-            }
-            .mini-platform-icon {
-                @apply size-6 flex items-center justify-center bg-black/40 border border-white/5 text-slate-400 shrink-0;
-            }
-            .sparkline-container {
-                @apply flex items-end gap-[1px] h-3 w-12 shrink-0;
-            }
-            .spark-bar {
-                @apply w-1 bg-accent/40 rounded-t-[0.5px];
-            }
-            .gutter-btn {
-                @apply w-7 h-7 flex items-center justify-center rounded border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 transition-all;
-            }
-            .gutter-btn.active {
-                @apply text-accent border-accent/40 bg-accent/10;
+            .workspace-card {
+                @apply bg-black/40 border border-white/10 p-4 hover:border-accent/30 transition-all group;
             }
             .custom-scrollbar::-webkit-scrollbar {
-                width: 3px;
+                width: 4px;
+                height: 4px;
             }
             .custom-scrollbar::-webkit-scrollbar-track {
-                background: transparent;
+                background: rgba(255, 255, 255, 0.02);
             }
             .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(0, 242, 255, 0.1);
+                background: rgba(0, 242, 255, 0.2);
+                border-radius: 10px;
             }
-            .vertical-text {
-                writing-mode: vertical-rl;
-                text-orientation: mixed;
+            .terminal-label {
+                @apply text-[9px] font-mono uppercase tracking-[0.15em];
             }
         }
     </style>
 </head>
 <body class="bg-[#020305] text-slate-100 font-display selection:bg-accent/30 selection:text-accent min-h-screen flex items-center justify-center p-6">
-<div class="w-full h-[860px] glass-panel relative overflow-hidden flex flex-col">
+<div class="w-full max-w-[1440px] h-[860px] glass-panel relative overflow-hidden flex flex-col">
 <div class="absolute inset-0 grid-bg pointer-events-none"></div>
-<header class="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md">
+<header class="relative z-30 flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/90 backdrop-blur-md shrink-0">
 <div class="flex items-center gap-8">
 <div class="space-y-0.5">
-<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">CORE_PIPELINE::CLUSTER_04</span>
+<span class="text-[8px] font-mono text-accent tracking-[0.2em] font-bold">CORE_PIPELINE::SPLIT_COMMAND_V2</span>
 <h2 class="text-xl font-bold tracking-tight text-white font-display uppercase leading-none">Autonomous Content Pipeline</h2>
 </div>
 <div class="h-8 w-px bg-white/10"></div>
-<div class="flex gap-4">
+<div class="flex gap-6">
 <div class="flex flex-col">
-<span class="text-[9px] font-mono text-slate-500 uppercase">Status</span>
-<span class="text-[10px] font-mono text-terminal-green">SYSTEM_OPTIMAL</span>
+<span class="terminal-label text-slate-500">Active Stage</span>
+<span class="text-[10px] font-mono text-accent font-bold">REVIEW_SESSION_01</span>
+</div>
+<div class="flex flex-col">
+<span class="terminal-label text-slate-500">Cluster Load</span>
+<span class="text-[10px] font-mono text-terminal-green">42.8%</span>
 </div>
 </div>
 </div>
-<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2 mr-4">
+<div class="w-7 h-7 rounded border border-white/10 bg-slate-800 flex items-center justify-center text-[10px] font-mono">A1</div>
+<div class="w-7 h-7 rounded border border-white/10 bg-slate-700 flex items-center justify-center text-[10px] font-mono">A4</div>
+</div>
+<button class="px-4 py-2 bg-white/5 border border-white/10 text-white text-[11px] font-mono uppercase tracking-widest hover:bg-white/10 transition-all">
+                Global_Config
+            </button>
 <button class="px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-[11px] font-mono uppercase tracking-widest hover:bg-accent/20 transition-all">
-                Force_Sync_Nodes
+                Execute_Batch
             </button>
 </div>
 </header>
-<main class="flex-1 flex overflow-x-auto overflow-y-hidden custom-scrollbar relative z-10 bg-black/20">
-<section class="stage-column shrink-0">
-<header class="h-14 flex items-center justify-between px-4 border-b border-white/10 bg-white/[0.02]">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-accent text-lg">edit_note</span>
+<div class="flex-1 flex overflow-hidden relative z-10">
+<nav class="w-72 border-r border-white/10 bg-black/40 flex flex-col shrink-0">
+<div class="px-4 py-3 border-b border-white/10 bg-white/[0.02]">
+<span class="terminal-label text-slate-400">Pipeline Stages</span>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="stage-nav-item">
+<div class="status-indicator bg-terminal-green"></div>
+<div class="flex-1">
+<h4 class="text-[11px] font-bold text-slate-300 uppercase">Drafting</h4>
+<p class="text-[9px] font-mono text-slate-500">12 ITEMS Â· 0 ERRORS</p>
+</div>
+<span class="material-symbols-outlined text-slate-600 text-sm">chevron_right</span>
+</div>
+<div class="stage-nav-item active">
+<div class="status-indicator bg-accent"></div>
+<div class="flex-1">
+<h4 class="text-[11px] font-bold text-white uppercase">Review</h4>
+<p class="text-[9px] font-mono text-accent">8 ITEMS Â· 2 URGENT</p>
+</div>
+<div class="flex gap-0.5">
+<div class="w-1 h-3 bg-accent/40"></div>
+<div class="w-1 h-2 bg-accent/40"></div>
+<div class="w-1 h-4 bg-accent"></div>
+</div>
+</div>
+<div class="stage-nav-item">
+<div class="status-indicator bg-warning"></div>
+<div class="flex-1">
+<h4 class="text-[11px] font-bold text-slate-300 uppercase">Deployment</h4>
+<p class="text-[9px] font-mono text-warning/70">4 ITEMS Â· LAG DETECTED</p>
+</div>
+<span class="material-symbols-outlined text-warning/50 text-sm">warning</span>
+</div>
+<div class="stage-nav-item">
+<div class="status-indicator bg-slate-700"></div>
+<div class="flex-1">
+<h4 class="text-[11px] font-bold text-slate-500 uppercase">Archiving</h4>
+<p class="text-[9px] font-mono text-slate-600">INACTIVE</p>
+</div>
+</div>
+<div class="stage-nav-item">
+<div class="status-indicator bg-terminal-green"></div>
+<div class="flex-1">
+<h4 class="text-[11px] font-bold text-slate-300 uppercase">Validation</h4>
+<p class="text-[9px] font-mono text-slate-500">READY</p>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-white/10 bg-black/60">
+<div class="flex items-center justify-between mb-2">
+<span class="terminal-label text-slate-500">Health Overview</span>
+<span class="text-[10px] font-mono text-terminal-green">98.2%</span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-terminal-green w-[98%] shadow-[0_0_10px_#4ade80]"></div>
+</div>
+</div>
+</nav>
+<main class="flex-1 flex flex-col bg-black/20 overflow-hidden">
+<header class="h-14 flex items-center justify-between px-6 border-b border-white/10 bg-white/[0.03]">
+<div class="flex items-center gap-4">
+<div class="p-2 bg-accent/10 rounded border border-accent/20">
+<span class="material-symbols-outlined text-accent text-lg">rate_review</span>
+</div>
 <div>
-<h3 class="text-[11px] font-bold text-white uppercase tracking-wider">Drafting</h3>
-<p class="text-[9px] font-mono text-slate-500">12 UNITS ACTIVE</p>
+<h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            Active Management: REVIEW
+                            <span class="px-1.5 py-0.5 rounded bg-accent/10 text-accent text-[9px] border border-accent/20">FOCUS_MODE</span>
+</h3>
+<p class="text-[10px] font-mono text-slate-500 tracking-tight">INSPECTING AGENT OUTPUTS FOR COMPLIANCE AND TONE</p>
 </div>
 </div>
-<button class="hover:text-accent text-slate-500 transition-colors">
-<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 border border-white/10 rounded px-2 py-1 bg-black/40">
+<span class="material-symbols-outlined text-[14px] text-slate-400">search</span>
+<input class="bg-transparent border-none text-[10px] font-mono focus:ring-0 text-white w-32 placeholder:text-slate-600" placeholder="FILTER_WORKSPACE..." type="text"/>
+</div>
+<div class="h-6 w-px bg-white/10"></div>
+<button class="text-slate-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">app_settings_alt</span>
 </button>
+</div>
 </header>
-<div class="flex flex-1 overflow-hidden">
-<div class="flex-1 overflow-y-auto p-3 custom-scrollbar">
-<div class="compact-log-card border-l-accent">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">terminal</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-accent font-bold">#D_202</span>
-<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">API Reference Refactor</h4>
+<div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+<div class="grid grid-cols-2 gap-4">
+<div class="workspace-card border-l-4 border-l-accent">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3">
+<div class="w-10 h-10 bg-accent/5 border border-accent/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-accent">description</span>
 </div>
-<div class="w-10 h-1 bg-white/5 shrink-0 relative"><div class="absolute inset-0 bg-accent w-[60%]"></div></div>
-</div>
-<div class="compact-log-card border-l-slate-700">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">alternate_email</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-slate-500 font-bold">#D_203</span>
-<h4 class="text-[11px] font-bold text-slate-300 truncate uppercase tracking-tight">Weekly X Thread: Rust</h4>
-</div>
-<span class="text-[8px] font-mono text-slate-500">DRAFT</span>
-</div>
-<div class="compact-log-card border-l-accent">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">forum</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-accent font-bold">#D_204</span>
-<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">Discord AMA Summary</h4>
-</div>
-<div class="w-10 h-1 bg-white/5 shrink-0 relative"><div class="absolute inset-0 bg-accent w-[85%]"></div></div>
-</div>
-<div class="compact-log-card border-l-slate-700 opacity-60">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">description</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-slate-500">#D_205</span>
-<h4 class="text-[11px] font-bold text-slate-400 truncate uppercase">Internal Spec Sheet</h4>
-</div>
-</div>
-</div>
-<aside class="action-gutter">
-<span class="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Filters</span>
-<button class="gutter-btn active" title="Filter: Code">
-<span class="material-symbols-outlined text-[16px]">code</span>
-</button>
-<button class="gutter-btn" title="Filter: Social">
-<span class="material-symbols-outlined text-[16px]">share</span>
-</button>
-<button class="gutter-btn" title="Filter: Blog">
-<span class="material-symbols-outlined text-[16px]">article</span>
-</button>
-<div class="w-4 h-px bg-white/10 my-1"></div>
-<button class="gutter-btn" title="Sort by priority">
-<span class="material-symbols-outlined text-[16px]">priority_high</span>
-</button>
-<button class="gutter-btn" title="Batch Action">
-<span class="material-symbols-outlined text-[16px]">checklist</span>
-</button>
-</aside>
-</div>
-</section>
-<section class="stage-column collapsed border-r-accent/20">
-<header class="h-14 flex flex-col items-center justify-center gap-4 bg-accent/5 border-b border-white/10 pt-2 cursor-pointer hover:bg-accent/10">
-<span class="material-symbols-outlined text-accent text-sm">keyboard_double_arrow_right</span>
-<span class="vertical-text text-[10px] font-bold text-accent uppercase tracking-widest pb-4">REVIEW_PIPELINE</span>
-</header>
-<div class="flex-1 flex flex-col items-center py-4 gap-2 opacity-30">
-<div class="w-6 h-6 border border-white/20"></div>
-<div class="w-6 h-6 border border-white/20"></div>
-<div class="w-6 h-6 border border-white/20"></div>
-</div>
-</section>
-<section class="stage-column shrink-0 bg-black/60">
-<header class="h-14 flex items-center justify-between px-4 border-b border-white/10 bg-terminal-green/5">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-terminal-green text-lg">sensors</span>
 <div>
-<h3 class="text-[11px] font-bold text-white uppercase tracking-wider">Live Nodes</h3>
-<p class="text-[9px] font-mono text-terminal-green">482 TOTAL</p>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-accent">#REV_4082</span>
+<span class="text-[8px] font-mono text-slate-500 bg-white/5 px-1">PRIO_HIGH</span>
+</div>
+<h4 class="text-xs font-bold text-white uppercase mt-0.5">Developer Experience Whitepaper</h4>
 </div>
 </div>
-<button class="text-slate-500">
-<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
-</button>
-</header>
-<div class="flex flex-1 overflow-hidden">
-<div class="flex-1 overflow-y-auto p-3 custom-scrollbar">
-<div class="compact-log-card border-l-terminal-green">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">terminal</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-terminal-green font-bold">#L_901</span>
-<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">Mainnet Launch Post</h4>
+<button class="text-slate-500 hover:text-accent"><span class="material-symbols-outlined text-sm">open_in_new</span></button>
 </div>
-<div class="sparkline-container">
-<div class="spark-bar h-1"></div>
-<div class="spark-bar h-3 bg-terminal-green"></div>
-<div class="spark-bar h-2 bg-terminal-green"></div>
+<div class="space-y-2 mb-4">
+<div class="flex justify-between text-[9px] font-mono">
+<span class="text-slate-500 uppercase">Draft Maturity</span>
+<span class="text-terminal-green">94%</span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-accent w-[94%]"></div>
 </div>
 </div>
-<div class="compact-log-card border-l-terminal-green">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">article</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-terminal-green font-bold">#L_902</span>
-<h4 class="text-[11px] font-bold text-white truncate uppercase tracking-tight">ZK-Proofs Deep Dive</h4>
-</div>
-<div class="sparkline-container">
-<div class="spark-bar h-2 bg-terminal-green"></div>
-<div class="spark-bar h-1 bg-terminal-green"></div>
-<div class="spark-bar h-3 bg-terminal-green"></div>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 border border-white/10 hover:border-terminal-green hover:bg-terminal-green/5 text-[10px] font-mono uppercase text-slate-400 hover:text-terminal-green transition-all">Approve</button>
+<button class="flex-1 py-1.5 border border-white/10 hover:border-warning/50 hover:bg-warning/5 text-[10px] font-mono uppercase text-slate-400 hover:text-warning transition-all">Re-Draft</button>
 </div>
 </div>
-<div class="compact-log-card border-l-terminal-green opacity-40">
-<div class="mini-platform-icon"><span class="material-symbols-outlined text-[14px]">forum</span></div>
-<div class="flex-1 min-w-0">
-<span class="text-[9px] font-mono text-slate-500">#L_899</span>
-<h4 class="text-[11px] font-bold text-slate-400 truncate uppercase">Community Update</h4>
+<div class="workspace-card border-l-4 border-l-warning">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3">
+<div class="w-10 h-10 bg-warning/5 border border-warning/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-warning">terminal</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-warning">#REV_4085</span>
+<span class="text-[8px] font-mono text-slate-500 bg-white/5 px-1">URGENT</span>
+</div>
+<h4 class="text-xs font-bold text-white uppercase mt-0.5">Node.js SDK Quickstart Update</h4>
+</div>
+</div>
+<button class="text-slate-500 hover:text-accent"><span class="material-symbols-outlined text-sm">open_in_new</span></button>
+</div>
+<p class="text-[10px] text-slate-400 mb-4 line-clamp-2 italic">"Ensure the code block formatting matches the new CLI v3 syntax before deploying to production."</p>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 border border-white/10 hover:border-accent hover:bg-accent/5 text-[10px] font-mono uppercase text-slate-400 hover:text-accent transition-all">Edit Script</button>
+<button class="flex-1 py-1.5 border border-white/10 hover:border-slate-400 hover:bg-white/5 text-[10px] font-mono uppercase text-slate-400 hover:text-white transition-all">Hold</button>
+</div>
+</div>
+<div class="workspace-card border-l-4 border-l-accent">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3">
+<div class="w-10 h-10 bg-accent/5 border border-accent/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-accent">alternate_email</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-accent">#REV_4089</span>
+</div>
+<h4 class="text-xs font-bold text-white uppercase mt-0.5">X Thread: Weekly Ecosystem Stats</h4>
 </div>
 </div>
 </div>
-<aside class="action-gutter border-l border-white/5">
-<span class="text-[8px] font-mono text-slate-600 vertical-text uppercase tracking-widest mb-2">Metrics</span>
-<button class="gutter-btn" title="View Heatmap">
-<span class="material-symbols-outlined text-[16px]">grid_view</span>
-</button>
-<button class="gutter-btn" title="Performance">
-<span class="material-symbols-outlined text-[16px]">show_chart</span>
-</button>
-<button class="gutter-btn" title="Alerts">
-<span class="material-symbols-outlined text-[16px]">notifications</span>
-</button>
+<div class="flex items-center gap-4 text-[9px] font-mono mb-4 text-slate-500">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">imagesmode</span> 4 Assets</div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span> 2h Rem.</div>
+</div>
+<button class="w-full py-1.5 border border-white/10 hover:border-accent hover:bg-accent/5 text-[10px] font-mono uppercase text-slate-400 hover:text-accent transition-all">Open Preview</button>
+</div>
+<div class="workspace-card border-l-4 border-l-slate-700">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3">
+<div class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">article</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-slate-500">#REV_4092</span>
+</div>
+<h4 class="text-xs font-bold text-slate-400 uppercase mt-0.5">Guest Post: Zero Knowledge</h4>
+</div>
+</div>
+</div>
+<div class="p-2 bg-black/40 border border-white/5 text-[9px] font-mono text-slate-600 mb-4">
+                            WAITING_FOR_LEGAL_CLEARANCE
+                        </div>
+<button class="w-full py-1.5 border border-white/10 opacity-50 cursor-not-allowed text-[10px] font-mono uppercase text-slate-600">Pending</button>
+</div>
+</div>
+</div>
+<aside class="h-20 border-t border-white/10 bg-black/60 flex items-center px-6 gap-6 shrink-0">
+<div class="flex-1 flex gap-8">
+<div class="flex flex-col">
+<span class="terminal-label text-slate-500 mb-1">Queue Status</span>
+<div class="flex items-center gap-2">
+<div class="flex gap-0.5">
+<div class="w-3 h-3 bg-accent"></div>
+<div class="w-3 h-3 bg-accent"></div>
+<div class="w-3 h-3 bg-white/10"></div>
+<div class="w-3 h-3 bg-white/10"></div>
+<div class="w-3 h-3 bg-white/10"></div>
+</div>
+<span class="text-[10px] font-mono text-white">2/8 REVIEWED</span>
+</div>
+</div>
+<div class="h-10 w-px bg-white/10"></div>
+<div class="flex flex-col">
+<span class="terminal-label text-slate-500 mb-1">Verification Agent</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-terminal-green"></span>
+<span class="text-[10px] font-mono text-white uppercase tracking-wider">ACTIVE_01_SONIC</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-white/10 text-slate-500 hover:text-white transition-all"><span class="material-symbols-outlined">refresh</span></button>
+<button class="px-6 py-2 bg-accent text-obsidian text-[11px] font-bold uppercase tracking-widest hover:brightness-110 transition-all">Submit_Batch</button>
+</div>
 </aside>
-</div>
-</section>
 </main>
-<footer class="relative z-20 px-6 py-3 border-t border-white/10 bg-black/95 flex justify-between items-center text-[10px] font-mono">
+</div>
+<footer class="relative z-20 px-6 py-3 border-t border-white/10 bg-black/95 flex justify-between items-center text-[10px] font-mono shrink-0">
 <div class="flex gap-8">
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">COLLAPSIBLE_CHANNELS:</span>
-<span class="text-accent font-bold">ENABLED</span>
+<span class="uppercase text-slate-500 tracking-wider">LAYOUT_MODE:</span>
+<span class="text-accent font-bold">SPLIT_COMMAND</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="uppercase text-slate-500 tracking-wider">ACTIVE_GUTTERS:</span>
-<span class="text-accent font-bold">MULTI_ACTION</span>
+<span class="uppercase text-slate-500 tracking-wider">WORKSPACE:</span>
+<span class="text-accent font-bold">FOCUSED_REVIEW</span>
 </div>
 </div>
 <div class="flex items-center gap-4 text-slate-400">
 <div class="flex items-center gap-2 border-r border-white/10 pr-4">
 <span class="size-1.5 rounded-full bg-terminal-green animate-pulse"></span>
-<span class="uppercase tracking-widest">AGENT_01: LISTENING</span>
+<span class="uppercase tracking-widest">SYSTEM: NOMINAL</span>
 </div>
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-[14px]">database</span>
-<span class="uppercase">v3.4.2_STABLE</span>
+<span class="uppercase">v4.0.1_RC2</span>
 </div>
 </div>
 </footer>
