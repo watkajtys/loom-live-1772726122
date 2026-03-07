@@ -36,7 +36,7 @@ test('Advoloom Command Center shell and primary views from the design load corre
 });
 
 test('Implement the Knowledge Base main layout and sidebar navigation', async ({ page }) => {
-  await page.goto('/?view=knowledge');
+  await page.goto('/');
 
   // Verify headers and custom layout
   await expect(page.locator('h1', { hasText: 'KB_GRAPH' })).toBeVisible();
@@ -102,7 +102,7 @@ test('Integrate data fetching and interactive state management', async ({ page }
   });
 
   // Navigate to split board view
-  await page.goto('/?view=split');
+  await page.goto('/pipeline?view=split');
 
   // Verify the card is initially visible in drafting (or active stage)
   const card = page.locator('text=Test Split Card 1');
@@ -205,7 +205,7 @@ test('Implement the Pipeline Board layout container UI (Split Command V2)', asyn
   });
 
   // Navigate to Content Pipeline in split mode
-  await page.goto('/?view=split');
+  await page.goto('/pipeline?view=split');
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');
@@ -543,7 +543,7 @@ test('Content Pipeline view layout shell and deep-linking filters are verified',
     });
   });
 
-  await page.goto('/');
+  await page.goto('/pipeline');
 
   // Verify custom Content Deck title from the new header
   await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
@@ -594,7 +594,7 @@ test('PipelineCard uses semantic icons mapped through Icon component', async ({ 
     });
   });
 
-  await page.goto('/');
+  await page.goto('/pipeline');
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');
@@ -640,7 +640,7 @@ test('Content Pipeline API and data models are defined correctly and fetch data'
     });
   });
 
-  await page.goto('/');
+  await page.goto('/pipeline');
 
   // Verify the page title is visible
   await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
@@ -1102,22 +1102,8 @@ test('usePocketBase uses SWR instead of raw useEffect', async ({ page }) => {
 
 test('KnowledgeBase, ContentPipeline, and AgentExecutionReports components mount correctly and use new service hooks', async ({ page }) => {
   // Test KnowledgeBase
-  await page.route('**/api/collections/knowledge_sources/records*', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        page: 1,
-        perPage: 50,
-        totalItems: 0,
-        totalPages: 1,
-        items: []
-      })
-    });
-  });
-
-  await page.goto('/knowledge');
-  await expect(page.locator('h1:has-text("Knowledge Base")')).toBeVisible();
+  await page.goto('/');
+  await expect(page.locator('h1', { hasText: 'KB_GRAPH' })).toBeVisible();
 
   // Test ContentPipeline
   await page.route('**/api/collections/content_pipeline/records*', async route => {
@@ -1134,7 +1120,7 @@ test('KnowledgeBase, ContentPipeline, and AgentExecutionReports components mount
     });
   });
 
-  await page.goto('/');
+  await page.goto('/pipeline');
   await expect(page.locator('h2:has-text("Content Deck")')).toBeVisible();
 
   // Test AgentExecutionReports
@@ -1317,7 +1303,7 @@ test('Compact Pipeline Card view toggles correctly and renders design', async ({
   });
 
   // Navigate to compact view using deep link
-  await page.goto('/?view=compact');
+  await page.goto('/pipeline?view=compact');
 
   // Verify compact header changes
   await expect(page.locator('h2:has-text("System Logs")')).toBeVisible();
@@ -1415,7 +1401,7 @@ test('Implement the Pipeline Stage (Column) UI component', async ({ page }) => {
   });
 
   // Navigate to Content Pipeline in compact mode
-  await page.goto('/?view=compact');
+  await page.goto('/pipeline?view=compact');
 
   // Wait for the pipeline stages to appear
   await page.waitForSelector('.stage-column');
@@ -1477,7 +1463,7 @@ test('ContentPipeline refactored hooks and DataViewLayout integration', async ({
     });
   });
 
-  await page.goto('/');
+  await page.goto('/pipeline');
 
   // Wait for loading to finish
   const loadingIndicator = page.locator('text=Loading Data...');
@@ -1514,7 +1500,7 @@ test('ContentPipeline refactored hooks and DataViewLayout integration', async ({
     });
   });
 
-  await page.goto('/');
+  await page.goto('/pipeline');
 
   // Wait for loading
   if (await loadingIndicator.isVisible()) {
@@ -1884,7 +1870,7 @@ test('Define validation schemas for Pipeline Execution payloads', async ({ page 
 });
 
 test('Ensure configuration constants are extracted into config file', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/pipeline');
   // Test asserting that CONTENT_PLATFORMS etc are exported correctly by checking the UI strings we extracted
   await expect(page.locator('text=Github')).toBeVisible();
   await expect(page.locator('text=Nexus_01')).toBeVisible();
@@ -2888,7 +2874,7 @@ test('Implement frontend data fetching logic for the Pipeline Board', async ({ p
 });
 
 test('User can access Stream view and view stream cards', async ({ page }) => {
-  await page.goto('/?view=stream');
+  await page.goto('/pipeline?view=stream');
   
 
   // Verify stream layout elements
@@ -2925,7 +2911,7 @@ test('User can access Stream view and view stream cards', async ({ page }) => {
     });
   });
 
-  await page.goto('/?view=stream');
+  await page.goto('/pipeline?view=stream');
   
 
   await expect(page.locator('main.overflow-x-auto')).toBeVisible();
@@ -2984,14 +2970,8 @@ test('Implement drag-and-drop or state transition logic for Pipeline Cards', asy
     }
   });
 
-  // Intercept the PATCH request to verify it's called
-  const patchRequestPromise = page.waitForRequest(request => 
-    request.url().includes('/api/collections/content_pipeline/records/card_1') &&
-    (request.method() === 'PATCH' || request.method() === 'PUT')
-  );
-
   // Navigate to compact board view which uses ContentBoard
-  await page.goto('/?view=compact');
+  await page.goto('/pipeline?view=compact');
   
 
   // Verify the card is in the Drafting column initially
@@ -3006,6 +2986,12 @@ test('Implement drag-and-drop or state transition logic for Pipeline Cards', asy
   await expect(targetStageHeader).toBeVisible();
   const targetBox = await targetStageHeader.boundingBox();
   expect(targetBox).not.toBeNull();
+
+  // Intercept the PATCH request to verify it's called
+  const patchRequestPromise = page.waitForRequest(request => 
+    request.url().includes('/api/collections/content_pipeline/records/card_1') &&
+    (request.method() === 'PATCH' || request.method() === 'PUT')
+  );
 
   // Simulate drag and drop using page.mouse
   if (cardBox && targetBox) {
@@ -3031,7 +3017,7 @@ test('Implement drag-and-drop or state transition logic for Pipeline Cards', asy
 });
 
 test('Implement the AX Reports view', async ({ page }) => {
-  await page.goto('/?view=reports');
+  await page.goto('/pipeline?view=reports');
 
   // Verify headers from AXReportsHeader
   await expect(page.locator('h1', { hasText: 'AX_REPORTS' })).toBeVisible();
