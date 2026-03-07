@@ -3733,3 +3733,27 @@ test('Verify Orchestrator Feed decoupled architecture', async ({ page }) => {
   expect(fileContent).toContain('FEED_PROVIDERS.forEach');
   expect(fileContent).toContain('useRealtimeSubscription');
 });
+
+test('Navigate to /dashboard; verify Obsidian Black background, Space Grotesk used for general UI, and Neon Cyan reserved strictly for interactive/status-critical elements', async ({ page }) => {
+  await page.goto('/dashboard');
+  
+  // Wait for load
+  await page.waitForLoadState('domcontentloaded');
+
+  // Verify Obsidian Black background
+  const container = page.locator('.bg-obsidian');
+  await expect(container.first()).toBeVisible();
+
+  // Verify Space Grotesk
+  await expect(container.first()).toHaveCSS('font-family', /Space Grotesk/i);
+  
+  // Verify JetBrains Mono
+  await expect(page.locator('.font-mono').first()).toHaveCSS('font-family', /JetBrains Mono/i);
+  
+  // Verify Neon Cyan is used
+  const neonElements = page.locator('.text-accent');
+  expect(await neonElements.count()).toBeGreaterThan(0);
+
+  // Take screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

@@ -14,7 +14,7 @@ export const Dashboard: React.FC = () => {
   const { avgLatency } = useProfiler();
 
   return (
-    <div className="flex flex-col h-full bg-obsidian text-slate-300 font-sans overflow-hidden">
+    <div className="flex flex-col h-full bg-obsidian text-slate-300 font-display overflow-hidden">
       <header className="h-14 border-b border-white/10 bg-black flex items-center justify-between px-6 shrink-0 relative z-40">
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center size-8 bg-white/5 rounded-sm border border-white/10">
