@@ -388,6 +388,22 @@ test('Define the Pipeline database schema and create its initial migration.', as
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Soften panel grid lines to reduce visual clutter and improve data hierarchy.', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('domcontentloaded');
+
+  // Verify that the UI loads and does not crash
+  await expect(page.locator('text=KB_GRAPH')).toBeVisible();
+
+  // Switch to feed view
+  await page.goto('/?view=feed');
+  await page.waitForLoadState('domcontentloaded');
+  await expect(page.locator('h1', { hasText: 'KB_FEED' })).toBeVisible();
+
+  // Take screenshot as required
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Define the Card/Item database schema and create its migration.', async ({ page }) => {
   // Directly verify the migration file content in the Node.js test runner context
   const pbMigrationsDir = path.join(process.cwd(), 'pb_migrations');

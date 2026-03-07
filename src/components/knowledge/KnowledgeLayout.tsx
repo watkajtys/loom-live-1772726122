@@ -35,10 +35,10 @@ export const KnowledgeLayout: React.FC<KnowledgeLayoutProps> = ({
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PHBhdGggZD0iTTYwIDBMMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLCAyNDIsIDI1NSwgMC4wMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')] pointer-events-none z-0"></div>
       <div className="absolute inset-0 grid-bg pointer-events-none z-0"></div>
 
-      <header className="relative z-30 h-14 border-b border-white/10 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
+      <header className="relative z-30 h-14 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-accent/10 border border-accent/40 flex items-center justify-center">
+            <div className="w-7 h-7 bg-accent/10 flex items-center justify-center">
               <span className="material-symbols-outlined text-accent text-lg">{icon}</span>
             </div>
             <div className="leading-none">
@@ -50,7 +50,7 @@ export const KnowledgeLayout: React.FC<KnowledgeLayoutProps> = ({
           <div className="hidden md:flex items-center gap-6">
             {headerStats}
             {headerStatus && (
-              <div className="flex flex-col border-l border-white/10 pl-6">
+              <div className="flex flex-col pl-6">
                 <span className="text-[8px] font-mono text-slate-500 uppercase">Sync Status</span>
                 <span className="text-xs font-mono text-terminal-green">{headerStatus}</span>
               </div>
@@ -58,11 +58,11 @@ export const KnowledgeLayout: React.FC<KnowledgeLayoutProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 px-4 py-1.5 border border-white/10 bg-white/5 text-[10px] font-mono uppercase tracking-widest text-slate-400">
+          <div className="flex items-center gap-3 px-4 py-1.5 bg-white/5 text-[10px] font-mono uppercase tracking-widest text-slate-400">
             <span className="text-terminal-green animate-pulse">●</span>
             SYS_HEALTH: OPTIMAL
           </div>
-          <Link to={viewLink} className="w-9 h-9 flex items-center justify-center border border-white/10 hover:bg-white/5 text-slate-400 hover:text-white transition-all" title={viewTitle}>
+          <Link to={viewLink} className="w-9 h-9 flex items-center justify-center bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all" title={viewTitle}>
             <span className="material-symbols-outlined text-xl">{viewIcon}</span>
           </Link>
         </div>
@@ -70,7 +70,7 @@ export const KnowledgeLayout: React.FC<KnowledgeLayoutProps> = ({
 
       {children}
 
-      <footer className="h-8 border-t border-white/10 bg-black/90 px-6 flex items-center justify-between relative z-30 shrink-0">
+      <footer className="h-8 bg-black/90 px-6 flex items-center justify-between relative z-30 shrink-0">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-terminal-green animate-pulse shadow-[0_0_6px_#00ff41]"></span>
@@ -80,9 +80,9 @@ export const KnowledgeLayout: React.FC<KnowledgeLayoutProps> = ({
         </div>
         <div className="flex items-center gap-4">
           <div className="flex gap-2">
-            <div className="w-2 h-2 border border-white/20"></div>
-            <div className="w-2 h-2 border border-accent/60 bg-accent/20"></div>
-            <div className="w-2 h-2 border border-white/20"></div>
+            <div className="w-2 h-2 bg-white/10"></div>
+            <div className="w-2 h-2 bg-accent/20"></div>
+            <div className="w-2 h-2 bg-white/10"></div>
           </div>
           <span className="text-[9px] font-mono text-slate-600">{footerVersion}</span>
           <span className="text-[9px] font-mono text-slate-600">© ADVOLOOM_SYSTEMS_2024</span>

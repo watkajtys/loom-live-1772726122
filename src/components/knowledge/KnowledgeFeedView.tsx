@@ -100,7 +100,7 @@ export const KnowledgeFeedView: React.FC = () => {
     >
       <main className="relative z-10 flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full">
         <div className="px-6 pt-12 pb-8 shrink-0">
-          <div className="bg-black/80 border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.8)] focus-within:border-accent/50 transition-all duration-500 flex items-center p-4 gap-4">
+          <div className="bg-white/5 shadow-[0_0_40px_rgba(0,0,0,0.8)] focus-within:bg-white/10 transition-all duration-500 flex items-center p-4 gap-4">
             <span className="material-symbols-outlined text-accent/60">search</span>
             <input 
               autoFocus 
@@ -111,8 +111,8 @@ export const KnowledgeFeedView: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <div className="flex items-center gap-2">
-              <span className="px-1.5 py-0.5 border border-white/20 text-[9px] font-mono text-slate-500">⌘</span>
-              <span className="px-1.5 py-0.5 border border-white/20 text-[9px] font-mono text-slate-500">K</span>
+              <span className="px-1.5 py-0.5 bg-white/10 text-[9px] font-mono text-slate-500">⌘</span>
+              <span className="px-1.5 py-0.5 bg-white/10 text-[9px] font-mono text-slate-500">K</span>
             </div>
           </div>
           
@@ -131,10 +131,10 @@ export const KnowledgeFeedView: React.FC = () => {
 
         <section className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-accent/20 px-6 pb-12 space-y-4">
           {filteredData.map((item) => (
-            <div key={item.id} className={`border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300 p-4 relative overflow-hidden before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-accent/20 hover:before:bg-accent hover:before:shadow-[0_0_8px_#00f2ff] ${item.cardClass || ''}`}>
+            <div key={item.id} className={`bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300 p-4 relative overflow-hidden before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-accent/20 hover:before:bg-accent hover:before:shadow-[0_0_8px_#00f2ff] ${item.cardClass || ''}`}>
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 border flex items-center justify-center ${item.iconClass}`}>
+                  <div className={`w-8 h-8 flex items-center justify-center ${item.iconClass}`}>
                     <span className="material-symbols-outlined text-lg">{item.icon}</span>
                   </div>
                   <div>
@@ -164,7 +164,7 @@ export const KnowledgeFeedView: React.FC = () => {
                     const label = typeof action === 'string' ? action : action.label;
                     const customClass = typeof action === 'string' ? '' : action.className;
                     return (
-                      <button key={idx} className={`px-2 py-1 text-[8px] font-mono border border-white/10 text-slate-500 hover:text-accent hover:border-accent/40 bg-white/5 transition-all uppercase tracking-tighter ${customClass}`}>
+                      <button key={idx} className={`px-2 py-1 text-[8px] font-mono text-slate-500 hover:text-accent hover:bg-white/10 bg-white/5 transition-all uppercase tracking-tighter ${customClass}`}>
                         {label}
                       </button>
                     )

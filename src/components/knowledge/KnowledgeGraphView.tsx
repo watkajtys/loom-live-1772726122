@@ -28,13 +28,13 @@ export const KnowledgeGraphView: React.FC = () => {
     >
       <main className="relative z-10 flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
-        <aside className="w-64 border-r border-white/10 bg-black/40 flex flex-col shrink-0">
-          <div className="p-4 border-b border-white/5">
+        <aside className="w-64 bg-black/40 flex flex-col shrink-0">
+          <div className="p-4 bg-white/5">
             <div className="relative">
               <input 
                 type="text"
                 placeholder="FILTER_CLUSTERS..."
-                className="w-full bg-white/5 border border-white/10 text-[10px] font-mono focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent text-white placeholder-slate-600 pl-8 h-8 rounded-none"
+                className="w-full bg-black/40 text-[10px] font-mono focus:outline-none focus:ring-1 focus:ring-accent text-white placeholder-slate-600 pl-8 h-8 rounded-none"
               />
               <span className="material-symbols-outlined absolute left-2 top-1.5 text-slate-500 text-base">search</span>
             </div>
@@ -66,7 +66,7 @@ export const KnowledgeGraphView: React.FC = () => {
             </a>
           </nav>
 
-          <div className="p-4 bg-black/60 border-t border-white/10">
+          <div className="p-4 bg-black/60">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[9px] font-mono text-slate-500">VECTOR_SPACE</span>
               <span className="text-[9px] font-mono text-accent">HNSW_INDEX</span>
@@ -109,30 +109,30 @@ export const KnowledgeGraphView: React.FC = () => {
           </div>
 
           <div className="absolute top-4 left-4 z-20 flex gap-2">
-            <button className="px-3 py-1 bg-black/80 border border-white/10 text-[9px] font-mono text-white hover:border-accent transition-colors">2D_VIEW</button>
-            <button className="px-3 py-1 bg-black/40 border border-white/10 text-[9px] font-mono text-slate-500 hover:border-accent transition-colors">3D_SPACE</button>
-            <button className="px-3 py-1 bg-black/40 border border-white/10 text-[9px] font-mono text-slate-500 hover:border-accent transition-colors">AUTO_LAYOUT</button>
+            <button className="px-3 py-1 bg-white/10 text-[9px] font-mono text-white hover:bg-white/20 transition-colors">2D_VIEW</button>
+            <button className="px-3 py-1 bg-white/5 text-[9px] font-mono text-slate-500 hover:bg-white/10 transition-colors">3D_SPACE</button>
+            <button className="px-3 py-1 bg-white/5 text-[9px] font-mono text-slate-500 hover:bg-white/10 transition-colors">AUTO_LAYOUT</button>
           </div>
 
           <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-2">
-            <button className="w-8 h-8 bg-black/80 border border-white/10 flex items-center justify-center text-slate-400 hover:text-accent transition-colors">
+            <button className="w-8 h-8 bg-white/5 flex items-center justify-center text-slate-400 hover:text-accent transition-colors">
               <span className="material-symbols-outlined text-lg">add</span>
             </button>
-            <button className="w-8 h-8 bg-black/80 border border-white/10 flex items-center justify-center text-slate-400 hover:text-accent transition-colors">
+            <button className="w-8 h-8 bg-white/5 flex items-center justify-center text-slate-400 hover:text-accent transition-colors">
               <span className="material-symbols-outlined text-lg">remove</span>
             </button>
           </div>
         </section>
 
         {/* Right Sidebar */}
-        <section className="w-96 border-l border-white/10 bg-black/80 flex flex-col shrink-0 z-20">
-          <div className="p-4 border-b border-white/10 bg-white/5">
+        <section className="w-96 bg-black/80 flex flex-col shrink-0 z-20">
+          <div className="p-4 bg-white/5">
             <div className="flex items-center justify-between mb-4">
               <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest">Source Details</span>
               <span className="w-1.5 h-1.5 rounded-full bg-terminal-green shadow-[0_0_5px_#00ff41]"></span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 border border-accent/20 bg-accent/5 flex items-center justify-center">
+              <div className="w-12 h-12 bg-accent/5 flex items-center justify-center">
                 <span className="material-symbols-outlined text-accent text-2xl">description</span>
               </div>
               <div>
@@ -144,21 +144,21 @@ export const KnowledgeGraphView: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6">
             <div className="space-y-3">
-              <h4 className="text-[10px] font-mono text-accent uppercase tracking-wider border-b border-accent/20 pb-1">Embedding Matrix</h4>
+              <h4 className="text-[10px] font-mono text-accent uppercase tracking-wider pb-1">Embedding Matrix</h4>
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white/5 p-2 border border-white/5">
+                <div className="bg-white/5 p-2">
                   <div className="text-[8px] text-slate-500 uppercase">Cosine Sim</div>
                   <div className="text-xs font-mono text-terminal-green">0.9982</div>
                 </div>
-                <div className="bg-white/5 p-2 border border-white/5">
+                <div className="bg-white/5 p-2">
                   <div className="text-[8px] text-slate-500 uppercase">Dimensions</div>
                   <div className="text-xs font-mono text-white">1,536</div>
                 </div>
-                <div className="bg-white/5 p-2 border border-white/5">
+                <div className="bg-white/5 p-2">
                   <div className="text-[8px] text-slate-500 uppercase">Fragments</div>
                   <div className="text-xs font-mono text-white">24</div>
                 </div>
-                <div className="bg-white/5 p-2 border border-white/5">
+                <div className="bg-white/5 p-2">
                   <div className="text-[8px] text-slate-500 uppercase">Last Updated</div>
                   <div className="text-xs font-mono text-white">2m ago</div>
                 </div>
@@ -166,37 +166,37 @@ export const KnowledgeGraphView: React.FC = () => {
             </div>
 
             <div className="space-y-3 flex-1">
-              <h4 className="text-[10px] font-mono text-accent uppercase tracking-wider border-b border-accent/20 pb-1 flex justify-between">
+              <h4 className="text-[10px] font-mono text-accent uppercase tracking-wider pb-1 flex justify-between">
                 Raw Data Stream
                 <span className="text-[8px] text-slate-500">LIVE_READ</span>
               </h4>
-              <div className="bg-black/60 border border-white/5 p-2 h-64 overflow-y-auto custom-scrollbar font-mono text-[9px] leading-relaxed">
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-500">0001: {`{ "root": "auth", "version": "2.1" }`}</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-terminal-green">0002: [CHUNK_01] Validating OAuth flow...</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-400">0003: POST /api/v1/auth/token status:200</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-400">0004: Mapping vector IDs: 0x921, 0x882, 0x112</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-accent">0005: EVENT: "User Login" {'->'} Relation: "Security"</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-500">0006: Data integrity check... PASSED</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-500">0007: Refreshing embeddings for cluster B-4</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-terminal-green">0008: [CHUNK_02] Mapping session lifetimes...</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-400">0009: KV_STORE updated successfully.</div>
-                <div className="py-0.5 border-l border-transparent hover:border-accent hover:bg-accent/5 transition-all px-2 text-slate-500">0010: EOF reached. Waiting for next sync.</div>
+              <div className="bg-white/[0.02] p-2 h-64 overflow-y-auto custom-scrollbar font-mono text-[9px] leading-relaxed">
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-500">0001: {`{ "root": "auth", "version": "2.1" }`}</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-terminal-green">0002: [CHUNK_01] Validating OAuth flow...</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-400">0003: POST /api/v1/auth/token status:200</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-400">0004: Mapping vector IDs: 0x921, 0x882, 0x112</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-accent">0005: EVENT: "User Login" {'->'} Relation: "Security"</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-500">0006: Data integrity check... PASSED</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-500">0007: Refreshing embeddings for cluster B-4</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-terminal-green">0008: [CHUNK_02] Mapping session lifetimes...</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-400">0009: KV_STORE updated successfully.</div>
+                <div className="py-0.5 hover:bg-accent/5 transition-all px-2 text-slate-500">0010: EOF reached. Waiting for next sync.</div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h4 className="text-[10px] font-mono text-accent uppercase tracking-wider border-b border-accent/20 pb-1">Relations</h4>
+              <h4 className="text-[10px] font-mono text-accent uppercase tracking-wider pb-1">Relations</h4>
               <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-0.5 border border-white/10 text-[8px] font-mono bg-white/5">API_GATEWAY</span>
-                <span className="px-2 py-0.5 border border-white/10 text-[8px] font-mono bg-white/5">SECURITY_PROTOCOL</span>
-                <span className="px-2 py-0.5 border border-white/10 text-[8px] font-mono bg-white/5">USER_IDENTITY</span>
+                <span className="px-2 py-0.5 text-[8px] font-mono bg-white/5">API_GATEWAY</span>
+                <span className="px-2 py-0.5 text-[8px] font-mono bg-white/5">SECURITY_PROTOCOL</span>
+                <span className="px-2 py-0.5 text-[8px] font-mono bg-white/5">USER_IDENTITY</span>
               </div>
             </div>
           </div>
 
-          <div className="p-4 border-t border-white/10 flex gap-2">
+          <div className="p-4 flex gap-2">
             <button className="flex-1 py-2 bg-accent text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors">Re-Embed Source</button>
-            <button className="w-10 h-10 border border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors">
+            <button className="w-10 h-10 flex items-center justify-center hover:bg-white/5 transition-colors bg-white/5">
               <span className="material-symbols-outlined text-base">delete</span>
             </button>
           </div>
