@@ -109,13 +109,13 @@ export const Orchestrator: React.FC = () => {
             <section className="flex-1 border border-accent/30 shadow-[0_0_10px_rgba(0,242,255,0.1)] bg-black/40 flex flex-col overflow-hidden">
               <div className="h-8 border-b border-accent/20 bg-accent/5 flex items-center px-3 shrink-0 justify-between">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">SYSTEM_LOGS</span>
-                <span className="text-[8px] font-mono text-slate-600">S_PRIORITY: CRITICAL</span>
+                <span className="text-[8px] font-mono text-muted">S_PRIORITY: CRITICAL</span>
               </div>
               <div className="flex-1 overflow-y-auto custom-scrollbar p-3">
                 <div className="border border-accent/10 bg-black/40 p-3 mb-2 hover:border-accent/30 transition-all duration-200 relative overflow-hidden">
                   <div className="flex justify-between items-start mb-1">
                     <span className="text-[9px] font-mono text-accent font-bold uppercase">Kernel_Boot_Seq</span>
-                    <span className="text-[8px] font-mono text-slate-600">14:55:01</span>
+                    <span className="text-[8px] font-mono text-muted">14:55:01</span>
                   </div>
                   <p className="text-[10px] font-mono text-slate-400 leading-tight">Memory allocation verified. Peripheral scan complete. No errors detected.</p>
                   <div className="mt-2 flex gap-1">
@@ -126,7 +126,7 @@ export const Orchestrator: React.FC = () => {
                 <div className="border border-accent/10 bg-black/40 p-3 mb-2 hover:border-accent/30 transition-all duration-200 relative overflow-hidden">
                   <div className="flex justify-between items-start mb-1">
                     <span className="text-[9px] font-mono text-terminal-green font-bold uppercase">Net_Handshake</span>
-                    <span className="text-[8px] font-mono text-slate-600">14:54:30</span>
+                    <span className="text-[8px] font-mono text-muted">14:54:30</span>
                   </div>
                   <p className="text-[10px] font-mono text-slate-400 leading-tight">Incoming connection from proxy node 04. SSL Handshake succeeded.</p>
                 </div>
@@ -136,7 +136,7 @@ export const Orchestrator: React.FC = () => {
             <section className="flex-1 border border-accent/30 shadow-[0_0_10px_rgba(0,242,255,0.1)] bg-black/40 flex flex-col overflow-hidden">
               <div className="h-8 border-b border-accent/20 bg-accent/5 flex items-center px-3 shrink-0 justify-between">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">AGENT_LOGS</span>
-                <span className="text-[8px] font-mono text-slate-600">A_PRIORITY: HIGH</span>
+                <span className="text-[8px] font-mono text-muted">A_PRIORITY: HIGH</span>
               </div>
               <div className="flex-1 overflow-y-auto custom-scrollbar p-3">
                 <div className="border border-accent/10 bg-black/40 p-3 mb-2 hover:border-accent/30 transition-all duration-200 relative overflow-hidden">
@@ -145,7 +145,7 @@ export const Orchestrator: React.FC = () => {
                       <span className="size-1 bg-accent shadow-[0_0_8px_rgba(0,242,255,0.8)] animate-[pulse-ring_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
                       Decision_Engine
                     </span>
-                    <span className="text-[8px] font-mono text-slate-600">14:55:04</span>
+                    <span className="text-[8px] font-mono text-muted">14:55:04</span>
                   </div>
                   <div className="p-2 bg-accent/5 border-l border-accent/30 mt-1">
                     <p className="text-[10px] font-mono text-slate-300 italic">"Redirecting workflow to node_B based on current latency spike."</p>
@@ -160,7 +160,7 @@ export const Orchestrator: React.FC = () => {
               <span className="text-terminal-green font-mono text-xs font-bold">$</span>
               <input 
                 autoFocus 
-                className="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-slate-700 outline-none" 
+                className="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-placeholder outline-none" 
                 placeholder="SEND_COMMAND_TO_ACTIVE_FEED..." 
                 type="text"
                 value={input}
@@ -272,7 +272,7 @@ export const Orchestrator: React.FC = () => {
               <span className="text-[10px] font-mono text-terminal-green font-bold tracking-widest uppercase">REBOOT_IDLE_NODES</span>
             </button>
             <div className="flex justify-between items-center px-1">
-              <span className="text-[8px] font-mono text-slate-600 uppercase">Engine_ID:</span>
+              <span className="text-[8px] font-mono text-muted uppercase">Engine_ID:</span>
               <span className="text-[8px] font-mono text-slate-400 tracking-tighter">RE-771-MATRIX-OVERLOAD</span>
             </div>
           </div>
@@ -281,12 +281,12 @@ export const Orchestrator: React.FC = () => {
       
       <footer className="h-6 border-t border-accent/30 bg-black px-6 flex items-center justify-between relative z-40 shrink-0">
         <div className="flex items-center gap-6">
-          <div className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">I/O_STREAM: 4.8MB/S</div>
-          <div className="text-[8px] font-mono text-slate-600 uppercase tracking-tighter">LATENCY: 4ms</div>
+          <div className="text-[8px] font-mono text-muted uppercase tracking-tighter">I/O_STREAM: 4.8MB/S</div>
+          <div className="text-[8px] font-mono text-muted uppercase tracking-tighter">LATENCY: 4ms</div>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[8px] font-mono text-slate-600 uppercase">Buffer: 0x8892AF</span>
-          <span className="text-[8px] font-mono text-slate-600">© 2024_ADVOLOOM_SYSTEMS</span>
+          <span className="text-[8px] font-mono text-muted uppercase">Buffer: 0x8892AF</span>
+          <span className="text-[8px] font-mono text-muted">© 2024_ADVOLOOM_SYSTEMS</span>
         </div>
       </footer>
     </div>

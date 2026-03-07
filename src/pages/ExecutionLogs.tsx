@@ -116,7 +116,7 @@ export const ExecutionLogs: React.FC = () => {
                       <span className={`text-[9px] font-mono font-bold uppercase ${log.color === 'accent' ? 'text-accent' : log.color === 'terminal-green' ? 'text-terminal-green' : 'text-red-500'}`}>
                         {log.title}
                       </span>
-                      <span className="text-[8px] font-mono text-slate-400">{log.time}</span>
+                      <span className="text-[8px] font-mono text-muted">{log.time}</span>
                     </div>
                     <p className="text-[10px] font-mono text-slate-400 leading-tight">{log.msg}</p>
                     {log.id === 1 && (
@@ -143,7 +143,7 @@ export const ExecutionLogs: React.FC = () => {
                         {log.pulse && <span className="size-1.5 bg-accent shadow-[0_0_8px_rgba(0,242,255,0.8)] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>}
                         {log.title}
                       </span>
-                      <span className="text-[8px] font-mono text-slate-400">{log.time}</span>
+                      <span className="text-[8px] font-mono text-muted">{log.time}</span>
                     </div>
                     {log.isItalic ? (
                       <div className="p-2 bg-accent/5 border-l border-accent/30 mt-1">
@@ -163,7 +163,7 @@ export const ExecutionLogs: React.FC = () => {
               <span className="text-terminal-green font-mono text-xs font-bold">$</span>
               <input 
                 autoFocus 
-                className="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-slate-500 outline-none" 
+                className="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-placeholder outline-none" 
                 placeholder="SEND_COMMAND_TO_ACTIVE_FEED..." 
                 type="text"
                 value={input}

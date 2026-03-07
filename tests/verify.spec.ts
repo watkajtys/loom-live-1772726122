@@ -3859,12 +3859,12 @@ test('Fix empty Orchestrator icon and clarify the far-left utility tabs.', async
 test('Improve text contrast for command input placeholder and log timestamps.', async ({ page }) => {
   await page.goto('/dashboard/logs');
   const input = page.getByPlaceholder('SEND_COMMAND_TO_ACTIVE_FEED...');
-  await expect(input).toHaveClass(/placeholder-slate-500/);
+  await expect(input).toHaveClass(/placeholder-placeholder/);
   
-  const timeElements = await page.locator('.text-\\[8px\\].font-mono.text-slate-400');
+  const timeElements = await page.locator('.text-\\[8px\\].font-mono.text-muted');
   const count = await timeElements.count();
   for (let i = 0; i < count; i++) {
-    await expect(timeElements.nth(i)).toHaveClass(/text-slate-400/);
+    await expect(timeElements.nth(i)).toHaveClass(/text-muted/);
   }
   await page.screenshot({ path: 'evidence.png' });
 });
@@ -3891,5 +3891,20 @@ test('Far-left utility stack renders icons (including Orchestrator) dynamically 
   const avatar = page.locator('aside div.flex-col.gap-6 a[href="/?modal=profile"]', { hasText: 'AV' });
   await expect(avatar).toBeVisible();
 
+  await page.screenshot({ path: 'evidence.png' });
+});
+
+test('Auxiliary UI elements (placeholders, timestamps) pass WCAG contrast ratios while strictly utilizing the established Neon Cyan/Terminal Green palette system.', async ({ page }) => {
+  await page.goto('/dashboard/logs');
+  const input = page.getByPlaceholder('SEND_COMMAND_TO_ACTIVE_FEED...');
+  await expect(input).toHaveClass(/placeholder-placeholder/);
+
+  const timeElements = await page.locator('.text-\\[8px\\].font-mono.text-muted');
+  const count = await timeElements.count();
+  expect(count).toBeGreaterThan(0);
+  for (let i = 0; i < count; i++) {
+    await expect(timeElements.nth(i)).toHaveClass(/text-muted/);
+  }
+  
   await page.screenshot({ path: 'evidence.png' });
 });

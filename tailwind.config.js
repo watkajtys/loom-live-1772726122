@@ -14,6 +14,8 @@ export default {
         "background-dark": "#0a0c10",
         "obsidian": "#0a0c10",
         "terminal-green": "#4ade80",
+        "muted": "rgba(0, 242, 255, 0.6)",
+        "placeholder": "rgba(0, 242, 255, 0.4)",
       },
       fontFamily: {
         "sans": ["Space Grotesk", "sans-serif"],
