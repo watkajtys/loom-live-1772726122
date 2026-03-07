@@ -3415,3 +3415,16 @@ test('Create the CriticAgent class in src/agents/critic.py', async ({ page }) =>
   await page.goto('/');
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Create the IngesterAgent class in src/agents/ingester.py', async ({ page }) => {
+  // Verify the file exists and contains the required content
+  const filePath = path.join(process.cwd(), 'src/agents/ingester.py');
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  expect(fileContent).toContain('class IngesterAgent:');
+  expect(fileContent).toContain('class MockDocsParser:'); // Parser wrapper or logic
+  expect(fileContent).toContain('8090'); // PocketBase port
+
+  await page.goto('/');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
