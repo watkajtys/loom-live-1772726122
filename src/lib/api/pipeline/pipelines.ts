@@ -31,6 +31,7 @@ export const fetchPipelines = async (options: FetchPipelinesOptions = {}): Promi
   }
 };
 export const createPipeline = async (data: CreatePipelineDTO): Promise<Pipeline> => {
+  // Apply validation schema to Pipeline POST controller
   try {
     const validatedData = CreatePipelineSchema.parse(data);
     return await pb.collection(COLLECTIONS.PIPELINES).create<Pipeline>(validatedData);

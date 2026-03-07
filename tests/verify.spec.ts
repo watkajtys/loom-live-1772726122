@@ -2091,3 +2091,65 @@ test('Apply validation schemas for parameters and queries to GET and DELETE Pipe
 
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Apply validation schema to Pipeline POST controller', async ({ page }) => {
+  // Mock the PocketBase route so valid requests succeed for pipeline POST route
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    if (route.request().method() === 'POST') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'new_pipe_test_1',
+          title: 'Valid Pipeline Test',
+          description: 'It passed validation schema'
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+    
+    let validSuccess = false;
+    let invalidFailed = false;
+    let errorStatus = null;
+
+    try {
+      await pipelinesApi.createPipeline({
+        title: 'Valid Pipeline Test',
+        description: 'It passed validation schema'
+      });
+      validSuccess = true;
+    } catch (e) {
+      validSuccess = false;
+    }
+
+    try {
+      // Intentionally passing an invalid body (empty title) to trigger validation schema error
+      await pipelinesApi.createPipeline({
+        title: '',
+      });
+    } catch (e: any) {
+      invalidFailed = true;
+      errorStatus = e.status;
+    }
+
+    return { 
+      validSuccess, 
+      invalidFailed, 
+      errorStatus
+    };
+  });
+
+  expect(result.validSuccess).toBe(true);
+  expect(result.invalidFailed).toBe(true);
+  expect(result.errorStatus).toBe(400);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
