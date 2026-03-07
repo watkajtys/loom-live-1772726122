@@ -3909,7 +3909,7 @@ test('Auxiliary UI elements (placeholders, timestamps) pass WCAG contrast ratios
   await page.screenshot({ path: 'evidence.png' });
 });
 
-test('', async ({ page }) => {
+test('Focus-within border classes are applied correctly on orchestrator input', async ({ page }) => {
   await page.goto('/orchestrator');
   
   // Locate the input element by placeholder
@@ -3929,5 +3929,21 @@ test('', async ({ page }) => {
   await expect(container).toHaveClass(/focus-within:shadow-\[0_0_15px_rgba\(0,242,255,0\.2\)\]/);
   
   // Take screenshot
+  await page.screenshot({ path: 'evidence.png' });
+});
+
+test('', async ({ page }) => {
+  await page.goto('/orchestrator');
+  
+  // Wait for the elements to be present
+  const titleLocator = page.locator('span.brightness-125').first();
+  await expect(titleLocator).toBeVisible();
+  
+  const timestampLocator = page.locator('span.text-muted\\/50').first();
+  await expect(timestampLocator).toBeVisible();
+
+  const metadataLocator = page.locator('span.text-accent\\/50').first();
+  await expect(metadataLocator).toBeVisible();
+  
   await page.screenshot({ path: 'evidence.png' });
 });

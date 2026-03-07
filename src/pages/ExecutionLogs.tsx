@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Icon } from '../components/Icon';
 import { OrchestratorLayout } from '../components/layout/OrchestratorLayout';
 import { CommandInput } from '../components/CommandInput';
+import { LOG_TYPOGRAPHY } from '../constants/theme';
 
 export const ExecutionLogs: React.FC = () => {
   const [logs, setLogs] = useState([
@@ -189,16 +190,16 @@ export const ExecutionLogs: React.FC = () => {
               {logs.map((log) => (
                 <div key={log.id} className={`border border-accent/10 bg-black/40 p-3 mb-2 hover:border-accent/30 transition-all duration-200 relative overflow-hidden ${log.color === 'red-500' ? 'border-red-500/20' : ''}`}>
                   <div className="flex justify-between items-start mb-1">
-                    <span className={`text-[9px] font-mono font-bold uppercase ${log.color === 'accent' ? 'text-accent' : log.color === 'terminal-green' ? 'text-terminal-green' : 'text-red-500'}`}>
+                    <span className={`${LOG_TYPOGRAPHY.title} ${log.color === 'accent' ? 'text-accent' : log.color === 'terminal-green' ? 'text-terminal-green' : 'text-red-500'}`}>
                       {log.title}
                     </span>
-                    <span className="text-[8px] font-mono text-muted">{log.time}</span>
+                    <span className={LOG_TYPOGRAPHY.timestamp}>{log.time}</span>
                   </div>
-                  <p className="text-[10px] font-mono text-slate-400 leading-tight">{log.msg}</p>
+                  <p className={LOG_TYPOGRAPHY.body}>{log.msg}</p>
                   {log.id === 1 && (
                     <div className="mt-2 flex gap-1">
-                      <span className="px-1 py-0.5 border border-accent/20 bg-accent/5 text-[8px] font-mono text-accent uppercase">PID: 1022</span>
-                      <span className="px-1 py-0.5 border border-accent/20 bg-accent/5 text-[8px] font-mono text-accent uppercase">CPU: 0.1%</span>
+                      <span className={LOG_TYPOGRAPHY.metadata}>PID: 1022</span>
+                      <span className={LOG_TYPOGRAPHY.metadata}>CPU: 0.1%</span>
                     </div>
                   )}
                 </div>
@@ -215,11 +216,11 @@ export const ExecutionLogs: React.FC = () => {
               {agentLogs.map((log) => (
                 <div key={log.id} className="border border-accent/10 bg-black/40 p-3 mb-2 hover:border-accent/30 transition-all duration-200 relative overflow-hidden">
                   <div className="flex justify-between items-start mb-1">
-                    <span className={`text-[9px] font-mono font-bold uppercase flex items-center gap-1 ${log.color === 'accent' ? 'text-accent' : log.color === 'slate-400' ? 'text-slate-400' : ''}`}>
+                    <span className={`${LOG_TYPOGRAPHY.title} flex items-center gap-1 ${log.color === 'accent' ? 'text-accent' : log.color === 'slate-400' ? 'text-slate-400' : ''}`}>
                       {log.pulse && <span className="size-1.5 bg-accent shadow-[0_0_8px_rgba(0,242,255,0.8)] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>}
                       {log.title}
                     </span>
-                    <span className="text-[8px] font-mono text-muted">{log.time}</span>
+                    <span className={LOG_TYPOGRAPHY.timestamp}>{log.time}</span>
                   </div>
                   {log.isItalic ? (
                     <div className="p-2 bg-accent/5 border-l border-accent/30 mt-1">
