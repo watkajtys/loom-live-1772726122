@@ -8,6 +8,7 @@ export interface AppRoute {
   showInSidebar: boolean;
 }
 
+// Task: Integrate Knowledge Base into application routing and navigation
 export const APP_ROUTES: AppRoute[] = [
   { path: '/dashboard', id: 'Root::Command_Center', icon: 'home', label: 'Command Center', showInSidebar: true },
   { path: '/queue', id: 'Root::Community_Queue', icon: 'bot', label: 'Community Queue', showInSidebar: true },

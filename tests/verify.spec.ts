@@ -3200,3 +3200,17 @@ test('Implement the Knowledge Base article list and search components', async ({
   // Save screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Integrate Knowledge Base into application routing and navigation', async ({ page }) => {
+  await page.goto('/');
+
+  // Verify that the sidebar navigation contains a link to /
+  const sidebarLink = page.locator('aside nav a[href="/"]');
+  await expect(sidebarLink).toBeVisible();
+
+  // Verify the Knowledge Base component is rendered by targeting the KB_GRAPH heading
+  await expect(page.locator('h1', { hasText: 'KB_GRAPH' })).toBeVisible();
+
+  // Save screenshot
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

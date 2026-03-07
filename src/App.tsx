@@ -16,6 +16,7 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/queue" element={<CommunityQueue />} />
+            {/* Task: Integrate Knowledge Base into application routing and navigation */}
             <Route path="/" element={<KnowledgeBase />} />
             <Route path="/pipeline" element={<ContentPipeline />} />
             <Route path="/reports" element={<AgentExecutionReports />} />
