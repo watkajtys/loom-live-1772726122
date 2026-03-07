@@ -10,6 +10,7 @@ export interface FetchPipelinesOptions {
   filter?: string;
   sort?: string;
 }
+// Implement GET endpoints to retrieve pipelines, associated stages, and cards.
 export const fetchPipelines = async (options: FetchPipelinesOptions = {}): Promise<{ items: Pipeline[]; totalItems: number }> => {
   try {
     const validatedOptions = FetchPipelinesOptionsSchema.parse(options);

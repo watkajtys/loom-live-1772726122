@@ -2318,3 +2318,99 @@ test('Define the Stage database schema and create its migration.', async ({ page
   await page.waitForLoadState('networkidle');
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Implement GET endpoints to retrieve pipelines, associated stages, and cards.', async ({ page }) => {
+  // Mock PocketBase endpoints for GET responses
+  await page.route('**/api/collections/pipelines/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          items: [{ id: 'pipe_1', title: 'Test Pipeline' }],
+          totalItems: 1
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.route('**/api/collections/pipeline_stages/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          items: [{ id: 'stage_1', pipeline_id: 'pipe_1', title: 'Test Stage', position: 0 }],
+          totalItems: 1
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.route('**/api/collections/pipeline_cards/records*', async route => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          items: [{ id: 'card_1', stage_id: 'stage_1', title: 'Test Card', position: 0 }],
+          totalItems: 1
+        })
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const result = await page.evaluate(async () => {
+    const pipelinesApi = await import('/src/lib/api/pipeline/pipelines.ts');
+    const stagesApi = await import('/src/lib/api/pipeline/stages.ts');
+    const cardsApi = await import('/src/lib/api/pipeline/cards.ts');
+    
+    let pipelineSuccess = false;
+    let stageSuccess = false;
+    let cardSuccess = false;
+
+    try {
+      const pipes = await pipelinesApi.fetchPipelines({ page: 1, perPage: 10 });
+      if (pipes.items.length === 1 && pipes.items[0].title === 'Test Pipeline') {
+        pipelineSuccess = true;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    try {
+      const stages = await stagesApi.fetchPipelineStages({ pipeline_id: 'pipe_1' });
+      if (stages.items.length === 1 && stages.items[0].title === 'Test Stage') {
+        stageSuccess = true;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    try {
+      const cards = await cardsApi.fetchPipelineCards({ stage_id: 'stage_1' });
+      if (cards.items.length === 1 && cards.items[0].title === 'Test Card') {
+        cardSuccess = true;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    return { pipelineSuccess, stageSuccess, cardSuccess };
+  });
+
+  expect(result.pipelineSuccess).toBe(true);
+  expect(result.stageSuccess).toBe(true);
+  expect(result.cardSuccess).toBe(true);
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});

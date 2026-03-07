@@ -15,6 +15,7 @@ import {
 
 export interface FetchPipelineCardsOptions extends FetchPipelineCardsOptionsDTO {}
 
+// Implement GET endpoints to retrieve pipelines, associated stages, and cards.
 export const fetchPipelineCards = async (options: FetchPipelineCardsOptions): Promise<{ items: PipelineCard[]; totalItems: number }> => {
   try {
     const validatedOptions = FetchPipelineCardsOptionsSchema.parse(options);
