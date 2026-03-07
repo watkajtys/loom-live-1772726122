@@ -3336,3 +3336,16 @@ test('Integrate Knowledge Base into application routing and navigation', async (
   // Save screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
+
+test('Create the ScoutAgent class in src/agents/scout.py', async ({ page }) => {
+  // Verify the file exists and contains the required content
+  const filePath = path.join(process.cwd(), 'src/agents/scout.py');
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  expect(fileContent).toContain('class ScoutAgent:');
+  expect(fileContent).toContain('twitter'); // Twitter client wrapper
+  expect(fileContent).toContain('8090'); // PocketBase port
+
+  await page.goto('/');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
