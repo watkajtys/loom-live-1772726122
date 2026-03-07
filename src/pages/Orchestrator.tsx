@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { OrchestratorLayout } from '../components/layout/OrchestratorLayout';
+import { CommandInput } from '../components/CommandInput';
 
 export const Orchestrator: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -244,21 +245,11 @@ export const Orchestrator: React.FC = () => {
           </section>
         </div>
         
-        <div className="p-2 bg-black border border-accent/30 shadow-[0_0_10px_rgba(0,242,255,0.1)] border-accent/20">
-          <div className="flex items-center gap-3 bg-accent/5 border border-accent/20 px-3 py-1.5">
-            <span className="text-terminal-green font-mono text-xs font-bold">$</span>
-            <input 
-              autoFocus 
-              className="bg-transparent border-none focus:ring-0 text-white font-mono text-[11px] w-full uppercase placeholder-placeholder outline-none relative z-20" 
-              placeholder="SEND_COMMAND_TO_ACTIVE_FEED..." 
-              type="text"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleCommand}
-            />
-            <div className="w-1.5 h-3.5 bg-terminal-green animate-[pulse_1s_infinite]"></div>
-          </div>
-        </div>
+        <CommandInput 
+          value={input}
+          onChange={(val) => setInput(val)}
+          onKeyDown={handleCommand}
+        />
       </main>
     </OrchestratorLayout>
   );

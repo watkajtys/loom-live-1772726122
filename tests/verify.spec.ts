@@ -3658,7 +3658,7 @@ test('Send GET to /healthz and verify response programmatically validates DB poo
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
-test('', async ({ page }) => {
+test('Ensure application handles health checks correctly', async ({ page }) => {
   // Mock health check API response
   await page.route('**/api/health', async route => {
     await route.fulfill({
@@ -3906,5 +3906,28 @@ test('Auxiliary UI elements (placeholders, timestamps) pass WCAG contrast ratios
     await expect(timeElements.nth(i)).toHaveClass(/text-muted/);
   }
   
+  await page.screenshot({ path: 'evidence.png' });
+});
+
+test('', async ({ page }) => {
+  await page.goto('/orchestrator');
+  
+  // Locate the input element by placeholder
+  const input = page.getByPlaceholder('SEND_COMMAND_TO_ACTIVE_FEED...');
+  
+  // Get the parent container that should have the focus-within classes
+  const container = input.locator('..').locator('..');
+  
+  // Verify classes before focus
+  await expect(container).toHaveClass(/border-accent\/30/);
+  
+  // Focus the input
+  await input.focus();
+  
+  // Verify focus-within classes
+  await expect(container).toHaveClass(/focus-within:border-accent\/60/);
+  await expect(container).toHaveClass(/focus-within:shadow-\[0_0_15px_rgba\(0,242,255,0\.2\)\]/);
+  
+  // Take screenshot
   await page.screenshot({ path: 'evidence.png' });
 });
