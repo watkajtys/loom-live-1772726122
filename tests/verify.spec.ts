@@ -12,15 +12,15 @@ test('App initializes correctly', async ({ page }) => {
     });
   });
   await page.goto('/dashboard');
-  await expect(page.locator('text=Command::Live_Log')).toBeVisible();
+  await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
 });
 
 test('Advoloom Command Center shell and primary views from the design load correctly', async ({ page }) => {
   await page.goto('/dashboard');
 
   // Check top bar and dashboard view
-  await expect(page.locator('text=Root::Command_Center')).toBeVisible();
-  await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
+  await expect(page.locator('text=ORCHESTRATOR')).toBeVisible();
+  await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
   
   // Navigate to queue
   await page.click('nav a[href="/queue"]');
@@ -870,13 +870,13 @@ test('Icon component handles string mapping and fallback logic without crashing'
   });
   await page.goto('/dashboard');
   // Checking that the Top Bar renders correctly without a crash from Icon.tsx
-  await expect(page.locator('text=Command::Live_Log')).toBeVisible();
+  await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
   
   // Navigate to Dashboard and make sure stats grid icons load (Bot, Terminal, Network, Code, AtSign)
-  await expect(page.locator('text=Autonomous Activity Visualize')).toBeVisible();
+  await expect(page.locator('text=COMMAND_LIBRARY')).toBeVisible();
   
   // These headers contain the mapped icons from Icon.tsx
-  await expect(page.locator('text=Command::Live_Log')).toBeVisible();
+  await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
 });
 
 test('CommunityQueue handles telemetry passed to extracted Header and Footer components', async ({ page }) => {
@@ -3442,5 +3442,26 @@ test('Create the IngesterAgent class in src/agents/ingester.py', async ({ page }
   expect(fileContent).toContain('8090'); // PocketBase port
 
   await page.goto('/');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
+test('User opens /dashboard and sees the Space Grotesk and JetBrains Mono typography integrated with the Obsidian Black, Neon Cyan, and Terminal Green color palette.', async ({ page }) => {
+  await page.goto('/dashboard');
+  
+  // Wait for load
+  await page.waitForLoadState('domcontentloaded');
+
+  // Verify container class
+  const container = page.locator('.bg-obsidian');
+  await expect(container.first()).toBeVisible();
+
+  // Verify headers and content mapping to specified typography and colors
+  await expect(page.locator('h1', { hasText: 'ORCHESTRATOR' })).toBeVisible();
+  await expect(page.locator('span', { hasText: 'NODE_CONTROL_V3.0' })).toHaveClass(/text-accent/);
+  
+  // Terminal green check
+  await expect(page.locator('span', { hasText: 'Core: Running' })).toHaveClass(/text-terminal-green/);
+
+  // Take screenshot
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
