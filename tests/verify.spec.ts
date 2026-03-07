@@ -66,6 +66,42 @@ test('Define the Pipeline database schema and create its initial migration.', as
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
+test('Define the Card/Item database schema and create its migration.', async ({ page }) => {
+  // Directly verify the migration file content in the Node.js test runner context
+  const pbMigrationsDir = path.join(process.cwd(), 'pb_migrations');
+  
+  let migrationFileContent = '';
+  let foundMigration = false;
+  
+  if (fs.existsSync(pbMigrationsDir)) {
+    const files = fs.readdirSync(pbMigrationsDir);
+    const cardMigration = files.find(f => f.includes('created_pipeline_cards.js'));
+    
+    if (cardMigration) {
+      foundMigration = true;
+      migrationFileContent = fs.readFileSync(path.join(pbMigrationsDir, cardMigration), 'utf-8');
+    }
+  }
+  
+  expect(foundMigration).toBe(true);
+  
+  // Verify expected core properties of the migration
+  expect(migrationFileContent).toContain('"name": "pipeline_cards"');
+  expect(migrationFileContent).toContain('"name": "stage_id"');
+  expect(migrationFileContent).toContain('"type": "relation"');
+  expect(migrationFileContent).toContain('"collectionId": "2h3i4j5k6l7m8n9"');
+  expect(migrationFileContent).toContain('"cascadeDelete": true');
+  expect(migrationFileContent).toContain('"name": "title"');
+  expect(migrationFileContent).toContain('"name": "content"');
+  expect(migrationFileContent).toContain('"name": "position"');
+  expect(migrationFileContent).toContain('CREATE INDEX `idx_pipeline_cards_stage_id` ON `pipeline_cards` (`stage_id`)');
+  
+  // Navigate to root to take the screenshot
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Create validation schemas for Pipeline mutations', async ({ page }) => {
   // Mock PocketBase
   await page.route('**/api/collections/content_pipeline/records*', async route => {
