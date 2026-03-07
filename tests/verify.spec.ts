@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { generateMockQueueData } from '../src/lib/queueSimulation';
+import fs from 'fs';
+import path from 'path';
 
 test('App initializes correctly', async ({ page }) => {
   await page.route('**/api/collections/content_pipeline/records*', async route => {
@@ -30,6 +32,37 @@ test('Advoloom Command Center shell and primary views from the design load corre
   await page.click('nav a[href="/dashboard"]');
   await expect(page.locator('text=Root::Command_Center')).toBeVisible();
 
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
+test('Define the Pipeline database schema and create its initial migration.', async ({ page }) => {
+  // Directly verify the migration file content in the Node.js test runner context
+  const pbMigrationsDir = path.join(process.cwd(), 'pb_migrations');
+  
+  let migrationFileContent = '';
+  let foundMigration = false;
+  
+  if (fs.existsSync(pbMigrationsDir)) {
+    const files = fs.readdirSync(pbMigrationsDir);
+    const pipelineMigration = files.find(f => f.includes('created_pipelines.js'));
+    
+    if (pipelineMigration) {
+      foundMigration = true;
+      migrationFileContent = fs.readFileSync(path.join(pbMigrationsDir, pipelineMigration), 'utf-8');
+    }
+  }
+  
+  expect(foundMigration).toBe(true);
+  
+  // Verify expected core properties of the migration
+  expect(migrationFileContent).toContain('"name": "pipelines"');
+  expect(migrationFileContent).toContain('"name": "title"');
+  expect(migrationFileContent).toContain('"name": "description"');
+  expect(migrationFileContent).toContain('"name": "config"');
+  
+  // Navigate to root to take the screenshot
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
   await page.screenshot({ path: 'evidence.png', fullPage: true });
 });
 
