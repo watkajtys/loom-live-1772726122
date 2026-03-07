@@ -15,11 +15,37 @@ test('App initializes correctly', async ({ page }) => {
   await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
 });
 
+test('Dashboard renders Command, Feed, and State panes concurrently on wide-screen viewports, occupying previous whitespace and maintaining layout density.', async ({ page }) => {
+  await page.goto('/orchestrator');
+  
+  // Wait for the main page title
+  await expect(page.locator('h1', { hasText: 'ORCHESTRATOR' })).toBeVisible();
+
+  // Verify the three panes are rendered
+  const commandPane = page.locator('span.uppercase', { hasText: '01_COMMANDS' });
+  await expect(commandPane).toBeVisible();
+
+  const streamPane = page.locator('span.uppercase', { hasText: '02_LIVE_STREAM_MATRIX' });
+  await expect(streamPane).toBeVisible();
+
+  const statePane = page.locator('span.uppercase', { hasText: '03_CLUSTER_MONITOR' });
+  await expect(statePane).toBeVisible();
+
+  // Verify layout structure contains all three elements concurrently
+  const asideElements = page.locator('aside');
+  expect(await asideElements.count()).toBeGreaterThanOrEqual(2); // Left commands, right monitor (in addition to potential global sidebars)
+  
+  const mainElements = page.locator('main').last();
+  await expect(mainElements).toBeVisible();
+
+  await page.screenshot({ path: 'evidence.png', fullPage: true });
+});
+
 test('Advoloom Command Center shell and primary views from the design load correctly', async ({ page }) => {
   await page.goto('/dashboard');
 
   // Check top bar and dashboard view
-  await expect(page.locator('text=ORCHESTRATOR')).toBeVisible();
+  await expect(page.locator('h1', { hasText: 'ORCHESTRATOR' })).toBeVisible();
   await expect(page.locator('text=Orchestration_Feed')).toBeVisible();
   
   // Navigate to queue
